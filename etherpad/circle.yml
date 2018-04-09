@@ -1,0 +1,79 @@
+machine:
+  environment:
+    # PROJECT_NAME: turnkey-cocoa-720
+    # CLUSTER_NAME: cluster-1
+    # CLOUDSDK_COMPUTE_ZONE: europe-west1-c
+    DEBIAN_FRONTEND: noninteractive
+    CONTAINER_NAME: ep_dataporten
+    IMAGE_BASE: uninettno/ep_dataporten
+    IMAGE: ${IMAGE_BASE}:build-${CIRCLE_BUILD_NUM}
+    # KUBERNETES_SERVER: https://104.155.105.25
+    # KUBERNETES_DEPLOYMENT: feidernd
+    # KUBERNETES_DEPLOYMENT_TESTING: feidernd-testing
+  services:
+    - docker
+
+dependencies:
+  pre:
+    # - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
+    # - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update kubectl
+    # This is not really used right now..
+    # - echo $GKE_SERVICE_ACCOUNT | base64 --decode -i > ${HOME}/account-auth.json
+    # - sudo /opt/google-cloud-sdk/bin/gcloud config set project $PROJECT_NAME
+    # - sudo /opt/google-cloud-sdk/bin/gcloud --quiet config set container/cluster $CLUSTER_NAME
+    # Reading the zone from the env var is not working so we set it here
+    # - sudo /opt/google-cloud-sdk/bin/gcloud config set compute/zone ${CLOUDSDK_COMPUTE_ZONE}
+    # - sudo chown -R ubuntu:ubuntu ${HOME}/.kube
+    # - kubectl config set-credentials circleci --token=${GKE_SERVICE_TOKEN}
+    # - kubectl config set-credentials admin --username=admin --password=${GKE_ADMIN_PASSWD}
+    # - kubectl config set-cluster cluster-1 --server=${KUBERNETES_SERVER} --insecure-skip-tls-verify=true
+    # - kubectl config set-context gce --user=admin --cluster=cluster-1 --namespace=production
+    # - kubectl config use-context gce
+    # - kubectl config view
+    # - kubectl version
+    # - kubectl get pods
+    # - kubectl get serviceaccounts
+    # Using a separate tag command until Docker 1.10 is available on CircleCI, then we can use two tags in the build command above
+    # - gcloud docker push
+    - echo "Build ${CIRCLE_BUILD_NUM} branch ${CIRCLE_BRANCH}" > build.txt && cat build.txt
+    - echo "ENV CBUILDNUM ${CIRCLE_BUILD_NUM}" >> ./Dockerfile
+    - echo "ENV CBRANCH ${CIRCLE_BRANCH}" >> ./Dockerfile
+    - cat Dockerfile
+    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+    - docker build -t ${IMAGE} .
+    # - docker tag ${IMAGE_BASE}:$CIRCLE_SHA1 ${IMAGE_BASE}:testing-${CIRCLE_BUILD_NUM}
+    - docker push ${IMAGE_BASE}
+
+
+
+
+# Automatically configure kubectl
+    # - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/account-auth.json
+    # - sudo /opt/google-cloud-sdk/bin/gcloud --quiet container clusters get-credentials $CLUSTER_NAME
+
+
+# test:
+#   post:
+#     - docker run -d -p 3000:3000 -e "SECRET_KEY_BASE=abcd1234" eu.gcr.io/${PROJECT_NAME}/${CONTAINER_NAME}:$CIRCLE_SHA1; sleep 10
+#     - curl --retry 10 --retry-delay 5 -v http://localhost:3000
+
+test:
+  override:
+    - /bin/true
+    #- docker run -d -p 80:80 ${IMAGE}; sleep 10
+    #- curl --retry 10 --retry-delay 5 -v http://localhost:80
+
+deployment:
+  preprod:
+    branch: master
+    commands:
+      - echo "Deployment [MASTER / Preprod] ${IMAGE}"
+      # - kubectl patch deployment ${KUBERNETES_DEPLOYMENT_TESTING} -p "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"${KUBERNETES_DEPLOYMENT_TESTING}\",\"image\":\"${IMAGE}\"}]}}}}"
+      # - kubectl exec `kubectl --namespace production get pods -l 'appid=feidernd'  -o jsonpath={.items[*].metadata.name}` /app/bin/migratedb.sh
+      # - kubectl exec deployment ${KUBERNETES_DEPLOYMENT_TESTING} -p "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"${KUBERNETES_DEPLOYMENT_TESTING}\",\"image\":\"${IMAGE}\"}]}}}}"
+      # - ./bin/migratedb.sh
+  prod:
+    branch: stable
+    commands:
+      - echo "Deployment [STABLE / Production] ${IMAGE}"
+      # - kubectl patch deployment ${KUBERNETES_DEPLOYMENT} -p "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"${KUBERNETES_DEPLOYMENT}\",\"image\":\"${IMAGE}\"}]}}}}"

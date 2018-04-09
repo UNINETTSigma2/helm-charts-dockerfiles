@@ -1,0 +1,12 @@
+{
+    "parts": [
+        {
+            "name": "ep_dataporten",
+            "hooks": {
+            	"expressConfigure": "ep_dataporten/ep_dataporten",
+            	"authenticate": "ep_dataporten/ep_dataporten",
+            	"authorize": "ep_dataporten/ep_dataporten"
+            }
+        }
+    ]
+}
