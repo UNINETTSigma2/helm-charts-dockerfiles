@@ -1,7 +1,0 @@
-dataporten:
-  Options:
-    ScopesRequested:
-      - profile
-      - openid
-    RedirectURI:
-      - /oauth2/callback
