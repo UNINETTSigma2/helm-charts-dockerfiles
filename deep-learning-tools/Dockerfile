@@ -1,5 +1,8 @@
 FROM jupyter/base-notebook
 
+ENV NB_UID=999 \
+NB_GID=999
+
 USER root
 # Install cuDNN library
 RUN NVIDIA_GPGKEY_SUM=d1be581509378368edeec8c1eb2958702feedf3bc3d17011adbf24efacce4ab5 && \
@@ -52,6 +55,7 @@ RUN conda clean -tipsy && apt autoclean
 RUN echo "[global]\ndevice=cuda\nfloatX=float32\n[gpuarray]\npreallocate=1\n[blas]\nldflags = -lopenblas\n" > $HOME/.theanorc
 RUN mkdir $HOME/.keras
 RUN echo "{\n\"image_data_format\": \"channels_last\",\n\"epsilon\": 1e-07,\"floatx\": \"float32\",\"backend\": \"theano\"\n}" > $HOME/.keras/keras.json
+RUN chown -R $NB_UID:$NB_GID $HOME/.theanorc $HOME/.keras
 COPY start.sh /usr/local/bin/
-RUN chown -R jovyan /data/
-WORKDIR /data/notebooks
+RUN chown -R $NB_UID:$NB_GID /data
+WORKDIR /data/
