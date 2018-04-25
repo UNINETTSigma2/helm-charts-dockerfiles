@@ -1,4 +1,8 @@
 FROM jupyter/datascience-notebook
+USER root
+ENV NB_UID=999 \
+NB_GID=999
+
 RUN pip install npm
 RUN pip install jupyterlab
 RUN jupyter serverextension enable --py jupyterlab
