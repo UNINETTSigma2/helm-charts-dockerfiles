@@ -21,6 +21,6 @@ do
         docker push $img
         cd ..
     else
-        echo "Skipping, image already exist: img"
+        echo "Skipping, image already exist: $img"
     fi
 done
