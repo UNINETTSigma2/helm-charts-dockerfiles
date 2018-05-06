@@ -1,26 +1,39 @@
 #!/bin/bash
 
-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin quay.io
+#echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin quay.io
+
+function build_image() {
+    img="quay.io/uninett/$1:$2"
+    curl -s "https://quay.io/api/v1/repository/uninett/$1/tag/?specificTag=$2" | grep "$2" > /dev/null 2>&1
+    if test $? -ne 0
+    then
+        echo "Building container $img"
+        #docker build -t $img .
+        #docker push $img
+    else
+        echo "Skipping, image already exist: $img"
+    fi
+}
 
 for rawd in $(ls -d */)
 do
-    d=$(echo $rawd|sed 's/\///')
-    if test $d == "spark"
+    directory=$(echo $rawd|sed 's/\///')
+    if test -f "$directory/Dockerfile"
     then
-        continue
-        # Skip spark image for now, need to fix the directory structure
-    fi
-    tag="$(git log -n 1 --pretty=format:%cd --date=short -- $d| sed s/-//g)-$(git log -n 1 --pretty=format:%h -- $d)"
-    img="quay.io/uninett/$d:$tag"
-    curl -s "https://quay.io/api/v1/repository/uninett/$d/tag/?specificTag=$tag" | grep "$tag" > /dev/null 2>&1
-    if test $? -ne 0
-    then
-        cd $d
-        echo "Building container $img"
-        docker build -t $img .
-        docker push $img
+        tag="$(git log -n 1 --pretty=format:%cd --date=short -- $directory| sed s/-//g)-$(git log -n 1 --pretty=format:%h -- $directory)"
+        cd $directory
+        build_image "$directory" "$tag"
         cd ..
     else
-        echo "Skipping, image already exist: $img"
+        cd $directory
+        for innerawd in $(ls -d */)
+        do
+            innerdir=$(echo $innerawd|sed 's/\///')
+            tag="$(git log -n 1 --pretty=format:%cd --date=short -- $innerdir| sed s/-//g)-$(git log -n 1 --pretty=format:%h -- $innerdir)"
+            cd $innerdir
+            build_image "$directory-$innerdir" "$tag"
+            cd ..
+        done
+        cd ..
     fi
 done
