@@ -28,6 +28,7 @@ ENV PKG_RSTUDIO_VERSION 1.1.447
 
 RUN chmod go+w -R /home/rstudio
 COPY rserver.conf /etc/rstudio/rserver.conf
+COPY rsession.conf /etc/rstudio/rsession.conf
 USER $APP_UID:$APP_GID
 WORKDIR /mnt
 EXPOSE 8787

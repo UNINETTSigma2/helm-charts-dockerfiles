@@ -1,21 +1,21 @@
 FROM jupyter/base-notebook
 
-ENV NB_UID=999 \
-NB_GID=999
+ENV APP_UID=999
+ENV APP_GID=999
+ENV NVIDIA_GPGKEY_SUM=d1be581509378368edeec8c1eb2958702feedf3bc3d17011adbf24efacce4ab5
+ENV NVIDIA_GPGKEY_FPR=ae09fe4bbd223a84b2ccfce3f60f4b3d7fa2af80
 
 USER root
 # Install cuDNN library
-RUN NVIDIA_GPGKEY_SUM=d1be581509378368edeec8c1eb2958702feedf3bc3d17011adbf24efacce4ab5 && \
-    NVIDIA_GPGKEY_FPR=ae09fe4bbd223a84b2ccfce3f60f4b3d7fa2af80 && \
-    apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub && \
+RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub && \
     apt-key adv --export --no-emit-version -a $NVIDIA_GPGKEY_FPR | tail -n +5 > cudasign.pub && \
-    echo "$NVIDIA_GPGKEY_SUM  cudasign.pub" | sha256sum -c --strict - && rm cudasign.pub && \
+    echo "$NVIDIA_GPGKEY_SUM  cudasign.pub" | sha256sum "-c --strict -" && rm cudasign.pub && \
     echo "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/cuda.list && \
     echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
 
-ENV CUDNN_VERSION 7.0.5.15
-ENV CUDA_VERSION 8.0.61
-ENV CUDA_PKG_VERSION 8-0=$CUDA_VERSION-1
+ENV CUDNN_VERSION 7.1.2
+ENV CUDA_VERSION 9.1
+ENV CUDA_PKG_VERSION 9-1=$CUDA_VERSION-1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         cuda-core-$CUDA_PKG_VERSION \
@@ -40,7 +40,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 RUN echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo "/usr/local/cuda-8.0/lib64" >> /etc/ld.so.conf.d/nvidia.conf
+    echo "/usr/local/cuda-$CUDA_VERSION/lib64" >> /etc/ld.so.conf.d/nvidia.conf
 RUN ln -s /usr/local/cuda-8.0/include/* /usr/include/
 ENV PATH /usr/local/nvidia/bin/:/usr/local/cuda-8.0/bin/:${PATH}
 
@@ -52,10 +52,9 @@ RUN conda install theano=1.0.1 keras==1.2.2 networkx==1.11 pandas \
     tensorflow-gpu=1.4.1 tqdm=4.19.5
 RUN pip install hyperopt==0.1 pycuda
 RUN conda clean -tipsy && apt autoclean
-RUN echo "[global]\ndevice=cuda\nfloatX=float32\n[gpuarray]\npreallocate=1\n[blas]\nldflags = -lopenblas\n" > $HOME/.theanorc
-RUN mkdir $HOME/.keras
-RUN echo "{\n\"image_data_format\": \"channels_last\",\n\"epsilon\": 1e-07,\"floatx\": \"float32\",\"backend\": \"theano\"\n}" > $HOME/.keras/keras.json
-RUN chown -R $NB_UID:$NB_GID $HOME/.theanorc $HOME/.keras
+# RUN echo "[global]\ndevice=cuda\nfloatX=float32\n[gpuarray]\npreallocate=1\n[blas]\nldflags = -lopenblas\n" > $HOME/.theanorc
+# RUN mkdir $HOME/.keras
+# RUN echo "{\n\"image_data_format\": \"channels_last\",\n\"epsilon\": 1e-07,\"floatx\": \"float32\",\"backend\": \"theano\"\n}" > $HOME/.keras/keras.json
+# RUN chown -R $NB_UID:$NB_GID $HOME/.theanorc $HOME/.keras
 COPY start.sh /usr/local/bin/
-RUN chown -R $NB_UID:$NB_GID /data
 WORKDIR /data/
