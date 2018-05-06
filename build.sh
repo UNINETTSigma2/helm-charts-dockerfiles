@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin quay.io
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin quay.io
 
 function build_image() {
     img="quay.io/uninett/$1:$2"
@@ -8,8 +8,8 @@ function build_image() {
     if test $? -ne 0
     then
         echo "Building container $img"
-        #docker build -t $img .
-        #docker push $img
+        docker build -t $img .
+        docker push $img
     else
         echo "Skipping, image already exist: $img"
     fi
