@@ -21,12 +21,17 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin
 RUN chmod +x /sbin/tini
 
 # Setup ENV for Appstore to be picked up
-ENV APP_UID 988
-ENV APP_GID 988
+ENV APP_UID 999
+ENV APP_GID 999
 ENV PKG_R_VERSION 3.4.4
 ENV PKG_RSTUDIO_VERSION 1.1.447
 
-RUN chmod go+w -R /home/rstudio
+RUN chmod go+w -R /home/rstudio && \
+    usermod -u 988 rstudio-server && \
+    groupmod -g 988 rstudio-server && \
+    usermod -u "$APP_UID" rstudio && \
+    groupmod -g "$APP_GID" rstudio
+
 COPY rserver.conf /etc/rstudio/rserver.conf
 COPY rsession.conf /etc/rstudio/rsession.conf
 USER $APP_UID:$APP_GID
