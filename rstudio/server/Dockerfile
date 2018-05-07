@@ -9,8 +9,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y nano=2.7.4-1 \
  htop=2.0.2-1 \
  procps=2:3.3.12-3 \
  net-tools=1.60+git20161116.90da8a0-1 \
- rsync=3.1.2-1+deb9u1 \
- openssl=1.0.2g-1 && \
+ rsync=3.1.2-1+deb9u1 && \
  apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Setup locales
