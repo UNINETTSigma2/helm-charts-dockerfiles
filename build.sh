@@ -9,6 +9,15 @@ function build_image() {
     then
         echo "Building container $img"
         docker build -t $img .
+
+	if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+	    echo "Skipping push, as this is a pull request"
+	    exit 0;
+	fi
+
+	if [ "$TRAVIS_BRANCH" != "master" ]; then
+	    exit 0;
+	fi
         docker push $img
     else
         echo "Skipping, image already exist: $img"
