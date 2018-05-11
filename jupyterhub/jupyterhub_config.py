@@ -109,7 +109,7 @@ class DataportenAuth(OAuthenticator):
                           method="POST",
                           headers=headers,
                           body=urllib.parse.urlencode(params)  # Body is required for a POST...
-                          )
+                         )
 
         resp = yield http_client.fetch(req)
 
@@ -134,34 +134,40 @@ class DataportenAuth(OAuthenticator):
         req = HTTPRequest(url,
                           method=self.userdata_method,
                           headers=headers,
-                          )
+                         )
         resp = yield http_client.fetch(req)
         resp_json = json.loads(resp.body.decode('utf8', 'replace'))
 
-        if not resp_json.get(self.username_key):
+        username = resp_json.get(self.username_key)
+        if not username:
             self.log.error("OAuth user contains no key %s: %s", self.username_key, resp_json)
             return
 
         if self.authorized_groups:
-            groups_req = HTTPRequest(self.groups_url,
-                                     method="GET",
-                                     headers=headers
-            )
-            groups_resp = yield http_client.fetch(groups_req)
-            groups_resp_json = json.loads(groups_resp.body.decode('utf8', 'replace'))
-
-            # Determine whether the user is member of one of the authorized groups
-            user_group_id = [g["id"] for g in groups_resp_json]
             authorized = False
-            for group_id in self.authorized_groups.split(","):
-                if group_id in user_group_id:
-                    authorized = True
+
+            if username in self.authorized_groups:
+                authorized = True
+
+            if not authorized:
+                groups_req = HTTPRequest(self.groups_url,
+                                         method="GET",
+                                         headers=headers
+                                        )
+                groups_resp = yield http_client.fetch(groups_req)
+                groups_resp_json = json.loads(groups_resp.body.decode('utf8', 'replace'))
+
+                # Determine whether the user is member of one of the authorized groups
+                user_group_id = [g["id"] for g in groups_resp_json]
+                for group_id in self.authorized_groups.split(","):
+                    if group_id in user_group_id:
+                        authorized = True
 
             if not authorized:
                 return
 
         return {
-            'name': resp_json.get(self.username_key),
+            'name': username,
             'auth_state': {
                 'access_token': access_token,
                 'refresh_token': refresh_token,
