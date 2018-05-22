@@ -42,7 +42,7 @@ RUN groupadd -g $APP_GID notebook && \
 	chmod go+w -R /home/notebook $CONDA_DIR
 
 ENV HOME="/home/notebook"
-COPY start.sh /usr/local/bin/
+COPY start-*.sh /usr/local/bin/
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
 USER notebook
 
@@ -56,4 +56,4 @@ RUN conda install --quiet --yes -c conda-forge \
 
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter
 WORKDIR $HOME
-CMD ["/usr/local/bin/start.sh"]
+CMD ["/usr/local/bin/start-notebook.sh"]
