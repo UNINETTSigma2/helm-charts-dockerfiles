@@ -19,9 +19,9 @@ echo "spark.driver.memory ${SPARK_DRIVER_MEMORY:-1g}" >> $SPARK_HOME/conf/spark-
 echo "spark.driver.cores ${SPARK_DRIVER_CORES:-1}" >> $SPARK_HOME/conf/spark-defaults.conf
 
 if [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
-	jupyter lab $* &
+	jupyter lab --config $HOME/.jupyter/notebook_config.py $* &
 else
-	jupyter notebook $* &
+	jupyter notebook --config $HOME/.jupyter/notebook_config.py $* &
 fi
 
 sleep inf
