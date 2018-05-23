@@ -20,6 +20,7 @@ RUN apt update && apt-get install --no-install-recommends -y \
     less=481-2.1ubuntu0.2 \
     net-tools=1.60-26ubuntu1 \
     man-db=2.7.5-1 \
+    iputils-ping=3:20121221-5ubuntu2 \
     rsync=3.1.1-3ubuntu1.2 && \
  	apt-get clean && rm -rf /var/lib/apt/lists/*
 
