@@ -41,7 +41,9 @@ RUN groupadd -g $APP_GID notebook && \
 	useradd -m -s /bin/bash -N -u $APP_UID -g notebook notebook && \
 	chmod go+w -R /home/notebook $CONDA_DIR
 
-ENV HOME="/home/notebook"
+ENV HOME="/home/notebook" \
+    PATH=$PATH:$SPARK_HOME/bin
+
 COPY start-*.sh /usr/local/bin/
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
 USER notebook
