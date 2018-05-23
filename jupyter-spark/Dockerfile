@@ -42,7 +42,8 @@ RUN groupadd -g $APP_GID notebook && \
 	chmod go+w -R /home/notebook $CONDA_DIR
 
 ENV HOME="/home/notebook" \
-    PATH=$PATH:$SPARK_HOME/bin
+    PATH=$PATH:$SPARK_HOME/bin \
+    XDG_CACHE_HOME=$HOME/.cache/
 
 COPY start-*.sh /usr/local/bin/
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
@@ -54,7 +55,9 @@ RUN conda install --quiet --yes -c conda-forge \
  	'yapf=0.22*' \
  	'nbdime=1.0*' \
  	'nbconvert=5.3*' && \
-    conda clean -tipsy
+    conda clean -tipsy && \
+    jupyter labextension install nbdime-jupyterlab@0.2.0 && \
+    pip install jupyterlab-discovery==5.1.1
 
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter
 WORKDIR $HOME
