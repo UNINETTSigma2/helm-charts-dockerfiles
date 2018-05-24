@@ -4,7 +4,7 @@
 set -euo pipefail
 
 unset SPARK_MASTER_PORT
-echo "spark.eventLog.dir  file://${SPARK_EVENTLOG_DIR:-/tmp/eventlogs}" >> $SPARK_HOME/conf/spark-defaults.conf
+echo "spark.eventLog.dir  file://${SPARK_EVENTLOG_DIR:-/tmp}" >> $SPARK_HOME/conf/spark-defaults.conf
 
 # Run spark-class directly so that when it exits (or crashes), the pod restarts.
 $SPARK_HOME/bin/spark-class org.apache.spark.deploy.worker.Worker --webui-port 8081 \
