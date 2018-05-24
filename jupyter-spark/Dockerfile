@@ -51,11 +51,12 @@ COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
 USER notebook
 
 RUN conda install --quiet --yes -c conda-forge \
- 	'jupyter_contrib_nbextensions=0.5.0' \
- 	'tqdm=4.23*' \
- 	'yapf=0.22*' \
- 	'nbdime=1.0*' \
- 	'nbconvert=5.3*' && \
+    'jupyter_contrib_nbextensions=0.5.0' \
+    'tqdm=4.23*' \
+    'yapf=0.22*' \
+    'nbdime=1.0*' \
+    'altair=2.0*' \
+    'nbconvert=5.3*' && \
     conda clean -tipsy && \
     jupyter labextension install \
     'nbdime-jupyterlab@0.2.0' \
