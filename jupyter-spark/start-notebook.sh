@@ -18,7 +18,7 @@ fi
 echo "spark.driver.memory ${SPARK_DRIVER_MEMORY:-1g}" >> $SPARK_HOME/conf/spark-defaults.conf
 echo "spark.driver.cores ${SPARK_DRIVER_CORES:-1}" >> $SPARK_HOME/conf/spark-defaults.conf
 echo "spark.driver.host `ifconfig eth0 | awk '/inet addr/{print substr($2,6)}'`" >> $SPARK_HOME/conf/spark-defaults.conf
-echo "spark.eventLog.dir  file://${SPARK_EVENTLOG_DIR}" >> $SPARK_HOME/conf/spark-defaults.conf
+echo "spark.eventLog.dir  file://${SPARK_EVENTLOG_DIR:-/tmp/eventlogs}" >> $SPARK_HOME/conf/spark-defaults.conf
 
 if [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
 	jupyter lab --config $HOME/.jupyter/notebook_config.py $* &
