@@ -21,6 +21,11 @@ RUN apt update && apt-get install --no-install-recommends -y \
     net-tools=1.60-26ubuntu1 \
     man-db=2.7.5-1 \
     iputils-ping=3:20121221-5ubuntu2 \
+    screen=4.3.1-2build1 \
+    tmux=2.1-3build1 \
+    liblapack-dev=3.6.0-2ubuntu2 \
+    libopenblas-dev=0.2.18-1ubuntu1 \
+    graphviz=2.38.0-12ubuntu2.1 \
     rsync=3.1.1-3ubuntu1.2 && \
  	apt-get clean && rm -rf /var/lib/apt/lists/*
 
