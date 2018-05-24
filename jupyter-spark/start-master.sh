@@ -5,7 +5,6 @@ set -euo pipefail
 
 echo "spark.deploy.recoveryDirectory ${SPARK_RECOVERY_DIR:-/tmp}" >> $SPARK_HOME/conf/spark-defaults.conf
 echo "spark.ui.reverseProxyUrl  https://${SPARK_PUBLIC_DNS}" >> $SPARK_HOME/conf/spark-defaults.conf
-echo "spark.eventLog.dir  file://${SPARK_EVENTLOG_DIR:-/tmp}" >> $SPARK_HOME/conf/spark-defaults.conf
 
 unset SPARK_MASTER_PORT
 

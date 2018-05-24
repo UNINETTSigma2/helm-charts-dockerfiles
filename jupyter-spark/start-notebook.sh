@@ -11,15 +11,9 @@ fi
 
 if [ -z ${SPARK_MASTER_SERVICE+x} ]; then
 	echo "spark.master local[1]" >> $SPARK_HOME/conf/spark-defaults.conf
-	echo "spark.eventLog.dir  file:///tmp" >> $SPARK_HOME/conf/spark-defaults.conf
 else
 	echo "spark.master ${SPARK_MASTER_SERVICE}" >> $SPARK_HOME/conf/spark-defaults.conf
 	export SPARK_OPTS="--master=${SPARK_MASTER_SERVICE}"
-	if [[ $SPARK_MASTER_SERVICE == spark* ]]; then
-		echo "spark.eventLog.dir  file://${SPARK_EVENTLOG_DIR}/${SPARK_MASTER_SERVICE:8:-12}/events" >> $SPARK_HOME/conf/spark-defaults.conf
-	else
-		echo "spark.eventLog.dir  file:///tmp" >> $SPARK_HOME/conf/spark-defaults.conf
-	fi
 fi
 
 echo "spark.driver.memory ${SPARK_DRIVER_MEMORY:-1g}" >> $SPARK_HOME/conf/spark-defaults.conf
