@@ -58,6 +58,7 @@ ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 
 RUN conda install --quiet --yes -c caffe2 \
     'caffe2-cuda9.0-cudnn7=0.8.dev' && \
+    conda clean -tipsy && \
     conda install --quiet --yes -c conda-forge \
     'mkl-service=1.1*' \
     'pygpu=0.7*' \
@@ -66,6 +67,7 @@ RUN conda install --quiet --yes -c caffe2 \
     'pytorch=0.4*' \
     'torchvision=0.2*' \
     'visdom=0.1*' && \
+    conda clean -tipsy && \
     conda install --quiet --yes -c pytorch \
     'magma-cuda91=2.3*' \
     'faiss-gpu=1.2*' && \
@@ -80,7 +82,7 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     onnx==1.2.1 \
     tensorflow-gpu==1.8.0 \
     jupyter-tensorboard==0.1.6 \
-    mxnet-cu92mkl==1.2.0 \
+    mxnet-cu92mkl==1.2.0b20180525 \
     onnx-mxnet==0.4.2 \
     mxboard==0.1.0 \
     hypothesis==3.57.0

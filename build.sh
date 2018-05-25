@@ -19,6 +19,7 @@ function build_image() {
 	    exit 0;
 	fi
         docker push $img
+        docker rmi $img
     else
         echo "Skipping, image already exist: $img"
     fi
