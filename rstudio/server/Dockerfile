@@ -3,8 +3,7 @@ FROM rocker/tidyverse:3.4.4
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
     nano=2.7.4-1 \
-    curl=7.52.1-5+deb9u5 \
-    git=1:2.11.0-3+deb9u2 \
+    curl=7.52.1-5+deb9u6 \
     openssh-client=1:7.4p1-10+deb9u3 \
     less=481-2.1 \
     htop=2.0.2-1 \
@@ -37,8 +36,8 @@ RUN gdebi -n /tmp/shiny.deb && \
     install2.r -e shiny rmarkdown && \
     cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/ && \
     mkdir -p /var/log/shiny-server && \
-    chown shiny.shiny /var/log/shiny-server && \
-    chmod go+w -R /var/log/shiny-server /usr/local/lib/R /srv/shiny-server
+    chown rstudio.rstudio /var/log/shiny-server && \
+    chmod go+w -R /var/log/shiny-server /usr/local/lib/R /srv/shiny-server /var/lib/shiny-server
 
 RUN chmod go+w -R /home/rstudio && \
     usermod -u 988 rstudio-server && \
@@ -48,6 +47,7 @@ RUN chmod go+w -R /home/rstudio && \
 
 COPY rserver.conf rsession.conf /etc/rstudio/
 COPY start.sh /usr/local/bin/start.sh
+COPY shiny-server.conf /etc/shiny-server/shiny-server.conf
 
 USER $APP_UID:$APP_GID
 WORKDIR /mnt
