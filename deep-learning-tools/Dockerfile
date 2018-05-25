@@ -1,60 +1,81 @@
-FROM jupyter/base-notebook
+FROM quay.io/uninett/jupyter-spark:20180524-b6527f4
 
-ENV APP_UID=999
-ENV APP_GID=999
-ENV NVIDIA_GPGKEY_SUM=d1be581509378368edeec8c1eb2958702feedf3bc3d17011adbf24efacce4ab5
-ENV NVIDIA_GPGKEY_FPR=ae09fe4bbd223a84b2ccfce3f60f4b3d7fa2af80
+LABEL maintainer Uninett As <system@uninett.no>
 
+# hadolint ignore=DL3002
 USER root
-# Install cuDNN library
-RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub && \
-    apt-key adv --export --no-emit-version -a $NVIDIA_GPGKEY_FPR | tail -n +5 > cudasign.pub && \
-    echo "$NVIDIA_GPGKEY_SUM  cudasign.pub" | sha256sum -c --strict - && rm cudasign.pub && \
-    echo "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/cuda.list && \
-    echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
-
-ENV CUDNN_VERSION 7.1.2
-ENV CUDA_VERSION 9.1
-ENV CUDA_PKG_VERSION 9-1=$CUDA_VERSION-1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        cuda-core-$CUDA_PKG_VERSION \
-        cuda-misc-headers-$CUDA_PKG_VERSION \
-        cuda-command-line-tools-$CUDA_PKG_VERSION \
-        cuda-nvrtc-dev-$CUDA_PKG_VERSION \
-        cuda-nvml-dev-$CUDA_PKG_VERSION \
-        cuda-nvgraph-dev-$CUDA_PKG_VERSION \
-        cuda-cusolver-dev-$CUDA_PKG_VERSION \
-        cuda-cublas-dev-8-0=8.0.61.2-1 \
-        cuda-cufft-dev-$CUDA_PKG_VERSION \
-        cuda-curand-dev-$CUDA_PKG_VERSION \
-        cuda-cusparse-dev-$CUDA_PKG_VERSION \
-        cuda-npp-dev-$CUDA_PKG_VERSION \
-        cuda-cudart-dev-$CUDA_PKG_VERSION \
-        cuda-driver-dev-$CUDA_PKG_VERSION \
-        nano vim g++ liblapack-dev libopenblas-dev \
-        git-core unzip less curl python-dev graphviz \
-        screen tmux \
-        libcudnn7=$CUDNN_VERSION-1+cuda8.0 \
-        libcudnn7-dev=$CUDNN_VERSION-1+cuda8.0 && \
+    apt-transport-https=1.2.26 gnupg-curl=1.4.20-1ubuntu3.1 && \
+    rm -rf /var/lib/apt/lists/* && \
+    NVIDIA_GPGKEY_SUM=d1be581509378368edeec8c1eb2958702feedf3bc3d17011adbf24efacce4ab5 && \
+    NVIDIA_GPGKEY_FPR=ae09fe4bbd223a84b2ccfce3f60f4b3d7fa2af80 && \
+    apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub && \
+    apt-key adv --export --no-emit-version -a $NVIDIA_GPGKEY_FPR | tail -n +5 > cudasign.pub && \
+    echo "$NVIDIA_GPGKEY_SUM  cudasign.pub" | sha256sum -c --strict - && rm cudasign.pub && \
+    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/cuda.list && \
+    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
+
+ENV PKG_CUDA_VERSION=9.2.88 \
+    NCCL_VERSION=2.2.12 \
+    PKG_CUDNN_VERSION=7.1.4.18
+
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        "cuda-cudart-9-2=$PKG_CUDA_VERSION-1" \
+        "libcudnn7=$PKG_CUDNN_VERSION-1+cuda9.2" \
+        "libcudnn7-dev=$PKG_CUDNN_VERSION-1+cuda9.2" \
+        "cuda-libraries-9-2=$PKG_CUDA_VERSION-1" \
+        "cuda-libraries-dev-9-2=$PKG_CUDA_VERSION-1" \
+        "cuda-nvml-dev-9-2=$PKG_CUDA_VERSION-1" \
+        "cuda-minimal-build-9-2=$PKG_CUDA_VERSION-1" \
+        "cuda-command-line-tools-9-2=$PKG_CUDA_VERSION-1" \
+        "libnccl-dev=$NCCL_VERSION-1+cuda9.2" && \
+    ln -s cuda-9.2 /usr/local/cuda && \
     rm -rf /var/lib/apt/lists/*
 
-RUN echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo "/usr/local/cuda-$CUDA_VERSION/lib64" >> /etc/ld.so.conf.d/nvidia.conf
-RUN ln -s /usr/local/cuda-8.0/include/* /usr/include/
-ENV PATH /usr/local/nvidia/bin/:/usr/local/cuda-8.0/bin/:${PATH}
+RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
+    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
+    echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
+    ln -s /usr/local/cuda/include/* /usr/include/
 
-RUN mkdir -p /data /data/notebooks
-ENV NOTEBOOKS_CONFIG_DIR /etc/jupyter
-COPY jupyter_notebook_config.py $NOTEBOOKS_CONFIG_DIR/
-RUN conda install theano=1.0.1 keras==1.2.2 networkx==1.11 pandas \
-    seaborn pygpu=0.7.5 mkl-service pytorch=0.3.0 torchvision=0.2.0 ipywidgets=7.1.1 \
-    tensorflow-gpu=1.4.1 tqdm=4.19.5
-RUN pip install hyperopt==0.1 pycuda
-RUN conda clean -tipsy && apt autoclean
-# RUN echo "[global]\ndevice=cuda\nfloatX=float32\n[gpuarray]\npreallocate=1\n[blas]\nldflags = -lopenblas\n" > $HOME/.theanorc
-# RUN mkdir $HOME/.keras
-# RUN echo "{\n\"image_data_format\": \"channels_last\",\n\"epsilon\": 1e-07,\"floatx\": \"float32\",\"backend\": \"theano\"\n}" > $HOME/.keras/keras.json
-# RUN chown -R $NB_UID:$NB_GID $HOME/.theanorc $HOME/.keras
-COPY start.sh /usr/local/bin/
-WORKDIR /data/
+USER notebook
+
+ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
+    LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
+    NVIDIA_VISIBLE_DEVICES all \
+    NVIDIA_DRIVER_CAPABILITIES compute,utility \
+    PKG_THEANO_VERSION=1.0.x \
+    PKG_KERAS_VERSION=2.1.x \
+    PKG_TENSORFLOW_VERSION=1.8.x \
+    PKG_PYTORCH_VERSION=0.4.x \
+    PKG_MXNET_VERSION=1.1.x \
+    PKG_ONNX_VERSION=1.1.x \
+    PKG_CNTK_VERSION=2.5.1 \
+    PKG_CAFFE2_VERSION=0.8.dev
+
+
+RUN conda install --quiet --yes -c conda-forge \
+    'mkl-service=1.1*' \
+    'pygpu=0.7*' \
+    'theano=1.0*' \
+    'keras==2.1*' \
+    'tensorflow-gpu=1.8*' \
+    'pytorch=0.4*' \
+    'torchvision=0.2*' \
+    'visdom=0.1*' \
+    'mxnet=1.1*' \
+    'onnx=1.1*' && \
+    conda install --quiet --yes -c caffe2 \
+    'caffe2-cuda9.0-cudnn7=0.8.dev' && \
+    conda install --quiet --yes -c pytorch \
+    'magma-cuda91=2.3*' \
+    'faiss-gpu=1.2*' && \
+    conda remove --force --yes pillow && \
+    conda clean -tipsy
+
+RUN CC="cc -mavx2" pip install --no-cache-dir -U --force-reinstall \
+    hyperopt==0.1 \
+    pycuda==2017.1.1 \
+    pillow-simd==5.1.1.post0 \
+    cntk-gpu==2.5.1
