@@ -46,37 +46,41 @@ ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES all \
     NVIDIA_DRIVER_CAPABILITIES compute,utility \
-    PKG_THEANO_VERSION=1.0.x \
-    PKG_KERAS_VERSION=2.1.x \
-    PKG_TENSORFLOW_VERSION=1.8.x \
-    PKG_PYTORCH_VERSION=0.4.x \
-    PKG_MXNET_VERSION=1.1.x \
+    PKG_THEANO_VERSION=1.0.2 \
+    PKG_KERAS_VERSION=2.1.5 \
+    PKG_TENSORFLOW_VERSION=1.8.0 \
+    PKG_PYTORCH_VERSION=0.4.0 \
+    PKG_MXNET_VERSION=1.2.0 \
     PKG_ONNX_VERSION=1.2.1 \
     PKG_CNTK_VERSION=2.5.1 \
     PKG_CAFFE2_VERSION=0.8.dev
 
 
-RUN conda install --quiet --yes -c conda-forge \
+RUN conda install --quiet --yes -c caffe2 \
+    'caffe2-cuda9.0-cudnn7=0.8.dev' && \
+    conda install --quiet --yes -c conda-forge \
     'mkl-service=1.1*' \
     'pygpu=0.7*' \
     'theano=1.0*' \
     'keras==2.1*' \
-    'tensorflow-gpu=1.8*' \
     'pytorch=0.4*' \
     'torchvision=0.2*' \
     'visdom=0.1*' \
-    'mxnet=1.1*' && \
-    conda install --quiet --yes -c caffe2 \
-    'caffe2-cuda9.0-cudnn7=0.8.dev' && \
     conda install --quiet --yes -c pytorch \
     'magma-cuda91=2.3*' \
     'faiss-gpu=1.2*' && \
     conda remove --force --yes pillow && \
     conda clean -tipsy
 
-RUN CC="cc -mavx2" pip install --no-cache-dir -U --force-reinstall \
+RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     hyperopt==0.1 \
     pycuda==2017.1.1 \
     pillow-simd==5.1.1.post0 \
     cntk-gpu==2.5.1 \
-    onnx==1.2.1
+    onnx==1.2.1 \
+    tensorflow-gpu==1.8.0 \
+    jupyter-tensorboard==0.1.6 \
+    mxnet-cu92mkl==1.2.0 \
+    onnx-mxnet==0.4.2 \
+    mxboard==0.1.0 \
+    hypothesis==3.57.0
