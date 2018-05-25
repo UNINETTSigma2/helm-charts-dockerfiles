@@ -1,13 +1,13 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# All Spark: https://github.com/jupyter/docker-stacks/tree/4ebeb1f2d154/all-spark-notebook/Dockerfile
-# PySpark: https://github.com/jupyter/docker-stacks/tree/4ebeb1f2d154/pyspark-notebook/Dockerfile
-# SciPy: https://github.com/jupyter/docker-stacks/tree/4ebeb1f2d154/scipy-notebook/Dockerfile
-# Minimal: https://github.com/jupyter/docker-stacks/tree/4ebeb1f2d154/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/4ebeb1f2d154/base-notebook/Dockerfile
+# All Spark: https://github.com/jupyter/docker-stacks/tree/c7d997f2db86/all-spark-notebook/Dockerfile
+# PySpark: https://github.com/jupyter/docker-stacks/tree/c7d997f2db86/pyspark-notebook/Dockerfile
+# SciPy: https://github.com/jupyter/docker-stacks/tree/c7d997f2db86/scipy-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/c7d997f2db86/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/c7d997f2db86/base-notebook/Dockerfile
 
-FROM jupyter/all-spark-notebook:4ebeb1f2d154
+FROM jupyter/all-spark-notebook:c7d997f2db86
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -26,6 +26,7 @@ RUN apt update && apt-get install --no-install-recommends -y \
     liblapack-dev=3.6.0-2ubuntu2 \
     libopenblas-dev=0.2.18-1ubuntu1 \
     graphviz=2.38.0-12ubuntu2.1 \
+    cmake=3.5.1-1ubuntu3 \
     rsync=3.1.1-3ubuntu1.2 && \
  	apt-get clean && rm -rf /var/lib/apt/lists/*
 
