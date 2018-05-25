@@ -1,4 +1,4 @@
-FROM quay.io/uninett/jupyter-spark:20180524-b6527f4
+FROM quay.io/uninett/jupyter-spark:20180525-3a3c4dd
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -30,7 +30,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         "cuda-nvml-dev-9-2=$PKG_CUDA_VERSION-1" \
         "cuda-minimal-build-9-2=$PKG_CUDA_VERSION-1" \
         "cuda-command-line-tools-9-2=$PKG_CUDA_VERSION-1" \
-        "libnccl-dev=$NCCL_VERSION-1+cuda9.2" && \
+        "libnccl-dev=$NCCL_VERSION-1+cuda9.2" \
+        "openmpi-bin=1.10.2-8ubuntu1" && \
     ln -s cuda-9.2 /usr/local/cuda && \
     rm -rf /var/lib/apt/lists/*
 
@@ -50,7 +51,7 @@ ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     PKG_TENSORFLOW_VERSION=1.8.x \
     PKG_PYTORCH_VERSION=0.4.x \
     PKG_MXNET_VERSION=1.1.x \
-    PKG_ONNX_VERSION=1.1.x \
+    PKG_ONNX_VERSION=1.2.1 \
     PKG_CNTK_VERSION=2.5.1 \
     PKG_CAFFE2_VERSION=0.8.dev
 
@@ -64,8 +65,7 @@ RUN conda install --quiet --yes -c conda-forge \
     'pytorch=0.4*' \
     'torchvision=0.2*' \
     'visdom=0.1*' \
-    'mxnet=1.1*' \
-    'onnx=1.1*' && \
+    'mxnet=1.1*' && \
     conda install --quiet --yes -c caffe2 \
     'caffe2-cuda9.0-cudnn7=0.8.dev' && \
     conda install --quiet --yes -c pytorch \
@@ -78,4 +78,5 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -U --force-reinstall \
     hyperopt==0.1 \
     pycuda==2017.1.1 \
     pillow-simd==5.1.1.post0 \
-    cntk-gpu==2.5.1
+    cntk-gpu==2.5.1 \
+    onnx==1.2.1
