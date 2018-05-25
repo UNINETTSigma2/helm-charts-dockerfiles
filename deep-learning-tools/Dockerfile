@@ -65,7 +65,7 @@ RUN conda install --quiet --yes -c caffe2 \
     'keras==2.1*' \
     'pytorch=0.4*' \
     'torchvision=0.2*' \
-    'visdom=0.1*' \
+    'visdom=0.1*' && \
     conda install --quiet --yes -c pytorch \
     'magma-cuda91=2.3*' \
     'faiss-gpu=1.2*' && \
