@@ -42,10 +42,10 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
 
 USER notebook
 
-ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
-    LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
-    NVIDIA_VISIBLE_DEVICES all \
-    NVIDIA_DRIVER_CAPABILITIES compute,utility \
+ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
+    LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
+    NVIDIA_VISIBLE_DEVICES=all \
+    NVIDIA_DRIVER_CAPABILITIES=compute,utility \
     PKG_THEANO_VERSION=1.0.2 \
     PKG_KERAS_VERSION=2.1.5 \
     PKG_TENSORFLOW_VERSION=1.8.0 \
