@@ -74,7 +74,7 @@ RUN conda install --quiet --yes -c caffe2 \
     conda remove --force --yes pillow && \
     conda clean -tipsy
 
-RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
+RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall --user \
     hyperopt==0.1 \
     pycuda==2017.1.1 \
     pillow-simd==5.1.1.post0 \
