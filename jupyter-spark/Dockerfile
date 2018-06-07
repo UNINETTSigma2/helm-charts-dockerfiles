@@ -28,7 +28,8 @@ RUN apt update && apt-get install --no-install-recommends -y \
     graphviz=2.40.1-2 \
     cmake=3.10.2-1ubuntu2 \
     rsync=3.1.2-2.1ubuntu1 \
-    p7zip-full=16.02+dfsg-6 && \
+    p7zip-full=16.02+dfsg-6 \
+    unrar=1:5.5.8-1 && \
  	apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Setup locales
@@ -64,6 +65,7 @@ RUN conda install --quiet --yes -c conda-forge \
     'nbdime=1.0*' \
     'altair=2.0*' \
     'nbconvert=5.3*' && \
+    conda install --quiet --yes -c damianavila82 'rise=5.2.*' && \
     conda clean -tipsy && \
     jupyter labextension install \
     'nbdime-jupyterlab@0.2.0' \
