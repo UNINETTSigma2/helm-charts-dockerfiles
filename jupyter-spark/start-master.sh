@@ -3,7 +3,7 @@
 # Strict mode
 set -euo pipefail
 
-echo "spark.deploy.recoveryDirectory ${SPARK_RECOVERY_DIR:-/tmp}" >> $SPARK_HOME/conf/spark-defaults.conf
+echo "spark.deploy.recoveryDirectory ${SPARK_RECOVERY_DIR:-/tmp/spark-master}" >> $SPARK_HOME/conf/spark-defaults.conf
 echo "spark.ui.reverseProxyUrl  https://${SPARK_PUBLIC_DNS}" >> $SPARK_HOME/conf/spark-defaults.conf
 
 unset SPARK_MASTER_PORT

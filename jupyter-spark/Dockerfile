@@ -1,33 +1,34 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# All Spark: https://github.com/jupyter/docker-stacks/tree/c7d997f2db86/all-spark-notebook/Dockerfile
-# PySpark: https://github.com/jupyter/docker-stacks/tree/c7d997f2db86/pyspark-notebook/Dockerfile
-# SciPy: https://github.com/jupyter/docker-stacks/tree/c7d997f2db86/scipy-notebook/Dockerfile
-# Minimal: https://github.com/jupyter/docker-stacks/tree/c7d997f2db86/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/c7d997f2db86/base-notebook/Dockerfile
+# All Spark: https://github.com/jupyter/docker-stacks/tree/59904dd7776a/all-spark-notebook/Dockerfile
+# PySpark: https://github.com/jupyter/docker-stacks/tree/59904dd7776a/pyspark-notebook/Dockerfile
+# SciPy: https://github.com/jupyter/docker-stacks/tree/59904dd7776a/scipy-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/59904dd7776a/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/59904dd7776a/base-notebook/Dockerfile
 
-FROM jupyter/all-spark-notebook:c7d997f2db86
+FROM jupyter/all-spark-notebook:59904dd7776a
 
 LABEL maintainer Uninett As <system@uninett.no>
 
 # hadolint ignore=DL3002
 USER root
 RUN apt update && apt-get install --no-install-recommends -y \
-    openssh-client=1:7.2p2-4ubuntu2.4 \
-    nano=2.5.3-2ubuntu2 \
-    htop=2.0.1-1ubuntu1 \
-    less=481-2.1ubuntu0.2 \
-    net-tools=1.60-26ubuntu1 \
-    man-db=2.7.5-1 \
-    iputils-ping=3:20121221-5ubuntu2 \
-    screen=4.3.1-2build1 \
-    tmux=2.1-3build1 \
-    liblapack-dev=3.6.0-2ubuntu2 \
-    libopenblas-dev=0.2.18-1ubuntu1 \
-    graphviz=2.38.0-12ubuntu2.1 \
-    cmake=3.5.1-1ubuntu3 \
-    rsync=3.1.1-3ubuntu1.2 && \
+    openssh-client=1:7.6p1-4 \
+    nano=2.9.3-2 \
+    htop=2.1.0-3 \
+    less=487-0.1 \
+    net-tools=1.60+git20161116.90da8a0-1ubuntu1 \
+    man-db=2.8.3-2 \
+    iputils-ping=3:20161105-1ubuntu2 \
+    screen=4.6.2-1 \
+    tmux=2.6-3 \
+    liblapack-dev=3.7.1-4ubuntu1 \
+    libopenblas-dev=0.2.20+ds-4 \
+    graphviz=2.40.1-2 \
+    cmake=3.10.2-1ubuntu2 \
+    rsync=3.1.2-2.1ubuntu1 \
+    p7zip-full=16.02+dfsg-6 && \
  	apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Setup locales
@@ -53,7 +54,7 @@ ENV HOME=/home/notebook \
     XDG_CACHE_HOME=/home/notebook/.cache/
 
 COPY start-*.sh /usr/local/bin/
-COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
+COPY spark-defaults.conf /usr/local/spark/conf/
 USER notebook
 
 RUN conda install --quiet --yes -c conda-forge \
@@ -69,9 +70,12 @@ RUN conda install --quiet --yes -c conda-forge \
     '@ijmbarr/jupyterlab_spellchecker@0.1.1' \
     '@jupyterlab/github@0.7.2' \
     'jupyterlab-toc@0.2.1'  && \
-    pip install jupyterlab-discovery==5.1.1 jupyterlab-github==0.6.0 && \
+    pip install jupyterlab-discovery==5.1.2 jupyterlab-github==0.6.0 && \
     jupyter lab build
 
-COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter
+COPY .jupyter/ $HOME/.jupyter
+RUN chmod go+w -R "$HOME/.jupyter" /usr/local/spark/conf/ && \
+    mkdir /tmp/spark-{master,worker} && chmod go+w /tmp/spark-{master,worker}
+
 WORKDIR $HOME
 CMD ["/usr/local/bin/start-notebook.sh"]
