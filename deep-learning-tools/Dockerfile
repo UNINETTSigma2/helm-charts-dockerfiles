@@ -61,6 +61,8 @@ RUN conda install --quiet --yes -c caffe2 \
     'keras==2.1*' \
     'pytorch=0.4*' \
     'torchvision=0.2*' \
+    'bcolz=1.2.*' \
+    'python-graphviz=0.8*' \
     'visdom=0.1*' && \
     conda clean -tipsy && \
     conda install --quiet --yes -c pytorch \
@@ -79,7 +81,13 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall --user \
     tensorboard-pytorch==0.7.1 \
     tensorboardX==1.2 \
     chainer==4.1.0 \
-    cupy-cuda91==4.1.0 \
+    kaggle==1.3.8 \
+    pandas-summary==0.0.41 \
+    sklearn_pandas==1.6.0 \
+    feather-format==0.4.0 \
+    plotnine==0.3.0 \
+    isoweek==1.3.3 \
+    torchtext==0.2.3 \
     mxnet-cu92mkl==1.2.0b20180525 \
     onnx-mxnet==0.4.2 \
     mxboard==0.1.0 \
