@@ -1,20 +1,15 @@
-FROM quay.io/uninett/jupyter-spark:20180525-3a3c4dd
+FROM quay.io/uninett/jupyter-spark:20180608-ed0d171
 
 LABEL maintainer Uninett As <system@uninett.no>
 
 # hadolint ignore=DL3002
 USER root
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    apt-transport-https=1.2.26 gnupg-curl=1.4.20-1ubuntu3.1 && \
-    rm -rf /var/lib/apt/lists/* && \
-    NVIDIA_GPGKEY_SUM=d1be581509378368edeec8c1eb2958702feedf3bc3d17011adbf24efacce4ab5 && \
-    NVIDIA_GPGKEY_FPR=ae09fe4bbd223a84b2ccfce3f60f4b3d7fa2af80 && \
-    apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub && \
-    apt-key adv --export --no-emit-version -a $NVIDIA_GPGKEY_FPR | tail -n +5 > cudasign.pub && \
-    echo "$NVIDIA_GPGKEY_SUM  cudasign.pub" | sha256sum -c --strict - && rm cudasign.pub && \
-    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/cuda.list && \
-    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
+RUN apt-get update && apt-get install -y --no-install-recommends gnupg2=2.2.4-1ubuntu1 && \
+    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1710/x86_64/7fa2af80.pub | apt-key add - && \
+    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1710/x86_64 /" > /etc/apt/sources.list.d/cuda.list && \
+    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV PKG_CUDA_VERSION=9.2.88 \
     NCCL_VERSION=2.2.12 \
@@ -44,8 +39,8 @@ USER notebook
 
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
-    NVIDIA_VISIBLE_DEVICES=all \
-    NVIDIA_DRIVER_CAPABILITIES=compute,utility \
+    NVIDIA_VISIBLE_DEVICES="" \
+    NVIDIA_DRIVER_CAPABILITIES=all \
     PKG_THEANO_VERSION=1.0.2 \
     PKG_KERAS_VERSION=2.1.5 \
     PKG_TENSORFLOW_VERSION=1.8.0 \
@@ -81,7 +76,10 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall --user \
     cntk-gpu==2.5.1 \
     onnx==1.2.1 \
     tensorflow-gpu==1.8.0 \
-    jupyter-tensorboard==0.1.6 \
+    tensorboard-pytorch==0.7.1 \
+    tensorboardX==1.2 \
+    chainer==4.1.0 \
+    cupy-cuda91==4.1.0 \
     mxnet-cu92mkl==1.2.0b20180525 \
     onnx-mxnet==0.4.2 \
     mxboard==0.1.0 \
