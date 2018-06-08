@@ -45,17 +45,16 @@ ENV APP_UID=999 \
 	PKG_SPYLON_VERSION=0.4.x \
 	PKG_R_VERSION=3.4.1
 
-# hadolint ignore=SC2086
-RUN groupadd -g $APP_GID notebook && \
-	useradd -m -s /bin/bash -N -u $APP_UID -g notebook notebook && \
-	chmod go+w -Rc $CONDA_DIR | cut -d'/' -f 5 | cut -d' ' -f 1| sed -e "s/'//g"  | uniq
+RUN groupadd -g "$APP_GID" notebook && \
+	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
+	chmod go+w -Rc "$CONDA_DIR" | cut -d'/' -f 5 | cut -d' ' -f 1| sed -e "s/'//g"  | uniq
 
 ENV HOME=/home/notebook \
     PATH=$PATH:$SPARK_HOME/bin \
     XDG_CACHE_HOME=/home/notebook/.cache/
 
 COPY start-*.sh /usr/local/bin/
-COPY --chown notebook:notebook spark-defaults.conf /usr/local/spark/conf/
+COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
 USER notebook
 
 RUN conda install --quiet --yes -c conda-forge \
@@ -75,7 +74,7 @@ RUN conda install --quiet --yes -c conda-forge \
     pip install jupyterlab-discovery==5.1.2 jupyterlab-github==0.6.0 && \
     jupyter lab build
 
-COPY --chown notebook:notebook .jupyter/* $HOME/.jupyter/
+COPY --chown=notebook:notebook .jupyter/* $HOME/.jupyter/
 RUN chmod go+w -R "$HOME" /usr/local/spark/conf/spark-defaults.conf && \
     mkdir /tmp/spark-{master,worker} && chmod go+w /tmp/spark-{master,worker}
 
