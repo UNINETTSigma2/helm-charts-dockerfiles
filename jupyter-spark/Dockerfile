@@ -76,7 +76,7 @@ RUN conda install --quiet --yes -c conda-forge \
     jupyter lab build
 
 COPY .jupyter/ $HOME/.jupyter
-RUN chmod go+w -R "$HOME/.jupyter" /usr/local/spark/conf/ && \
+RUN chmod go+w -R "$HOME" /usr/local/spark/conf/ && \
     mkdir /tmp/spark-{master,worker} && chmod go+w /tmp/spark-{master,worker}
 
 WORKDIR $HOME
