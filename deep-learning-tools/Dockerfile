@@ -80,7 +80,6 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall --user \
     tensorflow-gpu==1.8.0 \
     tensorboard-pytorch==0.7.1 \
     tensorboardX==1.2 \
-    chainer==4.1.0 \
     kaggle==1.3.8 \
     pandas-summary==0.0.41 \
     sklearn_pandas==1.6.0 \
