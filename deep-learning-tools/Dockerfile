@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends gnupg2=2.2.4-1u
     rm -rf /var/lib/apt/lists/*
 
 ENV PKG_CUDA_VERSION=9.2.88 \
-    NCCL_VERSION=2.2.12 \
+    NCCL_VERSION=2.2.13 \
     PKG_CUDNN_VERSION=7.1.4.18
 
 
