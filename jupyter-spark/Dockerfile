@@ -74,7 +74,7 @@ RUN conda install --quiet --yes -c conda-forge \
     pip install jupyterlab-discovery==5.1.2 jupyterlab-github==0.6.0 && \
     jupyter lab build
 
-COPY --chown=notebook:notebook .jupyter/* $HOME/.jupyter/
+COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
 RUN chmod go+w -R "$HOME" /usr/local/spark/conf/spark-defaults.conf && \
     mkdir /tmp/spark-{master,worker} && chmod go+w /tmp/spark-{master,worker}
 
