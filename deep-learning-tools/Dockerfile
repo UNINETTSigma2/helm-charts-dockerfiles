@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         "cuda-minimal-build-9-2=$PKG_CUDA_VERSION-1" \
         "cuda-command-line-tools-9-2=$PKG_CUDA_VERSION-1" \
         "libnccl-dev=$NCCL_VERSION-1+cuda9.2" \
-        "openmpi-bin=1.10.2-8ubuntu1" && \
+        "openmpi-bin=2.1.1-8" && \
     ln -s cuda-9.2 /usr/local/cuda && \
     rm -rf /var/lib/apt/lists/*
 
