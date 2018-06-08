@@ -48,7 +48,7 @@ ENV APP_UID=999 \
 # hadolint ignore=SC2086
 RUN groupadd -g $APP_GID notebook && \
 	useradd -m -s /bin/bash -N -u $APP_UID -g notebook notebook && \
-	chmod go+w -Rc $CONDA_DIR
+	chmod go+w -Rc $CONDA_DIR | cut -d'/' -f 5 | cut -d' ' -f 1| sed -e "s/'//g"  | uniq
 
 ENV HOME=/home/notebook \
     PATH=$PATH:$SPARK_HOME/bin \
