@@ -1,7 +1,6 @@
 {
   "load_extensions": {
     "spellchecker/main": true,
-    "notify/notify": true,
     "select_keymap/main": true,
     "scroll_down/main": true,
     "toc2/main": true,
