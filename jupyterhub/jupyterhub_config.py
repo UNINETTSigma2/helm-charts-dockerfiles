@@ -1,186 +1,9 @@
 import os
 import glob
-
-import json
-import base64
-import urllib
-
-from tornado.httpclient import AsyncHTTPClient, HTTPRequest
-from oauthenticator.generic import GenericOAuthenticator
+from tornado.httpclient import AsyncHTTPClient
 from kubernetes import client
 
-from tornado import gen, web
-from tornado.auth import OAuth2Mixin
-from tornado.httputil import url_concat
-
-from z2jh import get_config, get_secret
-
-from jupyterhub.auth import LocalAuthenticator
-from traitlets import Unicode, Dict
-from oauthenticator.oauth2 import OAuthLoginHandler, OAuthenticator
-
-class GenericEnvMixin(OAuth2Mixin):
-    _OAUTH_ACCESS_TOKEN_URL = os.environ.get('OAUTH2_TOKEN_URL', '')
-    _OAUTH_AUTHORIZE_URL = os.environ.get('OAUTH2_AUTHORIZE_URL', '')
-
-
-class GenericLoginHandler(OAuthLoginHandler, GenericEnvMixin):
-    pass
-
-
-class DataportenAuth(OAuthenticator):
-
-    login_service = Unicode(
-        "Dataporten",
-        config=True
-    )
-
-    login_handler = GenericLoginHandler
-
-    userdata_url = Unicode(
-        os.environ.get('OAUTH2_USERDATA_URL', ''),
-        config=True,
-        help="Userdata url to get user data login information"
-    )
-    token_url = Unicode(
-        os.environ.get('OAUTH2_TOKEN_URL', ''),
-        config=True,
-        help="Access token endpoint URL"
-    )
-
-    username_key = Unicode(
-        os.environ.get('OAUTH2_USERNAME_KEY', 'username'),
-        config=True,
-        help="Userdata username key from returned json for USERDATA_URL"
-    )
-    userdata_params = Dict(
-        os.environ.get('OAUTH2_USERDATA_PARAMS', {}),
-        help="Userdata params to get user data login information"
-    ).tag(config=True)
-
-    userdata_method = Unicode(
-        os.environ.get('OAUTH2_USERDATA_METHOD', 'GET'),
-        config=True,
-        help="Userdata method to get user data login information"
-    )
-
-    authorized_groups = Unicode(
-        os.environ.get('AUTHORIZED_GROUPS', ''),
-        config=True,
-        help="The groups that allowed to access the application. If none are specified, all groups are allowed access."
-    )
-
-    groups_url = Unicode(
-        os.environ.get('GROUPS_URL', "https://groups-api.dataporten.no/groups/me/groups"),
-        config=True,
-        help="The groups URL to use when fetching groups."
-    )
-
-    @gen.coroutine
-    def authenticate(self, handler, data=None):
-        code = handler.get_argument("code")
-        # TODO: Configure the curl_httpclient for tornado
-        http_client = AsyncHTTPClient()
-
-        params = dict(
-            redirect_uri=self.get_callback_url(handler),
-            code=code,
-            grant_type='authorization_code'
-        )
-
-        if self.token_url:
-            url = self.token_url
-        else:
-            raise ValueError("Please set the OAUTH2_TOKEN_URL environment variable")
-
-        b64key = base64.b64encode(
-            bytes(
-                "{}:{}".format(self.client_id, self.client_secret),
-                "utf8"
-            )
-        )
-
-        headers = {
-            "Accept": "application/json",
-            "User-Agent": "JupyterHub",
-            "Authorization": "Basic {}".format(b64key.decode("utf8"))
-        }
-        req = HTTPRequest(url,
-                          method="POST",
-                          headers=headers,
-                          body=urllib.parse.urlencode(params)  # Body is required for a POST...
-                         )
-
-        resp = yield http_client.fetch(req)
-
-        resp_json = json.loads(resp.body.decode('utf8', 'replace'))
-
-        access_token = resp_json['access_token']
-        refresh_token = resp_json.get('refresh_token', None)
-        token_type = resp_json['token_type']
-        scope = (resp_json.get('scope', '')).split(' ')
-
-        # Determine who the logged in user is
-        headers = {
-            "Accept": "application/json",
-            "User-Agent": "JupyterHub",
-            "Authorization": "{} {}".format(token_type, access_token)
-        }
-        if self.userdata_url:
-            url = url_concat(self.userdata_url, self.userdata_params)
-        else:
-            raise ValueError("Please set the OAUTH2_USERDATA_URL environment variable")
-
-        req = HTTPRequest(url,
-                          method=self.userdata_method,
-                          headers=headers,
-                         )
-        resp = yield http_client.fetch(req)
-        resp_json = json.loads(resp.body.decode('utf8', 'replace'))
-
-        username = resp_json.get(self.username_key)
-        if not username:
-            self.log.error("OAuth user contains no key %s: %s", self.username_key, resp_json)
-            return
-
-        if self.authorized_groups:
-            authorized = False
-
-            if username in self.authorized_groups:
-                authorized = True
-
-            if not authorized:
-                groups_req = HTTPRequest(self.groups_url,
-                                         method="GET",
-                                         headers=headers
-                                        )
-                groups_resp = yield http_client.fetch(groups_req)
-                groups_resp_json = json.loads(groups_resp.body.decode('utf8', 'replace'))
-
-                # Determine whether the user is member of one of the authorized groups
-                user_group_id = [g["id"] for g in groups_resp_json]
-                for group_id in self.authorized_groups.split(","):
-                    if group_id in user_group_id:
-                        authorized = True
-
-            if not authorized:
-                return
-
-        return {
-            'name': username,
-            'auth_state': {
-                'access_token': access_token,
-                'refresh_token': refresh_token,
-                'oauth_user': resp_json,
-                'scope': scope,
-            }
-        }
-
-
-class LocalGenericOAuthenticator(LocalAuthenticator, DataportenAuth):
-
-    """A version that mixes in local system user creation"""
-    pass
+from z2jh import get_config, get_secret, set_config_if_not_none
 
 # Configure JupyterHub to use the curl backend for making HTTP requests,
 # rather than the pure-python implementations. The default one starts
@@ -191,8 +14,7 @@ AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
 c.JupyterHub.spawner_class = 'kubespawner.KubeSpawner'
 
 # Connect to a proxy running in a different pod
-api_proxy_service_name = os.environ["PROXY_API_SERVICE_NAME"]
-c.ConfigurableHTTPProxy.api_url = 'http://{}:{}'.format(os.environ[api_proxy_service_name + "_HOST"], int(os.environ[api_proxy_service_name + "_PORT"]))
+c.ConfigurableHTTPProxy.api_url = 'http://{}:{}'.format(os.environ['PROXY_API_SERVICE_HOST'], int(os.environ['PROXY_API_SERVICE_PORT']))
 c.ConfigurableHTTPProxy.should_start = False
 
 # Do not shut down user pods when hub is restarted
@@ -206,16 +28,16 @@ c.JupyterHub.last_activity_interval = 60
 c.JupyterHub.concurrent_spawn_limit = get_config('hub.concurrent-spawn-limit')
 
 active_server_limit = get_config('hub.active-server-limit', None)
-
 if active_server_limit is not None:
     c.JupyterHub.active_server_limit = int(active_server_limit)
 
-public_proxy_service_name = os.environ["PROXY_PUBLIC_SERVICE_NAME"]
-c.JupyterHub.ip = os.environ[public_proxy_service_name + "_HOST"]
-c.JupyterHub.port = int(os.environ[public_proxy_service_name + "_PORT"])
+c.JupyterHub.ip = os.environ['PROXY_PUBLIC_SERVICE_HOST']
+c.JupyterHub.port = int(os.environ['PROXY_PUBLIC_SERVICE_PORT'])
 
 # the hub should listen on all interfaces, so the proxy can access it
 c.JupyterHub.hub_ip = '0.0.0.0'
+
+c.KubeSpawner.common_labels = get_config('kubespawner.common-labels')
 
 c.KubeSpawner.namespace = os.environ.get('POD_NAMESPACE', 'default')
 
@@ -223,6 +45,8 @@ c.KubeSpawner.start_timeout = get_config('singleuser.start-timeout')
 
 # Use env var for this, since we want hub to restart when this changes
 c.KubeSpawner.singleuser_image_spec = os.environ['SINGLEUSER_IMAGE']
+
+c.KubeSpawner.singleuser_image_pull_policy = get_config('singleuser.image-pull-policy')
 
 c.KubeSpawner.singleuser_extra_labels = get_config('singleuser.extra-labels', {})
 
@@ -237,27 +61,29 @@ c.KubeSpawner.singleuser_node_selector = get_config('singleuser.node-selector')
 # Configure dynamically provisioning pvc
 storage_type = get_config('singleuser.storage.type')
 if storage_type == 'dynamic':
-    c.KubeSpawner.pvc_name_template = 'claim-{username}{servername}'
+    pvc_name_template = get_config('singleuser.storage.dynamic.pvc-name-template')
+    volume_name_template = get_config('singleuser.storage.dynamic.volume-name-template')
+    c.KubeSpawner.pvc_name_template = pvc_name_template
     c.KubeSpawner.user_storage_pvc_ensure = True
     storage_class = get_config('singleuser.storage.dynamic.storage-class', None)
     if storage_class:
         c.KubeSpawner.user_storage_class = storage_class
-    c.KubeSpawner.user_storage_access_modes = ['ReadWriteOnce']
+    c.KubeSpawner.user_storage_access_modes = get_config('singleuser.storage.dynamic.storage-access-modes')
     c.KubeSpawner.user_storage_capacity = get_config('singleuser.storage.capacity')
 
     # Add volumes to singleuser pods
     c.KubeSpawner.volumes = [
         {
-            'name': 'volume-{username}{servername}',
+            'name': volume_name_template,
             'persistentVolumeClaim': {
-                'claimName': 'claim-{username}{servername}'
+                'claimName': pvc_name_template
             }
         }
     ]
     c.KubeSpawner.volume_mounts = [
         {
             'mountPath': get_config('singleuser.storage.home_mount_path'),
-            'name': 'volume-{username}{servername}'
+            'name': volume_name_template
         }
     ]
 elif storage_type == 'static':
@@ -287,12 +113,11 @@ if init_containers:
     c.KubeSpawner.singleuser_init_containers.extend(init_containers)
 
 # Gives spawned containers access to the API of the hub
-hub_service_name = os.environ["HUB_SERVICE_NAME"]
-c.KubeSpawner.hub_connect_ip = os.environ[hub_service_name + "_HOST"]
-c.KubeSpawner.hub_connect_port = int(os.environ[hub_service_name + '_PORT'])
+c.KubeSpawner.hub_connect_ip = os.environ['HUB_SERVICE_HOST']
+c.KubeSpawner.hub_connect_port = int(os.environ['HUB_SERVICE_PORT'])
 
-c.JupyterHub.hub_connect_ip = os.environ[hub_service_name + "_HOST"]
-c.JupyterHub.hub_connect_port = int(os.environ[hub_service_name + "_PORT"])
+c.JupyterHub.hub_connect_ip = os.environ['HUB_SERVICE_HOST']
+c.JupyterHub.hub_connect_port = int(os.environ['HUB_SERVICE_PORT'])
 
 c.KubeSpawner.mem_limit = get_config('singleuser.memory.limit')
 c.KubeSpawner.mem_guarantee = get_config('singleuser.memory.guarantee')
@@ -303,18 +128,95 @@ c.KubeSpawner.cpu_guarantee = get_config('singleuser.cpu.guarantee')
 auth_type = get_config('auth.type')
 email_domain = 'local'
 
-c.JupyterHub.authenticator_class =  DataportenAuth
-c.OAuthenticator.login_service = 'Dataporten'
+if auth_type == 'google':
+    c.JupyterHub.authenticator_class = 'oauthenticator.GoogleOAuthenticator'
+    c.GoogleOAuthenticator.client_id = get_config('auth.google.client-id')
+    c.GoogleOAuthenticator.client_secret = get_config('auth.google.client-secret')
+    c.GoogleOAuthenticator.oauth_callback_url = get_config('auth.google.callback-url')
+    set_config_if_not_none(c.GoogleOAuthenticator, 'hosted_domain', 'auth.google.hosted-domain')
+    c.GoogleOAuthenticator.login_service = get_config('auth.google.login-service')
+    email_domain = get_config('auth.google.hosted-domain')
+elif auth_type == 'github':
+    c.JupyterHub.authenticator_class = 'oauthenticator.GitHubOAuthenticator'
+    c.GitHubOAuthenticator.oauth_callback_url = get_config('auth.github.callback-url')
+    c.GitHubOAuthenticator.client_id = get_config('auth.github.client-id')
+    c.GitHubOAuthenticator.client_secret = get_config('auth.github.client-secret')
+    org_whitelist = get_config('auth.github.org_whitelist', [])
+    if len(org_whitelist) != 0:
+        c.GitHubOAuthenticator.github_organization_whitelist = org_whitelist
+elif auth_type == 'cilogon':
+    c.JupyterHub.authenticator_class = 'oauthenticator.CILogonOAuthenticator'
+    c.CILogonOAuthenticator.oauth_callback_url = get_config('auth.cilogon.callback-url')
+    c.CILogonOAuthenticator.client_id = get_config('auth.cilogon.client-id')
+    c.CILogonOAuthenticator.client_secret = get_config('auth.cilogon.client-secret')
+elif auth_type == 'gitlab':
+    c.JupyterHub.authenticator_class = 'oauthenticator.gitlab.GitLabOAuthenticator'
+    c.GitLabOAuthenticator.oauth_callback_url = get_config('auth.gitlab.callback-url')
+    c.GitLabOAuthenticator.client_id = get_config('auth.gitlab.client-id')
+    c.GitLabOAuthenticator.client_secret = get_config('auth.gitlab.client-secret')
+elif auth_type == 'mediawiki':
+    c.JupyterHub.authenticator_class = 'oauthenticator.mediawiki.MWOAuthenticator'
+    c.MWOAuthenticator.client_id = get_config('auth.mediawiki.client-id')
+    c.MWOAuthenticator.client_secret = get_config('auth.mediawiki.client-secret')
+    c.MWOAuthenticator.index_url = get_config('auth.mediawiki.index-url')
+elif auth_type == 'globus':
+    c.JupyterHub.authenticator_class = 'oauthenticator.globus.GlobusOAuthenticator'
+    c.GlobusOAuthenticator.oauth_callback_url = get_config('auth.globus.callback-url')
+    c.GlobusOAuthenticator.client_id = get_config('auth.globus.client-id')
+    c.GlobusOAuthenticator.client_secret = get_config('auth.globus.client-secret')
+    c.GlobusOAuthenticator.identity_provider = get_config('auth.globus.identity-provider', '')
+elif auth_type == 'hmac':
+    c.JupyterHub.authenticator_class = 'hmacauthenticator.HMACAuthenticator'
+    c.HMACAuthenticator.secret_key = bytes.fromhex(get_config('auth.hmac.secret-key'))
+elif auth_type == 'dummy':
+    c.JupyterHub.authenticator_class = 'dummyauthenticator.DummyAuthenticator'
+    c.DummyAuthenticator.password = get_config('auth.dummy.password', None)
+elif auth_type == 'tmp':
+    c.JupyterHub.authenticator_class = 'tmpauthenticator.TmpAuthenticator'
+elif auth_type == 'lti':
+    c.JupyterHub.authenticator_class = 'ltiauthenticator.LTIAuthenticator'
+    c.LTIAuthenticator.consumers = get_config('auth.lti.consumers')
+elif auth_type == 'ldap':
+    c.JupyterHub.authenticator_class = 'ldapauthenticator.LDAPAuthenticator'
+    c.LDAPAuthenticator.server_address = get_config('auth.ldap.server.address')
+    set_config_if_not_none(c.LDAPAuthenticator, 'server_port', 'auth.ldap.server.port')
+    set_config_if_not_none(c.LDAPAuthenticator, 'use_ssl', 'auth.ldap.server.ssl')
+    set_config_if_not_none(c.LDAPAuthenticator, 'allowed_groups', 'auth.ldap.allowed-groups')
+    c.LDAPAuthenticator.bind_dn_template = get_config('auth.ldap.dn.templates')
+    set_config_if_not_none(c.LDAPAuthenticator, 'lookup_dn', 'auth.ldap.dn.lookup')
+    set_config_if_not_none(c.LDAPAuthenticator, 'lookup_dn_search_filter', 'auth.ldap.dn.search.filter')
+    set_config_if_not_none(c.LDAPAuthenticator, 'lookup_dn_search_user', 'auth.ldap.dn.search.user')
+    set_config_if_not_none(c.LDAPAuthenticator, 'lookup_dn_search_password', 'auth.ldap.dn.search.password')
+    set_config_if_not_none(c.LDAPAuthenticator, 'lookup_dn_user_dn_attribute', 'auth.ldap.dn.user.dn-attribute')
+    set_config_if_not_none(c.LDAPAuthenticator, 'escape_userdn', 'auth.ldap.dn.user.escape')
+    set_config_if_not_none(c.LDAPAuthenticator, 'valid_username_regex', 'auth.ldap.dn.user.valid-regex')
+    set_config_if_not_none(c.LDAPAuthenticator, 'user_search_base', 'auth.ldap.dn.user.search-base')
+    set_config_if_not_none(c.LDAPAuthenticator, 'user_attribute', 'auth.ldap.dn.user.attribute')
+elif auth_type == 'dataporten':
+    c.JupyterHub.authenticator_class =  'oauthenticator.gitlab.DataportenAuth'
+    c.OAuthenticator.login_service = 'Dataporten'
+    c.DataportenAuth.token_url = 'https://auth.dataporten.no/oauth/token'
+    c.DataportenAuth.oauth_callback_url = os.environ["OAUTH_CALLBACK_URL"]
+    c.DataportenAuth.userdata_url  = 'https://auth.dataporten.no/openid/userinfo'
+    c.DataportenAuth.userdata_method = 'GET'
+    c.DataportenAuth.username_key = 'sub'
+elif auth_type == 'custom':
+    # full_class_name looks like "myauthenticator.MyAuthenticator".
+    # To create a docker image with this class availabe, you can just have the
+    # following Dockerifle:
+    #   FROM jupyterhub/k8s-hub:v0.4
+    #   RUN pip3 install myauthenticator
+    full_class_name = get_config('auth.custom.class-name')
+    c.JupyterHub.authenticator_class = full_class_name
+    auth_class_name = full_class_name.rsplit('.', 1)[-1]
+    auth_config = c[auth_class_name]
+    auth_config.update(get_config('auth.custom.config') or {})
+else:
+    raise ValueError("Unhandled auth type: %r" % auth_type)
 
-c.OAuthenticator.client_id = os.environ["OAUTH_CLIENT_ID"]
-c.OAuthenticator.client_secret = os.environ["OAUTH_CLIENT_SECRET"]
-
-c.DataportenAuth.token_url = 'https://auth.dataporten.no/oauth/token'
-c.DataportenAuth.oauth_callback_url = os.environ["OAUTH_CALLBACK_URL"]
-
-c.DataportenAuth.userdata_url  = 'https://auth.dataporten.no/openid/userinfo'
-c.DataportenAuth.userdata_method = 'GET'
-c.DataportenAuth.username_key = 'sub'
+auth_scopes = get_config('auth.scopes')
+if auth_scopes:
+    c.OAuthenticator.scope = auth_scopes
 
 c.Authenticator.enable_auth_state = get_config('auth.state.enabled', False)
 
@@ -353,14 +255,26 @@ c.JupyterHub.services = []
 if get_config('cull.enabled', False):
     cull_timeout = get_config('cull.timeout')
     cull_every = get_config('cull.every')
+    cull_concurrency = get_config('cull.concurrency')
     cull_cmd = [
         '/usr/local/bin/cull_idle_servers.py',
         '--timeout=%s' % cull_timeout,
         '--cull-every=%s' % cull_every,
-        '--url=http://127.0.0.1:8081' + c.JupyterHub.base_url + 'hub/api'
+        '--concurrency=%s' % cull_concurrency,
+        '--url=http://127.0.0.1:8081' + c.JupyterHub.base_url + 'hub/api',
     ]
+
     if get_config('cull.users'):
         cull_cmd.append('--cull-users')
+
+    # FIXME: remove version check when we require jupyterhub 0.9 in the chart
+    # that will also mean we can remove the podCuller image
+    import jupyterhub
+    from distutils.version import LooseVersion as V
+    cull_max_age = get_config('cull.max-age')
+    if cull_max_age and V(jupyterhub.__version__) >= V('0.9'):
+        cull_cmd.append('--max-age=%s' % cull_max_age)
+
     c.JupyterHub.services.append({
         'name': 'cull-idle',
         'admin': True,
@@ -387,6 +301,30 @@ default_url = get_config('singleuser.default-url', None)
 if default_url:
     c.Spawner.default_url = default_url
 
+cloud_metadata = get_config('singleuser.cloud-metadata', {})
+
+if not cloud_metadata.get('enabled', False):
+    # Use iptables to block access to cloud metadata by default
+    network_tools_image_name = get_config('singleuser.network-tools.image.name')
+    network_tools_image_tag = get_config('singleuser.network-tools.image.tag')
+    ip_block_container = client.V1Container(
+        name="block-cloud-metadata",
+        image=f"{network_tools_image_name}:{network_tools_image_tag}",
+        command=[
+            'iptables',
+            '-A', 'OUTPUT',
+            '-d', cloud_metadata.get('ip', '169.254.169.254'),
+            '-j', 'DROP'
+        ],
+        security_context=client.V1SecurityContext(
+            privileged=True,
+            run_as_user=0,
+            capabilities=client.V1Capabilities(add=['NET_ADMIN'])
+        )
+    )
+
+    c.KubeSpawner.singleuser_init_containers.append(ip_block_container)
+
 scheduler_strategy = get_config('singleuser.scheduler-strategy', 'spread')
 
 if scheduler_strategy == 'pack':
@@ -395,7 +333,19 @@ if scheduler_strategy == 'pack':
         'affinity': {
             'podAffinity': {
                 'preferredDuringSchedulingIgnoredDuringExecution': [{
-                    'weight': 100,
+                    'weight': 50,
+                    'podAffinityTerm': {
+                        'labelSelector': {
+                            'matchExpressions': [{
+                                'key': 'component',
+                                'operator': 'In',
+                                'values': ['hub']
+                            }]
+                        },
+                        'topologyKey': 'kubernetes.io/hostname'
+                    }
+                }, {
+                    'weight': 5,
                     'podAffinityTerm': {
                         'labelSelector': {
                             'matchExpressions': [{
@@ -413,6 +363,10 @@ if scheduler_strategy == 'pack':
 else:
     # Set default to {} so subconfigs can easily update it
     c.KubeSpawner.singleuser_extra_pod_config = {}
+
+if get_config('debug.enabled', False):
+    c.JupyterHub.log_level = 'DEBUG'
+    c.Spawner.debug = True
 
 extra_configs = sorted(glob.glob('/etc/jupyterhub/config/hub.extra-config.*.py'))
 for ec in extra_configs:
