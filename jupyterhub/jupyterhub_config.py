@@ -14,7 +14,8 @@ AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
 c.JupyterHub.spawner_class = 'kubespawner.KubeSpawner'
 
 # Connect to a proxy running in a different pod
-c.ConfigurableHTTPProxy.api_url = 'http://{}:{}'.format(os.environ['PROXY_API_SERVICE_HOST'], int(os.environ['PROXY_API_SERVICE_PORT']))
+api_proxy_service_name = os.environ["PROXY_API_SERVICE_NAME"]
+c.ConfigurableHTTPProxy.api_url = 'http://{}:{}'.format(os.environ[api_proxy_service_name + "_HOST"], int(os.environ[api_proxy_service_name + "_PORT"]))
 c.ConfigurableHTTPProxy.should_start = False
 
 # Do not shut down user pods when hub is restarted
@@ -31,8 +32,9 @@ active_server_limit = get_config('hub.active-server-limit', None)
 if active_server_limit is not None:
     c.JupyterHub.active_server_limit = int(active_server_limit)
 
-c.JupyterHub.ip = os.environ['PROXY_PUBLIC_SERVICE_HOST']
-c.JupyterHub.port = int(os.environ['PROXY_PUBLIC_SERVICE_PORT'])
+public_proxy_service_name = os.environ["PROXY_PUBLIC_SERVICE_NAME"]
+c.JupyterHub.ip = os.environ[public_proxy_service_name + "_HOST"]
+c.JupyterHub.port = int(os.environ[public_proxy_service_name + "_PORT"])
 
 # the hub should listen on all interfaces, so the proxy can access it
 c.JupyterHub.hub_ip = '0.0.0.0'
@@ -113,11 +115,13 @@ if init_containers:
     c.KubeSpawner.singleuser_init_containers.extend(init_containers)
 
 # Gives spawned containers access to the API of the hub
-c.KubeSpawner.hub_connect_ip = os.environ['HUB_SERVICE_HOST']
-c.KubeSpawner.hub_connect_port = int(os.environ['HUB_SERVICE_PORT'])
 
-c.JupyterHub.hub_connect_ip = os.environ['HUB_SERVICE_HOST']
-c.JupyterHub.hub_connect_port = int(os.environ['HUB_SERVICE_PORT'])
+hub_service_name = os.environ["HUB_SERVICE_NAME"]
+c.KubeSpawner.hub_connect_ip = os.environ[hub_service_name + "_HOST"]
+c.KubeSpawner.hub_connect_port = int(os.environ[hub_service_name + '_PORT'])
+
+c.JupyterHub.hub_connect_ip = os.environ[hub_service_name + "_HOST"]
+c.JupyterHub.hub_connect_port = int(os.environ[hub_service_name + "_PORT"])
 
 c.KubeSpawner.mem_limit = get_config('singleuser.memory.limit')
 c.KubeSpawner.mem_guarantee = get_config('singleuser.memory.guarantee')
