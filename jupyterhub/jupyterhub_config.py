@@ -197,7 +197,7 @@ elif auth_type == 'ldap':
     set_config_if_not_none(c.LDAPAuthenticator, 'user_search_base', 'auth.ldap.dn.user.search-base')
     set_config_if_not_none(c.LDAPAuthenticator, 'user_attribute', 'auth.ldap.dn.user.attribute')
 elif auth_type == 'dataporten':
-    c.JupyterHub.authenticator_class =  'oauthenticator.gitlab.DataportenAuth'
+    c.JupyterHub.authenticator_class =  'oauthenticator.dataporten.DataportenAuth'
     c.OAuthenticator.login_service = 'Dataporten'
     c.DataportenAuth.token_url = 'https://auth.dataporten.no/oauth/token'
     c.DataportenAuth.oauth_callback_url = os.environ["OAUTH_CALLBACK_URL"]
