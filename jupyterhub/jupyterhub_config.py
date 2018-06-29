@@ -305,30 +305,6 @@ default_url = get_config('singleuser.default-url', None)
 if default_url:
     c.Spawner.default_url = default_url
 
-cloud_metadata = get_config('singleuser.cloud-metadata', {})
-
-if not cloud_metadata.get('enabled', False):
-    # Use iptables to block access to cloud metadata by default
-    network_tools_image_name = get_config('singleuser.network-tools.image.name')
-    network_tools_image_tag = get_config('singleuser.network-tools.image.tag')
-    ip_block_container = client.V1Container(
-        name="block-cloud-metadata",
-        image=f"{network_tools_image_name}:{network_tools_image_tag}",
-        command=[
-            'iptables',
-            '-A', 'OUTPUT',
-            '-d', cloud_metadata.get('ip', '169.254.169.254'),
-            '-j', 'DROP'
-        ],
-        security_context=client.V1SecurityContext(
-            privileged=True,
-            run_as_user=0,
-            capabilities=client.V1Capabilities(add=['NET_ADMIN'])
-        )
-    )
-
-    c.KubeSpawner.singleuser_init_containers.append(ip_block_container)
-
 scheduler_strategy = get_config('singleuser.scheduler-strategy', 'spread')
 
 if scheduler_strategy == 'pack':
