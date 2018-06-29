@@ -6,6 +6,7 @@ import urllib
 
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from tornado.auth import OAuth2Mixin
+from tornado import gen
 from tornado.httputil import url_concat
 
 from jupyterhub.auth import LocalAuthenticator
