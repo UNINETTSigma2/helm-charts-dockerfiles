@@ -32,7 +32,7 @@ ENV TZ="Europe/Oslo"
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=5.5.x \
+	PKG_JUPYTER_NOTEBOOK_VERSION=5.5.x
 
 RUN groupadd -g "$APP_GID" notebook && \
 	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
@@ -63,6 +63,6 @@ RUN conda install --quiet --yes -c conda-forge \
     jupyter lab build
 
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
-RUN mkdir $HOME/work $HOME/data && chmod go+w -R "$HOME"
+RUN mkdir "$HOME/work" "$HOME/data" && chmod go+w -R "$HOME"
 
 WORKDIR $HOME
