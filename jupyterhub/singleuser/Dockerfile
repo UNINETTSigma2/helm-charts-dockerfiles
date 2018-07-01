@@ -63,6 +63,6 @@ RUN conda install --quiet --yes -c conda-forge \
     jupyter lab build
 
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
-RUN mkdir "$HOME/work" "$HOME/data" && chmod go+w -R "$HOME"
+RUN chmod go+w -R "$HOME"
 
 WORKDIR $HOME
