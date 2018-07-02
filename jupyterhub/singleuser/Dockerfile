@@ -42,6 +42,7 @@ RUN groupadd -g "$APP_GID" notebook && \
 
 ENV HOME=/home/notebook \
     XDG_CACHE_HOME=/home/notebook/.cache/
+COPY start-notebook.sh /usr/local/bin/
 
 USER notebook
 RUN conda install --quiet --yes -c conda-forge \
@@ -56,7 +57,8 @@ RUN conda install --quiet --yes -c conda-forge \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix
 
-COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
+COPY --chown=notebook:notebook .jupyter/ /opt/.jupyter/
 RUN chmod go+w -R "$HOME"
 
 WORKDIR $HOME
+CMD ["/usr/local/bin/start-notebook.sh"]
