@@ -10,6 +10,5 @@ c.IPKernelApp.pylab = 'inline'
 c.NotebookApp.ip = '*'
 c.NotebookApp.quit_button = False
 c.NotebookApp.port = 8888
-c.NotebookApp.tornado_settings = {'static_url_prefix': '/static/'}
 c.NotebookApp.notebook_dir = '/home/notebook'
 c.NotebookApp.allow_origin = '*'
