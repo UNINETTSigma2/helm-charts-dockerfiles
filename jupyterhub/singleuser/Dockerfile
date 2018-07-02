@@ -37,15 +37,16 @@ ENV APP_UID=999 \
 	PKG_JUPYTER_NOTEBOOK_VERSION=5.5.x
 
 RUN groupadd -g "$APP_GID" notebook && \
-	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
-	chmod go+w -Rc "$CONDA_DIR" | cut -d'/' -f 5 | cut -d' ' -f 1| sed -e "s/'//g"  | uniq
+	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook
 
 ENV HOME=/home/notebook \
     XDG_CACHE_HOME=/home/notebook/.cache/
 COPY start-notebook.sh /usr/local/bin/
+COPY --chown=notebook:notebook .jupyter/ /opt/.jupyter/
 
 USER notebook
 RUN conda install --quiet --yes -c conda-forge \
+	'jupyterhub==0.9.0' \
     'jupyter_contrib_nbextensions=0.5.0' \
     'tqdm=4.23*' \
     'nbdime=1.0*' \
@@ -57,8 +58,12 @@ RUN conda install --quiet --yes -c conda-forge \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix
 
-COPY --chown=notebook:notebook .jupyter/ /opt/.jupyter/
-RUN chmod go+w -R "$HOME"
+# hadolint ignore=DL3002
+USER root
+RUN chmod go+w -R "$HOME"  && \
+	chmod go+w -Rc "$CONDA_DIR" | cut -d'/' -f 5 | cut -d' ' -f 1| sed -e "s/'//g"  | uniq
+
+USER notebook
 
 WORKDIR $HOME
 CMD ["/usr/local/bin/start-notebook.sh"]
