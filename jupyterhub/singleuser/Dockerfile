@@ -22,7 +22,9 @@ RUN apt update && apt-get install --no-install-recommends -y \
     cmake=3.10.2-1ubuntu2 \
     rsync=3.1.2-2.1ubuntu1 \
     p7zip-full=16.02+dfsg-6 \
+    tzdata=2018d-1 \
     unrar=1:5.5.8-1 && \
+    ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime && \
  	apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
@@ -49,18 +51,10 @@ RUN conda install --quiet --yes -c conda-forge \
     'nbconvert=5.3*' && \
     conda install --quiet --yes -c damianavila82 'rise=5.2.*' && \
     conda clean -tipsy && \
-    jupyter labextension install \
-    'nbdime-jupyterlab@0.2.0' \
-    '@ijmbarr/jupyterlab_spellchecker@0.1.1' \
-    '@jupyterlab/github@0.7.2' \
-    'jupyterlab-toc@0.2.1'  && \
-    pip install jupyterlab-discovery==5.1.2 \
-    jupyterlab-github==0.6.0 \
-    nbresuse==0.2.0 && \
+    pip install nbresuse==0.2.0 && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
-    jupyter nbextension enable --py nbresuse --sys-prefix && \
-    jupyter lab build
+    jupyter nbextension enable --py nbresuse --sys-prefix
 
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
 RUN chmod go+w -R "$HOME"
