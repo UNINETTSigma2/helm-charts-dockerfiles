@@ -55,6 +55,8 @@ c.KubeSpawner.singleuser_extra_labels = get_config('singleuser.extra-labels', {}
 c.KubeSpawner.singleuser_uid = get_config('singleuser.uid')
 c.KubeSpawner.singleuser_fs_gid = get_config('singleuser.fs-gid')
 
+c.KubeSpawner.pod_name_template = get_config('singleuser.pod-name-template', 'jupyter-{username}{servername}')
+
 service_account_name = get_config('singleuser.service-account-name', None)
 if service_account_name:
     c.KubeSpawner.singleuser_service_account = service_account_name
