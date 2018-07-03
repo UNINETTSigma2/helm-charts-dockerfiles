@@ -15,6 +15,7 @@ fi
 
 # If we have shared data mounted, the link it to current directory to have it visible in notebook
 if [ -d "/mnt/data" ]; then
+	rm -f $HOME/data
 	ln -sf /mnt/data $HOME/data
 fi
 
