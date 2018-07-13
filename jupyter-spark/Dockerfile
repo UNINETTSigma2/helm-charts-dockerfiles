@@ -30,7 +30,7 @@ RUN apt update && apt-get install --no-install-recommends -y \
     rsync=3.1.2-2.1ubuntu1 \
     p7zip-full=16.02+dfsg-6 \
     unrar=1:5.5.8-1 && \
- 	apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Setup locales
 ENV TZ="Europe/Oslo"
