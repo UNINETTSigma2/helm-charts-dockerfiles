@@ -17,7 +17,9 @@ ENV PKG_CUDA_VERSION=9.2.88 \
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+        "cuda-cupti-9-2=$PKG_CUDA_VERSION-1" \
         "cuda-cudart-9-2=$PKG_CUDA_VERSION-1" \
+        "cuda-cudart-dev-9-2=$PKG_CUDA_VERSION-1" \
         "libcudnn7=$PKG_CUDNN_VERSION-1+cuda9.2" \
         "libcudnn7-dev=$PKG_CUDNN_VERSION-1+cuda9.2" \
         "cuda-libraries-9-2=$PKG_CUDA_VERSION-1" \
