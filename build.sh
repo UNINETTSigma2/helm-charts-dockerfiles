@@ -8,7 +8,7 @@ function build_image() {
     if test $? -ne 0
     then
         echo "Building container $img"
-        docker build --compress=true -t $img .
+        docker build -t $img .
 
 	if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
 	    echo "Skipping push, as this is a pull request"
