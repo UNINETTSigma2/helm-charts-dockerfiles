@@ -30,6 +30,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         "libnccl-dev=$NCCL_VERSION-1+cuda9.2" \
         "openmpi-bin=2.1.1-8" && \
     ln -s cuda-9.2 /usr/local/cuda && \
+    apt-get autoremove && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
