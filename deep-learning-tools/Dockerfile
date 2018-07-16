@@ -1,4 +1,4 @@
-FROM quay.io/uninett/jupyter-spark:20180713-77917d7
+FROM quay.io/uninett/jupyter-spark:20180716-33e9cbb
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -40,9 +40,7 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     ln -s /usr/local/cuda/include/* /usr/include/
 
-RUN chown notebook:notebook -R "$CONDA_DIR/bin"
 USER notebook
-
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
