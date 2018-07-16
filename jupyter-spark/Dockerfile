@@ -55,6 +55,7 @@ ENV HOME=/home/notebook \
 
 COPY start-*.sh /usr/local/bin/
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
+RUN chown notebook:notebook -R "$CONDA_DIR/bin"
 USER notebook
 
 RUN conda install --quiet --yes -c conda-forge \
