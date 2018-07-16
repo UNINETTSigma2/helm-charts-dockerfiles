@@ -67,6 +67,7 @@ RUN conda install --quiet --yes -c caffe2 \
     'bcolz=1.2.*' \
     'python-graphviz=0.8*' \
     'libjpeg-turbo=1.5.*' \
+    'spacy=2.0.*' \
     'visdom=0.1*' && \
     conda clean -tipsy && \
     conda install --quiet --yes -c pytorch \
