@@ -13,7 +13,7 @@ function build_image() {
 
 	for v in $PKG_VERSIONS
 	do
-	    MAYBE_ARGS="--label $v $ARGS"
+	    MAYBE_ARGS="--label $v $MAYBE_ARGS"
 	done
 
 	docker build $MAYBE_ARGS -t $img .
