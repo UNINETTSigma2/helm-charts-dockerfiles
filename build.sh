@@ -7,8 +7,14 @@ function build_image() {
     curl -s "https://quay.io/api/v1/repository/uninett/$1/tag/?specificTag=$2" | grep "$2" > /dev/null 2>&1
     if test $? -ne 0
     then
-        echo "Building container $img"
-        docker build -t $img .
+	echo "Building container $img"
+	PKG_VERSIONS=$(grep -o "PKG_.*=\S*" Dockerfile | tr "\n" ' ')
+
+	if [[ -z "${PKG_VERSIONS}" ]]; then
+	    docker build -t $img .
+	else
+	    docker build --label "$PKG_VERSIONS" -t $img .
+	fi
 
 	if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
 	    echo "Skipping push, as this is a pull request"
@@ -18,8 +24,8 @@ function build_image() {
 	if [ "$TRAVIS_BRANCH" != "master" ]; then
 	    exit 0;
 	fi
-        docker push $img
-        docker rmi $img
+	docker push $img
+	docker rmi $img
     else
         echo "Skipping, image already exist: $img"
     fi
