@@ -8,7 +8,7 @@ function build_image() {
     if test $? -ne 0
     then
 	echo "Building container $img"
-	PKG_VERSIONS=$(grep -o "PKG_.*=\S*" Dockerfile | tr "\n" ' ')
+	PKG_VERSIONS=$(grep -o "PKG_.*=\S*" Dockerfile | tr "\n" " " | tr "_" "-" | tr '[:upper:]' '[:lower:]' )
 
 	if [[ -z "${PKG_VERSIONS}" ]]; then
 	    docker build -t $img .
