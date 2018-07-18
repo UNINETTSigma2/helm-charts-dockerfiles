@@ -16,7 +16,6 @@ ENV PKG_CUDA_VERSION=9.2.148 \
     NCCL_VERSION=2.2.13 \
     PKG_CUDNN_VERSION=7.1.4.18
 
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
         "cuda-cupti-9-2=$PKG_CUDA_VERSION-1" \
         "cuda-cudart-9-2=$PKG_CUDA_VERSION-1" \
@@ -53,7 +52,6 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     PKG_ONNX_VERSION=1.2.1 \
     PKG_CNTK_VERSION=2.5.1 \
     PKG_CAFFE2_VERSION=0.8.dev
-
 
 RUN conda install --quiet --yes -c caffe2 \
     'caffe2-cuda9.0-cudnn7=0.8.dev' && \
