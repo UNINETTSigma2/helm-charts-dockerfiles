@@ -8,13 +8,15 @@ function build_image() {
     if test $? -ne 0
     then
 	echo "Building container $img"
-	PKG_VERSIONS=$(grep -o "PKG_.*=\S*" Dockerfile | tr "\n" " " | tr "_" "-" | tr '[:upper:]' '[:lower:]' )
+	PKG_VERSIONS=$(grep -o "PKG_.*=\S*" Dockerfile | tr "_" "-" | tr '[:upper:]' '[:lower:]')
+	MAYBE_ARGS=""
 
-	if [[ -z "${PKG_VERSIONS}" ]]; then
-	    docker build -t $img .
-	else
-	    docker build --label "$PKG_VERSIONS" -t $img .
-	fi
+	for v in $PKG_VERSIONS
+	do
+	    MAYBE_ARGS="--label $v $ARGS"
+	done
+
+	docker build $MAYBE_ARGS -t $img .
 
 	if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
 	    echo "Skipping push, as this is a pull request"
