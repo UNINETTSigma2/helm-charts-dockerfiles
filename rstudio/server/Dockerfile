@@ -24,7 +24,6 @@ ENV TZ="Europe/Oslo" \
     PKG_RSTUDIO_VERSION=1.1.447 \
     PKG_SHINY_VERSION=1.5.7.907
 
-
 # Setup Tini, as S6 does not work when run as non-root users
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
 RUN chmod +x /sbin/tini
