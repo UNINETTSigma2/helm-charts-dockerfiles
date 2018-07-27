@@ -3,9 +3,9 @@ FROM debian:stretch
 ENV DOKUWIKI_VERSION 2017-02-19e
 ENV DOKUWIKI_MD5 09bf175f28d6e7ff2c2e3be60be8c65f
 
-ENV DOKUWIKI_OAUTH_PLUGIN_MD5 85e69223ff52a39c14bf770e49119e75
+ENV DOKUWIKI_OAUTH_PLUGIN_MD5 1a47553186f0fc40993eea4b55618c1b
 
-ENV LAST_MODIFIED 2017-10-04
+ENV LAST_MODIFIED 2018-07-27
 
 # Update & install packages & cleanup afterwards
 RUN DEBIAN_FRONTEND=noninteractive \
@@ -26,9 +26,9 @@ RUN wget -q -O /dokuwiki.tgz "http://download.dokuwiki.org/src/dokuwiki/dokuwiki
     rm dokuwiki.tgz
 
 # Get plugins
-RUN wget -q -O /oauth.zip https://github.com/cosmocode/dokuwiki-plugin-oauth/archive/master.zip
+RUN wget -q -O /oauth.zip https://github.com/cosmocode/dokuwiki-plugin-oauth/archive/2016-10-25.zip
 RUN if [ "$DOKUWIKI_OAUTH_PLUGIN_MD5" != "$(md5sum /oauth.zip | awk '{print($1)}')" ];then echo "Wrong md5sum of downloaded file!"; exit 1; fi
-RUN    unzip /oauth.zip && mv dokuwiki-plugin-oauth-master /dokuwiki/lib/plugins/oauth
+RUN    unzip /oauth.zip && mv dokuwiki-plugin-oauth-2016-10-25 /dokuwiki/lib/plugins/oauth
 
 # Set up ownership
 RUN chown -R www-data:www-data /dokuwiki
