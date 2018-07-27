@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     openssh-client=1:7.4p1-10+deb9u3 \
     less=481-2.1 \
     htop=2.0.2-1 \
-    procps=2:3.3.12-3 \
+    procps=2:3.3.12-3+deb9u1 \
     net-tools=1.60+git20161116.90da8a0-1 \
     rsync=3.1.2-1+deb9u1 \
     gdebi-core=0.9.5.7+nmu1 \
