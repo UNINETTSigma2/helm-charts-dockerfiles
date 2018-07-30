@@ -96,7 +96,7 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     tensorboardX==1.2 \
     keras==2.2.* \
     kaggle==1.3.* \
-    pandas-summary==0.0.41 \
+    pandas-summary==0.0.5 \
     sklearn_pandas==1.6.* \
     feather-format==0.4.* \
     plotnine==0.3.0 \
