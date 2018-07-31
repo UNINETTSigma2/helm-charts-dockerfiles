@@ -1,4 +1,4 @@
-FROM jupyterhub/k8s-hub:36a8dcb
+FROM jupyterhub/k8s-hub:d47ec39
 
 # hadolint ignore=DL3002
 USER root
