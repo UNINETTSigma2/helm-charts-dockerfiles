@@ -16,7 +16,6 @@ ENV PKG_CUDA_VERSION=9.2.148 \
     NCCL_VERSION=2.2.13 \
     PKG_CUDNN_VERSION=7.1.4.18
 
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
         "cuda-cupti-9-2=$PKG_CUDA_VERSION-1" \
         "cuda-cudart-9-2=$PKG_CUDA_VERSION-1" \
@@ -40,6 +39,14 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     ln -s /usr/local/cuda/include/* /usr/include/
 
+RUN OPENMPI_VERSION=1.10.3 && \
+    wget -q -O - https://www.open-mpi.org/software/ompi/v1.10/downloads/openmpi-${OPENMPI_VERSION}.tar.gz | tar -xzf - && \
+    cd openmpi-${OPENMPI_VERSION} && \
+    ./configure --prefix=/usr/local/mpi && \
+    make -j"$(nproc)" install && \
+    cd "$OLDPWD" && \
+    rm -rf ./openmpi-${OPENMPI_VERSION}
+
 USER notebook
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
@@ -54,6 +61,8 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     PKG_CNTK_VERSION=2.5.1 \
     PKG_CAFFE2_VERSION=0.8.dev
 
+ENV PATH /usr/local/mpi/bin:$PATH
+ENV LD_LIBRARY_PATH /usr/local/mpi/lib:$LD_LIBRARY_PATH
 
 RUN conda install --quiet --yes -c caffe2 \
     'caffe2-cuda9.0-cudnn7=0.8.dev' && \
@@ -87,7 +96,7 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     tensorboardX==1.2 \
     keras==2.2.* \
     kaggle==1.3.* \
-    pandas-summary==0.0.41 \
+    pandas-summary==0.0.5 \
     sklearn_pandas==1.6.* \
     feather-format==0.4.* \
     plotnine==0.3.0 \
