@@ -62,15 +62,15 @@ USER notebook
 
 RUN conda install --quiet --yes -c conda-forge \
     'jupyter_contrib_nbextensions=0.5.0' \
-    'tqdm=4.23*' \
+    'tqdm=4.24*' \
     'yapf=0.22*' \
     'nbdime=1.0*' \
-    'altair=2.0*' \
+    'altair=2.1*' \
     'nbconvert=5.3*' && \
-    conda install --quiet --yes -c damianavila82 'rise=5.2.*' && \
+    conda install --quiet --yes -c damianavila82 'rise=5.3.*' && \
     conda clean -tipsy && \
     jupyter labextension install \
-    'nbdime-jupyterlab@0.2.0' \
+    'nbdime-jupyterlab@0.4.0' \
     '@ijmbarr/jupyterlab_spellchecker@0.1.1' \
     '@jupyterlab/github@0.7.2' \
     'jupyterlab-toc@0.2.1'  && \
@@ -84,7 +84,7 @@ RUN conda install --quiet --yes -c conda-forge \
 
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
 RUN chmod go+w -R "$HOME" /usr/local/spark/conf/spark-defaults.conf && \
-    mkdir /tmp/spark-{master,worker} && chmod go+w /tmp/spark-{master,worker}
+    mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*
 
 WORKDIR $HOME
 CMD ["/usr/local/bin/start-notebook.sh"]
