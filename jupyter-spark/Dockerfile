@@ -71,7 +71,6 @@ RUN conda install --quiet --yes -c conda-forge \
     conda clean -tipsy && \
     jupyter labextension install \
     'nbdime-jupyterlab@0.4.0' \
-    '@ijmbarr/jupyterlab_spellchecker@0.1.1' \
     '@jupyterlab/github@0.7.2' \
     'jupyterlab-toc@0.2.1'  && \
     pip install jupyterlab-discovery==5.1.2 \
