@@ -11,7 +11,6 @@ FROM jupyter/all-spark-notebook:177037d09156
 
 LABEL maintainer Uninett As <system@uninett.no>
 
-# hadolint ignore=DL3002
 USER root
 RUN apt update && apt-get install --no-install-recommends -y \
     openssh-client=1:7.6p1-4 \
@@ -60,6 +59,7 @@ RUN chown notebook:notebook -R "$CONDA_DIR/bin"
 
 USER notebook
 
+#hadolint ignore=DL3013
 RUN conda install --quiet --yes -c conda-forge \
     'jupyter_contrib_nbextensions=0.5.0' \
     'tqdm=4.24*' \
@@ -72,7 +72,7 @@ RUN conda install --quiet --yes -c conda-forge \
     jupyter labextension install \
     'nbdime-jupyterlab@0.4.0' \
     '@jupyterlab/github@0.8.0' \
-    'jupyterlab-toc@0.3.1'  && \
+    '@jupyterlab/toc@0.3.1'  && \
     pip install jupyterlab-discovery==5.1.2 \
     jupyterlab-github==0.6.1 && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
