@@ -11,6 +11,9 @@ if [[ $cores == *m ]]; then
     cores="$((($cores + 999) / 1000))"
 fi
 
+mem="${SPARK_WORKER_MEMORY:-1G}"
+read daemon_mem executor_mem < <(mem_parser.py $mem 0.4 1000M)
+
 # This is to give JAVA process a head start to have master up and running
 echo "Waiting for Master: ${SPARK_MASTER_SERVICE_HOST:-spark-master}:${SPARK_MASTER_SERVICE_PORT:-7077}"
 
@@ -27,7 +30,8 @@ do
 done
 
 
+export SPARK_DAEMON_MEMORY="$daemon_mem"
 # Run spark-class directly so that when it exits (or crashes), the pod restarts.
 $SPARK_HOME/bin/spark-class org.apache.spark.deploy.worker.Worker --webui-port 8081 \
-	 -c $cores -m ${SPARK_WORKER_MEMORY:-1g} -d ${SPARK_WORKER_DIRS:-/tmp/spark-worker} \
+	 -c $cores -m $executor_mem -d ${SPARK_WORKER_DIRS:-/tmp/spark-worker} \
 	 "spark://${SPARK_MASTER_SERVICE_HOST:-spark-master}:${SPARK_MASTER_SERVICE_PORT:-7077}"

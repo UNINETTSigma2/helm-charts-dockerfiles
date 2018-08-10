@@ -53,6 +53,7 @@ ENV HOME=/home/notebook \
     XDG_CACHE_HOME=/home/notebook/.cache/
 
 COPY start-*.sh /usr/local/bin/
+COPY mem_parser.py /usr/local/bin/
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
 RUN chown notebook:notebook -R "$CONDA_DIR/bin"
 
