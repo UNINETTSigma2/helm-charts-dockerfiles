@@ -1,8 +1,7 @@
-FROM quay.io/uninett/jupyter-spark:20180716-33e9cbb
+FROM quay.io/uninett/jupyter-spark:20180810-20765fe
 
 LABEL maintainer Uninett As <system@uninett.no>
 
-# hadolint ignore=DL3002
 USER root
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -12,9 +11,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends gnupg2=2.2.4-1u
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
+# Refer here for versions https://gitlab.com/nvidia/cuda/blob/centos7/9.2/base/Dockerfile
 ENV PKG_CUDA_VERSION=9.2.148 \
     NCCL_VERSION=2.2.13 \
-    PKG_CUDNN_VERSION=7.1.4.18
+    PKG_CUDNN_VERSION=7.2.1.38
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         "cuda-cupti-9-2=$PKG_CUDA_VERSION-1" \
@@ -39,8 +39,9 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     ln -s /usr/local/cuda/include/* /usr/include/
 
+#hadolint ignore=DL3003
 RUN OPENMPI_VERSION=1.10.3 && \
-    wget -q -O - https://www.open-mpi.org/software/ompi/v1.10/downloads/openmpi-${OPENMPI_VERSION}.tar.gz | tar -xzf - && \
+    curl -fsSL https://www.open-mpi.org/software/ompi/v1.10/downloads/openmpi-${OPENMPI_VERSION}.tar.gz | tar -xzf - && \
     cd openmpi-${OPENMPI_VERSION} && \
     ./configure --prefix=/usr/local/mpi && \
     make -j"$(nproc)" install && \
@@ -53,10 +54,10 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all \
     PKG_THEANO_VERSION=1.0.2 \
-    PKG_KERAS_VERSION=2.2.0 \
-    PKG_TENSORFLOW_VERSION=1.9.0 \
-    PKG_PYTORCH_VERSION=0.4.0 \
-    PKG_MXNET_VERSION=1.2.0 \
+    PKG_KERAS_VERSION=2.2.2 \
+    PKG_TENSORFLOW_VERSION=1.10.0 \
+    PKG_PYTORCH_VERSION=0.4.1 \
+    PKG_MXNET_VERSION=1.2.1 \
     PKG_ONNX_VERSION=1.2.1 \
     PKG_CNTK_VERSION=2.5.1 \
     PKG_CAFFE2_VERSION=0.8.dev
@@ -70,6 +71,7 @@ RUN conda install --quiet --yes -c caffe2 \
     conda install --quiet --yes -c conda-forge \
     'mkl-service=1.1*' \
     'pygpu=0.7*' \
+    'imagehash=4.0*' \
     'theano=1.0*' \
     'pytorch=0.4*' \
     'torchvision=0.2*' \
@@ -77,7 +79,8 @@ RUN conda install --quiet --yes -c caffe2 \
     'python-graphviz=0.8*' \
     'libjpeg-turbo=1.5.*' \
     'spacy=2.0.*' \
-    'visdom=0.1*' && \
+    'visdom=0.1*' \
+    'pydot=1.2.*' && \
     conda clean -tipsy && \
     conda install --quiet --yes -c pytorch \
     'magma-cuda91=2.3*' \
@@ -91,11 +94,9 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     pillow-simd==5.1.1.post0 \
     cntk-gpu==2.5.* \
     onnx==1.2.* \
-    tensorflow-gpu==1.9.* \
-    tensorboard-pytorch==0.7.* \
-    tensorboardX==1.2 \
     keras==2.2.* \
-    kaggle==1.3.* \
+    keras-tqdm==2.0.* \
+    kaggle==1.4.* \
     pandas-summary==0.0.5 \
     sklearn_pandas==1.6.* \
     feather-format==0.4.* \
@@ -106,5 +107,13 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     keras-mxnet==2.2.* \
     onnx-mxnet==0.4.* \
     mxboard==0.1.* \
+    tensorflow-gpu==1.10.* \
+    tensorboard-pytorch==0.7.* \
+    jupyter-tensorboard==0.1.* \
+    tensorboardX==1.4 \
     opencv-python==3.4.* \
     hypothesis==3.57.*
+
+# Make Tensorflow default backend for keras
+RUN mkdir -p "$HOME/.keras" && \
+    echo -e '{\n"image_data_format": "channels_last",\n"epsilon": 1e-07,\n"floatx": "float32",\n"backend": "tensorflow"\n}' > "$HOME/.keras/keras.json"
