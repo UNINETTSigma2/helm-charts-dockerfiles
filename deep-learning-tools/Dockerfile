@@ -43,8 +43,8 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
 RUN OPENMPI_VERSION=1.10.3 && \
     curl -fsSL https://www.open-mpi.org/software/ompi/v1.10/downloads/openmpi-${OPENMPI_VERSION}.tar.gz | tar -xzf - && \
     cd openmpi-${OPENMPI_VERSION} && \
-    ./configure --prefix=/usr/local/mpi && \
-    make -j"$(nproc)" install && \
+    ./configure --prefix=/usr/local/mpi >/dev/null && \
+    make -j"$(nproc)" install >/dev/null && \
     cd "$OLDPWD" && \
     rm -rf ./openmpi-${OPENMPI_VERSION}
 
