@@ -8,6 +8,7 @@ echo "Starting RSudio Server"
 if [ -n "$SHINY_APPS_PATH" ]; then
 	if [ ! -d "$SHINY_APPS_PATH" ]; then
 		echo "Initialising Shiny App directory"
+		mkdir -p "$SHINY_APPS_PATH"
 		cp -r /srv/shiny-server/* $SHINY_APPS_PATH
         if [ -L $SHINY_APPS_PATH/sample-apps ]; then
 		    rm -rf $SHINY_APPS_PATH/sample-apps
