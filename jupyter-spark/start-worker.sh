@@ -11,7 +11,7 @@ if [[ $core_limit == *m ]]; then
     core_limit="$((($core_limit + 999) / 1000))"
 fi
 
-mem="${SPARK_WORKER_MEMORY:-1G}"
+mem="${SPARK_WORKER_MEMORY:-1g}"
 read daemon_mem executor_mem < <(mem_parser.py $mem 0.4 1000M)
 
 # This is to give JAVA process a head start to have master up and running

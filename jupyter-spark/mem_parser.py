@@ -20,5 +20,5 @@ if mem_megs is None:
 daemon_mem = min(mem_megs * mem_ratio, mem_max)
 worker_mem = mem_megs - daemon_mem
 
-print("%dM %dM" % (daemon_mem, worker_mem))
+print("%dm %dm" % (daemon_mem, worker_mem))
 
