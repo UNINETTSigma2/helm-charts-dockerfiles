@@ -4,6 +4,7 @@ from tornado.httpclient import AsyncHTTPClient
 from kubernetes import client
 
 from z2jh import get_config, get_secret, set_config_if_not_none
+from jupyterhub.utils import url_path_join
 
 # Configure JupyterHub to use the curl backend for making HTTP requests,
 # rather than the pure-python implementations. The default one starts
@@ -28,6 +29,10 @@ c.JupyterHub.last_activity_interval = 60
 # Max number of servers that can be spawning at any one time
 c.JupyterHub.concurrent_spawn_limit = get_config('hub.concurrent-spawn-limit')
 
+# Max number of consecutive failures before the Hub restarts itself
+# requires jupyterhub 0.9.2
+c.Spawner.consecutive_failure_limit = get_config('hub.consecutive-failure-limit', 0)
+
 active_server_limit = get_config('hub.active-server-limit', None)
 if active_server_limit is not None:
     c.JupyterHub.active_server_limit = int(active_server_limit)
@@ -46,34 +51,39 @@ c.KubeSpawner.namespace = os.environ.get('POD_NAMESPACE', 'default')
 c.KubeSpawner.start_timeout = get_config('singleuser.start-timeout')
 
 # Use env var for this, since we want hub to restart when this changes
-c.KubeSpawner.singleuser_image_spec = os.environ['SINGLEUSER_IMAGE']
+c.KubeSpawner.image_spec = os.environ['SINGLEUSER_IMAGE']
 
-c.KubeSpawner.singleuser_image_pull_policy = get_config('singleuser.image-pull-policy')
+c.KubeSpawner.image_pull_policy = get_config('singleuser.image-pull-policy')
 
-c.KubeSpawner.singleuser_extra_labels = get_config('singleuser.extra-labels', {})
+c.KubeSpawner.image_pull_secrets = get_config('singleuser.image-pull-secret-name', None)
 
-c.KubeSpawner.singleuser_uid = get_config('singleuser.uid')
-c.KubeSpawner.singleuser_fs_gid = get_config('singleuser.fs-gid')
+c.KubeSpawner.events_enabled = get_config('singleuser.events', False)
+
+c.KubeSpawner.extra_labels = get_config('singleuser.extra-labels', {})
+
+c.KubeSpawner.uid = get_config('singleuser.uid')
+c.KubeSpawner.fs_gid = get_config('singleuser.fs-gid')
+c.KubeSpawner.supplemental_gids = get_config('singleuser.supplemental-gids')
 
 c.KubeSpawner.pod_name_template = get_config('singleuser.pod-name-template', 'jupyter-{username}{servername}')
 
 service_account_name = get_config('singleuser.service-account-name', None)
 if service_account_name:
-    c.KubeSpawner.singleuser_service_account = service_account_name
+    c.KubeSpawner.service_account = service_account_name
 
-c.KubeSpawner.singleuser_node_selector = get_config('singleuser.node-selector')
+c.KubeSpawner.node_selector = get_config('singleuser.node-selector')
 # Configure dynamically provisioning pvc
 storage_type = get_config('singleuser.storage.type')
 if storage_type == 'dynamic':
     pvc_name_template = get_config('singleuser.storage.dynamic.pvc-name-template')
     volume_name_template = get_config('singleuser.storage.dynamic.volume-name-template')
     c.KubeSpawner.pvc_name_template = pvc_name_template
-    c.KubeSpawner.user_storage_pvc_ensure = True
+    c.KubeSpawner.storage_pvc_ensure = True
     storage_class = get_config('singleuser.storage.dynamic.storage-class', None)
     if storage_class:
-        c.KubeSpawner.user_storage_class = storage_class
-    c.KubeSpawner.user_storage_access_modes = get_config('singleuser.storage.dynamic.storage-access-modes')
-    c.KubeSpawner.user_storage_capacity = get_config('singleuser.storage.capacity')
+        c.KubeSpawner.storage_class = storage_class
+    c.KubeSpawner.storage_access_modes = get_config('singleuser.storage.dynamic.storage-access-modes')
+    c.KubeSpawner.storage_capacity = get_config('singleuser.storage.capacity')
 
     # Add volumes to singleuser pods
     c.KubeSpawner.volumes = [
@@ -110,11 +120,11 @@ c.KubeSpawner.volume_mounts.extend(get_config('singleuser.storage.extra-volume-m
 
 lifecycle_hooks = get_config('singleuser.lifecycle-hooks')
 if lifecycle_hooks:
-    c.KubeSpawner.singleuser_lifecycle_hooks = lifecycle_hooks
+    c.KubeSpawner.lifecycle_hooks = lifecycle_hooks
 
 init_containers = get_config('singleuser.init-containers')
 if init_containers:
-    c.KubeSpawner.singleuser_init_containers.extend(init_containers)
+    c.KubeSpawner.init_containers.extend(init_containers)
 
 # Gives spawned containers access to the API of the hub
 
@@ -129,6 +139,8 @@ c.KubeSpawner.mem_limit = get_config('singleuser.memory.limit')
 c.KubeSpawner.mem_guarantee = get_config('singleuser.memory.guarantee')
 c.KubeSpawner.cpu_limit = get_config('singleuser.cpu.limit')
 c.KubeSpawner.cpu_guarantee = get_config('singleuser.cpu.guarantee')
+c.KubeSpawner.extra_resource_limits = get_config('singleuser.extra-resource.limits', {})
+c.KubeSpawner.extra_resource_guarantees = get_config('singleuser.extra-resource.guarantees', {})
 
 # Allow switching authenticators easily
 auth_type = get_config('auth.type')
@@ -267,7 +279,7 @@ if get_config('cull.enabled', False):
         '--timeout=%s' % cull_timeout,
         '--cull-every=%s' % cull_every,
         '--concurrency=%s' % cull_concurrency,
-        '--url=http://127.0.0.1:8081' + c.JupyterHub.base_url + 'hub/api',
+        '--url=http://127.0.0.1:8081' + url_path_join(c.JupyterHub.base_url, 'hub/api'),
     ]
 
     if get_config('cull.users'):
@@ -298,6 +310,7 @@ for name, service in get_config('hub.services', {}).items():
 
 
 c.JupyterHub.db_url = get_config('hub.db_url')
+c.JupyterHub.allow_named_servers = get_config('hub.allow-named-servers', False)
 
 cmd = get_config('singleuser.cmd', None)
 if cmd:
@@ -311,7 +324,7 @@ scheduler_strategy = get_config('singleuser.scheduler-strategy', 'spread')
 
 if scheduler_strategy == 'pack':
     # FIXME: Support setting affinity directly in KubeSpawner
-    c.KubeSpawner.singleuser_extra_pod_config = {
+    c.KubeSpawner.extra_pod_config = {
         'affinity': {
             'podAffinity': {
                 'preferredDuringSchedulingIgnoredDuringExecution': [{
@@ -342,9 +355,7 @@ if scheduler_strategy == 'pack':
             }
         }
     }
-else:
-    # Set default to {} so subconfigs can easily update it
-    c.KubeSpawner.singleuser_extra_pod_config = {}
+
 
 if get_config('debug.enabled', False):
     c.JupyterHub.log_level = 'DEBUG'
