@@ -4,6 +4,11 @@ set -e
 
 echo "Starting RSudio Server"
 echo "session-default-working-dir=/home/$USERNAME" >> /etc/rstudio/rsession.conf
+
+if [ ! -e "$HOME/.Renviron" ]; then
+	echo -e "HOME=/home/$USERNAME\nUSER=$USERNAME\nTZ=Europe/Oslo" > "$HOME/.Renviron"
+fi
+
 /usr/lib/rstudio-server/bin/rserver --server-daemonize 0 --auth-none 0 &
 
 if [ -n "$SHINY_APPS_PATH" ]; then
