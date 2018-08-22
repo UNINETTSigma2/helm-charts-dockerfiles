@@ -27,6 +27,11 @@ if [ -d "$PVC_MOUNT_PATH" ]; then
 	ln -sf "$PVC_MOUNT_PATH" "$HOME/data"
 fi
 
+# If we don't have the .jupyter config then copy it to user directory
+if [ ! -d "$HOME/.jupyter" ]; then
+	cp -r /home/notebook/.jupyter $HOME/
+fi
+
 if [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
 	jupyter lab --config $HOME/.jupyter/notebook_config.py $* &
 else
