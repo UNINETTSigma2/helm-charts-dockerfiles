@@ -20,6 +20,13 @@ echo "spark.driver.memory ${SPARK_DRIVER_MEMORY:-1g}" >> $SPARK_HOME/conf/spark-
 echo "spark.driver.cores ${SPARK_DRIVER_CORES:-1}" >> $SPARK_HOME/conf/spark-defaults.conf
 echo "spark.driver.host `hostname -i`" >> $SPARK_HOME/conf/spark-defaults.conf
 
+
+# If we have shared data mounted, the link it to current directory to have it visible in notebook
+if [ -d "$PVC_MOUNT_PATH" ]; then
+	rm -f "$HOME/data"
+	ln -sf "$PVC_MOUNT_PATH" "$HOME/data"
+fi
+
 if [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
 	jupyter lab --config $HOME/.jupyter/notebook_config.py $* &
 else

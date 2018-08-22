@@ -1,13 +1,13 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# All Spark: https://github.com/jupyter/docker-stacks/tree/177037d09156/all-spark-notebook/Dockerfile
-# PySpark: https://github.com/jupyter/docker-stacks/tree/177037d09156/pyspark-notebook/Dockerfile
-# SciPy: https://github.com/jupyter/docker-stacks/tree/177037d09156/scipy-notebook/Dockerfile
-# Minimal: https://github.com/jupyter/docker-stacks/tree/177037d09156/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/177037d09156/base-notebook/Dockerfile
+# All Spark: https://github.com/jupyter/docker-stacks/tree/8ccdfc1da8d5/all-spark-notebook/Dockerfile
+# PySpark: https://github.com/jupyter/docker-stacks/tree/8ccdfc1da8d5/pyspark-notebook/Dockerfile
+# SciPy: https://github.com/jupyter/docker-stacks/tree/8ccdfc1da8d5/scipy-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/8ccdfc1da8d5/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/8ccdfc1da8d5/base-notebook/Dockerfile
 
-FROM jupyter/all-spark-notebook:177037d09156
+FROM jupyter/all-spark-notebook:8ccdfc1da8d5
 
 LABEL maintainer Uninett As <system@uninett.no>
 
