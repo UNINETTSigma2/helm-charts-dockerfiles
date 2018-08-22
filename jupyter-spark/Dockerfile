@@ -71,9 +71,8 @@ RUN conda install --quiet --yes -c conda-forge \
     conda install --quiet --yes -c damianavila82 'rise=5.3.*' && \
     conda clean -tipsy && \
     jupyter labextension install \
-    'nbdime-jupyterlab@0.4.0' \
-    '@jupyterlab/github@0.8.0' \
-    '@jupyterlab/toc@0.3.1'  && \
+    '@jupyterlab/github@0.9.0' \
+    '@jupyterlab/toc@0.4.0'  && \
     pip install jupyterlab-discovery==5.1.2 \
     jupyterlab-github==0.6.1 && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
