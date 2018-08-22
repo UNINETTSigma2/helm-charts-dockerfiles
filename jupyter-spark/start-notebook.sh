@@ -22,9 +22,8 @@ echo "spark.driver.host `hostname -i`" >> $SPARK_HOME/conf/spark-defaults.conf
 
 
 # If we have shared data mounted, the link it to current directory to have it visible in notebook
-if [ -d "$PVC_MOUNT_PATH" ]; then
-	rm -f "$HOME/data"
-	ln -sf "$PVC_MOUNT_PATH" "$HOME/data"
+if [ -d "$PVC_MOUNT_PATH" ] && [ ! -L "$HOME/data" ]; then
+	ln -s "$PVC_MOUNT_PATH" "$HOME/data"
 fi
 
 # If we don't have the .jupyter config then copy it to user directory
