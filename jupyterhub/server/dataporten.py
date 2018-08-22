@@ -64,10 +64,10 @@ class DataportenAuth(OAuthenticator):
         help="The groups that allowed to access the application. If none are specified, all groups are allowed access."
     )
 
-    groups_url = Unicode(
-        os.environ.get('GROUPS_URL', "https://groups-api.dataporten.no/groups/me/groups"),
+    group_urls = Unicode(
+        os.environ.get('GROUP_URLS', "https://groups-api.dataporten.no/groups/me/groups"),
         config=True,
-        help="The groups URL to use when fetching groups."
+        help="A comma separated string of URLs to fetch groups from."
     )
 
     @gen.coroutine
@@ -144,18 +144,24 @@ class DataportenAuth(OAuthenticator):
                 authorized = True
 
             if not authorized:
-                groups_req = HTTPRequest(self.groups_url,
-                                         method="GET",
-                                         headers=headers
-                                        )
-                groups_resp = yield http_client.fetch(groups_req)
-                groups_resp_json = json.loads(groups_resp.body.decode('utf8', 'replace'))
+                _group_urls = self.group_urls.split(",")
+                for g_url in _group_urls:
+                    groups_req = HTTPRequest(g_url.strip(),
+                                             method="GET",
+                                             headers=headers
+                    )
+                    groups_resp = yield http_client.fetch(groups_req)
+                    groups_resp_json = json.loads(groups_resp.body.decode('utf8', 'replace'))
 
-                # Determine whether the user is member of one of the authorized groups
-                user_group_id = [g["id"] for g in groups_resp_json]
-                for group_id in self.authorized_groups.split(","):
-                    if group_id in user_group_id:
-                        authorized = True
+                    # Determine whether the user is member of one of the authorized groups
+                    user_group_id = [g["id"] for g in groups_resp_json]
+                    for group_id in self.authorized_groups.split(","):
+                        if group_id in user_group_id:
+                            authorized = True
+                            break
+
+                    if authorized:
+                        break
 
             if not authorized:
                 return
