@@ -4,7 +4,7 @@ import json
 import base64
 import urllib
 
-from tornado.httpclient import AsyncHTTPClient, HTTPRequest
+from tornado.httpclient import AsyncHTTPClient, HTTPRequest, HTTPClientError
 from tornado.auth import OAuth2Mixin
 from tornado import gen
 from tornado.httputil import url_concat
@@ -129,7 +129,9 @@ class DataportenAuth(OAuthenticator):
                           method=self.userdata_method,
                           headers=headers,
                          )
+
         resp = yield http_client.fetch(req)
+
         resp_json = json.loads(resp.body.decode('utf8', 'replace'))
 
         username = resp_json.get(self.username_key)
@@ -150,10 +152,14 @@ class DataportenAuth(OAuthenticator):
                                              method="GET",
                                              headers=headers
                     )
-                    groups_resp = yield http_client.fetch(groups_req)
+                    groups_resp = None
+                    try:
+                        groups_resp = yield http_client.fetch(groups_req)
+                    except HTTPClientError as e:
+                        if e.response:
+                            print("failed to fetch groups for:", g_url)
+                            print(e.response)
 
-                    if groups_resp.code != 200:
-                        print("Failed to fetch groups from %s, reason %s" % (groups_resp.code, groups_resp.reason))
                         continue
 
                     groups_resp_json = json.loads(groups_resp.body.decode('utf8', 'replace'))
