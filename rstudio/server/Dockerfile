@@ -17,6 +17,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 
 # Setup various variables
 ENV TZ="Europe/Oslo" \
+    USERNAME="rstudio" \
+    HOME="/home/rstudio" \
     TINI_VERSION=v0.18.0 \
     APP_UID=999 \
     APP_GID=999 \
@@ -38,15 +40,17 @@ RUN gdebi -n /tmp/shiny.deb && \
     chown rstudio.rstudio /var/log/shiny-server && \
     chmod go+w -R /var/log/shiny-server /usr/local/lib/R /srv /var/lib/shiny-server
 
+COPY rserver.conf rsession.conf /etc/rstudio/
+COPY start.sh /usr/local/bin/start.sh
+COPY shiny-server.conf /etc/shiny-server/shiny-server.conf
+
 RUN chmod go+w -R /home/rstudio && \
     usermod -u 988 rstudio-server && \
     groupmod -g 988 rstudio-server && \
     usermod -u "$APP_UID" rstudio && \
-    groupmod -g "$APP_GID" rstudio
+    groupmod -g "$APP_GID" rstudio && \
+    chmod -R go+w /tmp/downloaded_packages /etc/rstudio/rsession.conf
 
-COPY rserver.conf rsession.conf /etc/rstudio/
-COPY start.sh /usr/local/bin/start.sh
-COPY shiny-server.conf /etc/shiny-server/shiny-server.conf
 
 USER $APP_UID:$APP_GID
 WORKDIR /mnt

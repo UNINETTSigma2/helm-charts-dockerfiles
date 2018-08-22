@@ -3,6 +3,7 @@
 set -e
 
 echo "Starting RSudio Server"
+echo "session-default-working-dir=/home/$USERNAME" >> /etc/rstudio/rsession.conf
 /usr/lib/rstudio-server/bin/rserver --server-daemonize 0 --auth-none 0 &
 
 if [ -n "$SHINY_APPS_PATH" ]; then
@@ -22,6 +23,12 @@ if [ -n "$SHINY_APPS_PATH" ]; then
 	echo "Updating Shiny server directory path"
 	rm -rf /srv/shiny-server
 	ln -s $SHINY_APPS_PATH /srv
+fi
+
+# If we have shared data mounted, the link it to current directory to have it visible in notebook
+if [ -d "$PVC_MOUNT_PATH" ]; then
+	rm -f "$HOME/data"
+	ln -sf "$PVC_MOUNT_PATH" "$HOME/data"
 fi
 
 echo "Starting Shiny Server"
