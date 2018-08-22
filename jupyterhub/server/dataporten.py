@@ -157,8 +157,7 @@ class DataportenAuth(OAuthenticator):
                         groups_resp = yield http_client.fetch(groups_req)
                     except HTTPClientError as e:
                         if e.response:
-                            print("failed to fetch groups for:", g_url)
-                            print(e.response)
+                            self.log.error("failed to fetch groups for: %s. Reason: %s", g_url, e.response.reason)
 
                         continue
 
