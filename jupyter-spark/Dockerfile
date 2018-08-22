@@ -85,5 +85,4 @@ COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
 RUN chmod go+w -R "$HOME" /usr/local/spark/conf/spark-defaults.conf && \
     mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*
 
-WORKDIR $HOME
 CMD ["/usr/local/bin/start-notebook.sh"]
