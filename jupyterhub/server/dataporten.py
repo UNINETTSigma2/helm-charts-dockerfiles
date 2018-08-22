@@ -151,6 +151,11 @@ class DataportenAuth(OAuthenticator):
                                              headers=headers
                     )
                     groups_resp = yield http_client.fetch(groups_req)
+
+                    if groups_resp.code != 200:
+                        print("Failed to fetch groups from %s, reason %s" % (groups_resp.code, groups_resp.reason))
+                        continue
+
                     groups_resp_json = json.loads(groups_resp.body.decode('utf8', 'replace'))
 
                     # Determine whether the user is member of one of the authorized groups
