@@ -136,6 +136,9 @@ class DataportenAuth(OAuthenticator):
 
         username = resp_json.get(self.username_key)
         if not username:
+            username = resp_json.get("username")
+
+        if not username:
             self.log.error("OAuth user contains no key %s: %s", self.username_key, resp_json)
             return
 
