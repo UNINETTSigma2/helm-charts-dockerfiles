@@ -43,6 +43,7 @@ RUN gdebi -n /tmp/shiny.deb && \
 COPY rserver.conf rsession.conf /etc/rstudio/
 COPY start.sh /usr/local/bin/start.sh
 COPY shiny-server.conf /etc/shiny-server/shiny-server.conf
+COPY .Renviron $HOME/.Renviron
 
 RUN chmod go+w -R /home/rstudio && \
     usermod -u 988 rstudio-server && \
@@ -53,7 +54,7 @@ RUN chmod go+w -R /home/rstudio && \
 
 
 USER $APP_UID:$APP_GID
-WORKDIR /mnt
+WORKDIR $HOME
 EXPOSE 8787 3838
 LABEL maintainer Uninett AS <system@uninett.no>
 ENTRYPOINT ["/sbin/tini", "-g", "--"]
