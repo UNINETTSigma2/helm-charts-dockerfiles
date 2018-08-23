@@ -11,7 +11,7 @@ ENV APP_UID=999 \
 
 RUN groupadd -g "$APP_GID" notebook && \
     useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
-    chown -R notebook:notebook /srv
+    chown -R notebook:notebook /srv && chmod go+w -R /srv
 
 ENV HOME=/home/notebook \
     XDG_CACHE_HOME=/home/notebook/.cache/
