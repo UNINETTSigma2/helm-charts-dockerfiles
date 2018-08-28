@@ -55,7 +55,8 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     NVIDIA_DRIVER_CAPABILITIES=all \
     PKG_THEANO_VERSION=1.0.2 \
     PKG_KERAS_VERSION=2.2.2 \
-    PKG_TENSORFLOW_VERSION=1.10.0 \
+    PKG_TENSORFLOW_VERSION=1.10.1 \
+    PKG_TENSORFLOW_PROBABILITY_VERSION=0.3.0 \
     PKG_PYTORCH_VERSION=0.4.1 \
     PKG_MXNET_VERSION=1.2.1 \
     PKG_ONNX_VERSION=1.2.1 \
@@ -109,6 +110,7 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     mxboard==0.1.* \
     tensorflow-gpu==1.10.* \
     tensorboard-pytorch==0.7.* \
+    tensorflow-probability-gpu==0.3.* \
     jupyter-tensorboard==0.1.* \
     tensorboardX==1.4 \
     opencv-python==3.4.* \
