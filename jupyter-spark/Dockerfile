@@ -72,9 +72,10 @@ RUN conda install --quiet --yes -c conda-forge \
     conda clean -tipsy && \
     jupyter labextension install \
     '@jupyterlab/github@0.9.0' \
+    '@jupyterlab/statusbar@0.4.3' \
+    '@jupyterlab/shortcutui@0.3.1' \
     '@jupyterlab/toc@0.4.0'  && \
-    pip install jupyterlab-discovery==5.1.2 \
-    jupyterlab-github==0.6.1 && \
+    pip install jupyterlab-github==0.6.1 && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
