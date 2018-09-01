@@ -1,4 +1,4 @@
-FROM quay.io/uninett/jupyter-spark:20180823-3aaba68
+FROM quay.io/uninett/jupyter-spark:20180901-0c7a087
 
 LABEL maintainer Uninett As <system@uninett.no>
 
