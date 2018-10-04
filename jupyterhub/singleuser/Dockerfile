@@ -1,10 +1,10 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# Minimal: https://github.com/jupyter/docker-stacks/tree/5811dcb711ba/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/5811dcb711ba/base-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/1145fb1198b2/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/1145fb1198b2/base-notebook/Dockerfile
 
-FROM jupyter/minimal-notebook:5811dcb711ba
+FROM jupyter/minimal-notebook:1145fb1198b2
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -47,8 +47,8 @@ COPY --chown=notebook:notebook .jupyter/ /opt/.jupyter/
 
 USER notebook
 RUN conda install --quiet --yes -c conda-forge \
-	'jupyterhub==0.9.0' \
-    'jupyter_contrib_nbextensions=0.5.0' \
+    'jupyterhub==0.9*' \
+    'jupyter_contrib_nbextensions=0.5*' \
     'tqdm=4.23*' \
     'nbdime=1.0*' \
     'nbconvert=5.3*' && \

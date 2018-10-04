@@ -7,7 +7,7 @@ c = get_config()
 # ------------------------------------------------------------------------------
 
 c.IPKernelApp.pylab = 'inline'
-c.NotebookApp.ip = '*'
+c.NotebookApp.ip = '0.0.0.0'
 c.NotebookApp.quit_button = False
 c.NotebookApp.port = 8888
 c.NotebookApp.notebook_dir = '/home/notebook'
