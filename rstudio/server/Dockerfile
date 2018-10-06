@@ -34,7 +34,7 @@ RUN chmod +x /sbin/tini
 ADD https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-${PKG_SHINY_VERSION}-amd64.deb /tmp/shiny.deb
 RUN gdebi -n /tmp/shiny.deb && \
     rm /tmp/shiny.deb && \
-    install2.r -e shiny rmarkdown && \
+    install2.r -e shiny rmarkdown shinythemes shinydashboard && \
     cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/ && \
     mkdir -p /var/log/shiny-server && \
     chown rstudio.rstudio /var/log/shiny-server && \
