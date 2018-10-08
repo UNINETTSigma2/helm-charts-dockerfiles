@@ -63,7 +63,7 @@ c.KubeSpawner.extra_labels = get_config('singleuser.extra-labels', {})
 
 c.KubeSpawner.uid = get_config('singleuser.uid')
 c.KubeSpawner.fs_gid = get_config('singleuser.fs-gid')
-c.KubeSpawner.supplemental_gids = get_config('singleuser.supplemental-gids')
+c.KubeSpawner.supplemental_gids = get_config('singleuser.supplemental-gids', [])
 
 c.KubeSpawner.pod_name_template = get_config('singleuser.pod-name-template', 'jupyter-{username}{servername}')
 
