@@ -57,7 +57,6 @@ COPY mem_parser.py /usr/local/bin/
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
 RUN chown notebook:notebook -R "$CONDA_DIR/bin"
 
-
 USER notebook
 
 #hadolint ignore=DL3013
@@ -83,6 +82,9 @@ RUN conda install --quiet --yes -c conda-forge \
     jupyter lab build
 
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
+
+# Ensure that the default config files are available.
+COPY --chown=notebook:notebook .jupyter/ /etc/default/jupyter
 RUN chmod go+w -R "$HOME" /usr/local/spark/conf/spark-defaults.conf && \
     mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*
 

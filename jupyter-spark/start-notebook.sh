@@ -28,7 +28,7 @@ fi
 
 # If we don't have the .jupyter config then copy it to user directory
 if [ ! -d "$HOME/.jupyter/nbconfig" ]; then
-	cp -r /home/notebook/.jupyter/nbconfig $HOME/.jupyter/
+	cp -r /etc/default/jupyter/nbconfig $HOME/.jupyter/
 fi
 
 if [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
