@@ -1,13 +1,13 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# All Spark: https://github.com/jupyter/docker-stacks/tree/8ccdfc1da8d5/all-spark-notebook/Dockerfile
-# PySpark: https://github.com/jupyter/docker-stacks/tree/8ccdfc1da8d5/pyspark-notebook/Dockerfile
-# SciPy: https://github.com/jupyter/docker-stacks/tree/8ccdfc1da8d5/scipy-notebook/Dockerfile
-# Minimal: https://github.com/jupyter/docker-stacks/tree/8ccdfc1da8d5/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/8ccdfc1da8d5/base-notebook/Dockerfile
+# All Spark: https://github.com/jupyter/docker-stacks/tree/6c85e4b43a26/all-spark-notebook/Dockerfile
+# PySpark: https://github.com/jupyter/docker-stacks/tree/6c85e4b43a26/pyspark-notebook/Dockerfile
+# SciPy: https://github.com/jupyter/docker-stacks/tree/6c85e4b43a26/scipy-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/6c85e4b43a26/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/6c85e4b43a26/base-notebook/Dockerfile
 
-FROM jupyter/all-spark-notebook:8ccdfc1da8d5
+FROM jupyter/all-spark-notebook:6c85e4b43a26
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -37,10 +37,10 @@ ENV TZ="Europe/Oslo"
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=5.5.x \
+	PKG_JUPYTER_NOTEBOOK_VERSION=5.7.x \
 	PKG_SPARK_VERSION=2.3.1 \
 	PKG_HADOOP_VERSION=2.7 \
-	PKG_TOREE_VERSION=0.2.0-incubating-rc5 \
+	PKG_TOREE_VERSION=0.3.0-incubating-rc1 \
 	PKG_SPYLON_VERSION=0.4.x \
 	PKG_R_VERSION=3.4.1
 
@@ -55,25 +55,24 @@ ENV HOME=/home/notebook \
 COPY start-*.sh /usr/local/bin/
 COPY mem_parser.py /usr/local/bin/
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
-RUN chown notebook:notebook -R "$CONDA_DIR/bin"
+RUN chmod go+rwx -R "$CONDA_DIR/bin $CONDA_DIR/.condatmp"
 
 USER notebook
 
 #hadolint ignore=DL3013
 RUN conda install --quiet --yes -c conda-forge \
     'jupyter_contrib_nbextensions=0.5.0' \
-    'tqdm=4.24*' \
-    'yapf=0.22*' \
+    'tqdm=4.28*' \
+    'yapf=0.24*' \
     'nbdime=1.0*' \
-    'altair=2.1*' \
-    'nbconvert=5.3*' && \
-    conda install --quiet --yes -c damianavila82 'rise=5.3.*' && \
+    'nbconvert=5.4*' && \
+    conda install --quiet --yes -c damianavila82 'rise=5.4.*' && \
     conda clean -tipsy && \
     jupyter labextension install \
-    '@jupyterlab/github@0.9.0' \
+    '@jupyterlab/github@0.10.0' \
     '@jupyterlab/statusbar@0.4.3' \
     '@jupyterlab/shortcutui@0.3.1' \
-    '@jupyterlab/toc@0.4.0'  && \
+    '@jupyterlab/toc@0.6.0'  && \
     pip install jupyterlab-github==0.6.1 && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
