@@ -55,7 +55,8 @@ ENV HOME=/home/notebook \
 COPY start-*.sh /usr/local/bin/
 COPY mem_parser.py /usr/local/bin/
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
-RUN chmod go+rwx -R "$CONDA_DIR/bin" "$CONDA_DIR/.condatmp"
+RUN chmod go+rx -R "$CONDA_DIR/bin" && \
+    chmod go+rwx -R "$CONDA_DIR/.condatmp"
 
 USER notebook
 
