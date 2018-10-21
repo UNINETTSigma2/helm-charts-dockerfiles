@@ -70,7 +70,7 @@ RUN conda install --quiet --yes -c conda-forge \
     conda install --quiet --yes -c damianavila82 'rise=5.4.*' && \
     conda clean -tipsy && \
     jupyter labextension install \
-    '@jupyterlab/github@0.10.0' \
+    '@jupyterlab/github@0.9.0' \
     '@jupyterlab/statusbar@0.4.3' \
     '@jupyterlab/shortcutui@0.3.1' \
     '@jupyterlab/toc@0.6.0'  && \
