@@ -60,19 +60,23 @@ RUN chmod go+rx -R "$CONDA_DIR/bin" && \
 
 USER notebook
 
+RUN conda update conda python && pip install -U 'pip==18.*'
+
 #hadolint ignore=DL3013
 RUN conda install --quiet --yes -c conda-forge \
     'jupyter_contrib_nbextensions=0.5.0' \
     'tqdm=4.28*' \
     'yapf=0.24*' \
     'nbdime=1.0*' \
-    'nbconvert=5.4*' && \
+    'nbconvert=5.4*' \
+    'dataclasses=0.6' && \
     conda install --quiet --yes -c damianavila82 'rise=5.4.*' && \
     conda clean -tipsy && \
     jupyter labextension install \
     '@jupyterlab/github@0.9.0' \
     '@jupyterlab/statusbar@0.4.3' \
     '@jupyterlab/shortcutui@0.3.1' \
+    '@nbdime-jupyterlab@0.5.0' \
     '@jupyterlab/toc@0.5.0'  && \
     pip install jupyterlab-github==0.6.1 && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
