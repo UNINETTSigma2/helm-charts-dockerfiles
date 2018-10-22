@@ -1,4 +1,4 @@
-FROM quay.io/uninett/jupyter-spark:20181019-1c493e9
+FROM quay.io/uninett/jupyter-spark:20181022-84c3e72
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -55,13 +55,13 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all \
     PKG_THEANO_VERSION=1.0.2 \
-    PKG_KERAS_VERSION=2.2.2 \
-    PKG_TENSORFLOW_VERSION=1.10.1 \
-    PKG_TENSORFLOW_PROBABILITY_VERSION=0.3.0 \
+    PKG_KERAS_VERSION=2.2.4 \
+    PKG_TENSORFLOW_VERSION=1.11.0 \
+    PKG_TENSORFLOW_PROBABILITY_VERSION=0.4.0 \
     PKG_PYTORCH_VERSION=0.4.1 \
-    PKG_MXNET_VERSION=1.2.1 \
-    PKG_ONNX_VERSION=1.2.1 \
-    PKG_CNTK_VERSION=2.5.1 \
+    PKG_MXNET_VERSION=1.3.0 \
+    PKG_ONNX_VERSION=1.3.0 \
+    PKG_CNTK_VERSION=2.6.0 \
     PKG_CAFFE2_VERSION=0.8.dev
 
 ENV PATH /usr/local/mpi/bin:$PATH
@@ -79,23 +79,24 @@ RUN conda install --quiet --yes -c caffe2 \
     'torchvision=0.2*' \
     'bcolz=1.2.*' \
     'python-graphviz=0.8*' \
-    'libjpeg-turbo=1.5.*' \
+    'libjpeg-turbo=2.0*' \
     'spacy=2.0.*' \
-    'visdom=0.1*' \
     'pydot=1.2.*' && \
     conda clean -tipsy && \
     conda install --quiet --yes -c pytorch \
     'magma-cuda91=2.3*' \
     'faiss-gpu=1.2*' && \
+    conda install --quiet --yes -c fastai \
+    'fastprogress' && \
     conda remove --force --yes pillow && \
     conda clean -tipsy
 
 RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     hyperopt==0.1 \
-    pycuda==2017.1.1 \
-    pillow-simd==5.1.1.post0 \
-    cntk-gpu==2.5.* \
-    onnx==1.2.* \
+    pycuda==2018.1.1 \
+    pillow-simd==5.3.0.post0 \
+    cntk-gpu==2.6.* \
+    onnx==1.3.* \
     keras==2.2.* \
     keras-tqdm==2.0.* \
     kaggle==1.4.* \
@@ -104,18 +105,16 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     feather-format==0.4.* \
     plotnine==0.3.0 \
     isoweek==1.3.3 \
-    torchtext==0.2.3 \
-    mxnet-cu92mkl==1.2.* \
+    torchtext==0.3.1 \
+    mxnet-cu92mkl==1.3.* \
     keras-mxnet==2.2.* \
     onnx-mxnet==0.4.* \
     mxboard==0.1.* \
-    tensorflow-gpu==1.10.* \
-    tensorboard-pytorch==0.7.* \
-    tensorflow-probability-gpu==0.3.* \
-    jupyter-tensorboard==0.1.* \
+    tensorflow-gpu==1.11.* \
+    tensorflow-probability-gpu==0.4.* \
     tensorboardX==1.4 \
     opencv-python==3.4.* \
-    hypothesis==3.57.*
+    hypothesis==3.79.*
 
 # Make Tensorflow default backend for keras
 RUN mkdir -p "$HOME/.keras" && \
