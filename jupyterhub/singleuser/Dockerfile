@@ -1,10 +1,10 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# Minimal: https://github.com/jupyter/docker-stacks/tree/1145fb1198b2/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/1145fb1198b2/base-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/6c85e4b43a26/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/6c85e4b43a26/base-notebook/Dockerfile
 
-FROM jupyter/minimal-notebook:1145fb1198b2
+FROM jupyter/minimal-notebook:6c85e4b43a26
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -34,7 +34,7 @@ ENV TZ="Europe/Oslo"
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=5.5.x
+	PKG_JUPYTER_NOTEBOOK_VERSION=5.7.x
 
 RUN groupadd -g "$APP_GID" notebook && \
 	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
@@ -44,17 +44,21 @@ ENV HOME=/home/notebook \
     XDG_CACHE_HOME=/home/notebook/.cache/
 COPY start-notebook.sh /usr/local/bin/
 COPY --chown=notebook:notebook .jupyter/ /opt/.jupyter/
+RUN chmod go+rwx -R "$CONDA_DIR/bin" && chown notebook:notebook -R "$CONDA_DIR/bin" && \
+    mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp"
 
 USER notebook
+
+RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda install --quiet --yes -c conda-forge \
     'jupyterhub==0.9*' \
     'jupyter_contrib_nbextensions=0.5*' \
-    'tqdm=4.23*' \
+    'tqdm=4.28*' \
     'nbdime=1.0*' \
-    'nbconvert=5.3*' && \
-    conda install --quiet --yes -c damianavila82 'rise=5.2.*' && \
+    'nbconvert=5.4*' && \
+    conda install --quiet --yes -c damianavila82 'rise=5.4.*' && \
     conda clean -tipsy && \
-    pip install nbresuse==0.2.0 && \
+    git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix
