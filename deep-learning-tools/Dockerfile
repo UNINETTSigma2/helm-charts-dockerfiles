@@ -1,4 +1,4 @@
-FROM quay.io/uninett/jupyter-spark:20181022-0cb9bd3
+FROM quay.io/uninett/jupyter-spark:20181114-71fc41e
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -56,7 +56,7 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     NVIDIA_DRIVER_CAPABILITIES=all \
     PKG_THEANO_VERSION=1.0.2 \
     PKG_KERAS_VERSION=2.2.4 \
-    PKG_TENSORFLOW_VERSION=1.11.0 \
+    PKG_TENSORFLOW_VERSION=1.12.0 \
     PKG_TENSORFLOW_PROBABILITY_VERSION=0.4.0 \
     PKG_PYTORCH_VERSION=0.4.1 \
     PKG_MXNET_VERSION=1.3.0 \
@@ -86,36 +86,34 @@ RUN conda install --quiet --yes -c caffe2 \
     conda install --quiet --yes -c pytorch \
     'magma-cuda91=2.3*' \
     'faiss-gpu=1.2*' && \
-    conda install --quiet --yes -c fastai \
-    'fastprogress' && \
+    # conda install --quiet --yes -c fastai \
+    # 'fastprogress' && \
     conda remove --force --yes pillow && \
     conda clean -tipsy
 
 RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     hyperopt==0.1 \
     pycuda==2018.1.1 \
-    pillow-simd==5.3.0.post0 \
     cntk-gpu==2.6.* \
     onnx==1.3.* \
     keras==2.2.* \
     keras-tqdm==2.0.* \
-    kaggle==1.4.* \
+    kaggle==1.5.* \
     pandas-summary==0.0.5 \
     sklearn_pandas==1.6.* \
     feather-format==0.4.* \
     plotnine==0.3.0 \
     isoweek==1.3.3 \
     torchtext==0.3.1 \
-    mxnet-cu92mkl==1.3.* \
+    mxnet-cu92==1.3.* \
     keras-mxnet==2.2.* \
     onnx-mxnet==0.4.* \
     mxboard==0.1.* \
-    tensorflow-gpu==1.11.* \
+    tensorflow-gpu==1.12.* \
     tensorflow-probability-gpu==0.4.* \
     tensorboardX==1.4 \
     opencv-python==3.4.* \
+    pillow-simd==5.3.0.post0 \
     hypothesis==3.79.*
 
-# Make Tensorflow default backend for keras
-RUN mkdir -p "$HOME/.keras" && \
-    echo -e '{\n"image_data_format": "channels_last",\n"epsilon": 1e-07,\n"floatx": "float32",\n"backend": "tensorflow"\n}' > "$HOME/.keras/keras.json"
+COPY start-notebook.sh /usr/local/bin/
