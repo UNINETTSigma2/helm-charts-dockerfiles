@@ -24,7 +24,7 @@ if [ ! -d "$HOME/.jupyter/nbconfig" ]; then
 fi
 
 # Make Tensorflow default backend for keras, if user doesn't already have .keras file
-if [ ! -d "$HOME/.jupyter/nbconfig" ]; then
+if [ ! -d "$HOME/.keras" ]; then
     mkdir -p "$HOME/.keras"
     echo -e '{\n"image_data_format": "channels_last",\n"epsilon": 1e-07,\n"floatx": "float32",\n"backend": "tensorflow"\n}' > "$HOME/.keras/keras.json"
 fi
