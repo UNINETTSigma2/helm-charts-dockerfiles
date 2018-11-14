@@ -11,10 +11,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends gnupg2=2.2.4-1u
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
-# Refer here for versions https://gitlab.com/nvidia/cuda/blob/centos7/9.2/base/Dockerfile
+# Refer here for versions https://gitlab.com/nvidia/cuda/blob/ubuntu18.04/9.2/base/Dockerfile
 ENV PKG_CUDA_VERSION=9.2.148 \
-    NCCL_VERSION=2.2.13 \
-    PKG_CUDNN_VERSION=7.2.1.38
+    NCCL_VERSION=2.3.7 \
+    PKG_CUDNN_VERSION=7.4.1.5
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         "cuda-cupti-9-2=$PKG_CUDA_VERSION-1" \
