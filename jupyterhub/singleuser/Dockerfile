@@ -1,10 +1,10 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# Minimal: https://github.com/jupyter/docker-stacks/tree/6c85e4b43a26/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/6c85e4b43a26/base-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/5b2160dfd919/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/5b2160dfd919/base-notebook/Dockerfile
 
-FROM jupyter/minimal-notebook:6c85e4b43a26
+FROM jupyter/minimal-notebook:5b2160dfd919
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -23,6 +23,7 @@ RUN apt update && apt-get install --no-install-recommends -y \
     rsync=3.1.2-2.1ubuntu1 \
     p7zip-full=16.02+dfsg-6 \
     tzdata=2018d-1 \
+    vim=2:8.0.1453-1ubuntu1 \
     unrar=1:5.5.8-1 && \
     ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime && \
  	apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -51,7 +52,6 @@ USER notebook
 
 RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda install --quiet --yes -c conda-forge \
-    'jupyterhub==0.9*' \
     'jupyter_contrib_nbextensions=0.5*' \
     'tqdm=4.28*' \
     'nbdime=1.0*' \
