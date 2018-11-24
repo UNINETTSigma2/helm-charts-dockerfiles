@@ -75,7 +75,6 @@ RUN conda install --quiet --yes -c conda-forge \
     conda clean -tipsy && \
     jupyter labextension install \
     '@jupyterlab/github@0.10.0' \
-    '@jupyterlab/shortcutui@0.3.3' \
     'nbdime-jupyterlab@0.6.0' \
     '@jupyterlab/toc@0.6.0'  && \
     pip install jupyterlab-github==0.6.1 && \
