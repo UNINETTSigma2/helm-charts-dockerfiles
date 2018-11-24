@@ -1,13 +1,13 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# All Spark: https://github.com/jupyter/docker-stacks/tree/77e10160c7ef/all-spark-notebook/Dockerfile
-# PySpark: https://github.com/jupyter/docker-stacks/tree/77e10160c7ef/pyspark-notebook/Dockerfile
-# SciPy: https://github.com/jupyter/docker-stacks/tree/77e10160c7ef/scipy-notebook/Dockerfile
-# Minimal: https://github.com/jupyter/docker-stacks/tree/77e10160c7ef/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/77e10160c7ef/base-notebook/Dockerfile
+# All Spark: https://github.com/jupyter/docker-stacks/tree/e8613d84128b/all-spark-notebook/Dockerfile
+# PySpark: https://github.com/jupyter/docker-stacks/tree/e8613d84128b/pyspark-notebook/Dockerfile
+# SciPy: https://github.com/jupyter/docker-stacks/tree/e8613d84128b/scipy-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/e8613d84128b/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/e8613d84128b/base-notebook/Dockerfile
 
-FROM jupyter/all-spark-notebook:77e10160c7ef
+FROM jupyter/all-spark-notebook:e8613d84128b
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -39,9 +39,9 @@ ENV TZ="Europe/Oslo"
 ENV APP_UID=999 \
 	APP_GID=999 \
 	PKG_JUPYTER_NOTEBOOK_VERSION=5.7.x \
-	PKG_SPARK_VERSION=2.3.1 \
+	PKG_SPARK_VERSION=2.4.0 \
 	PKG_HADOOP_VERSION=2.7 \
-	PKG_TOREE_VERSION=0.3.0-incubating-rc1 \
+	PKG_TOREE_VERSION=0.3.0-incubating \
 	PKG_SPYLON_VERSION=0.4.x \
 	PKG_R_VERSION=3.4.1
 
@@ -57,7 +57,7 @@ COPY start-*.sh /usr/local/bin/
 COPY mem_parser.py /usr/local/bin/
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
 RUN chmod go+rwx -R "$CONDA_DIR/bin" && chown notebook:notebook -R "$CONDA_DIR/bin" && \
-    mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp"
+    mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
 
 USER notebook
 
@@ -74,11 +74,11 @@ RUN conda install --quiet --yes -c conda-forge \
     conda install --quiet --yes -c damianavila82 'rise=5.4.*' && \
     conda clean -tipsy && \
     jupyter labextension install \
-    '@jupyterlab/github@0.9.0' \
+    '@jupyterlab/github@0.10.0' \
     '@jupyterlab/statusbar@0.4.3' \
     '@jupyterlab/shortcutui@0.3.1' \
-    'nbdime-jupyterlab@0.5.0' \
-    '@jupyterlab/toc@0.5.0'  && \
+    'nbdime-jupyterlab@0.6.0' \
+    '@jupyterlab/toc@0.6.0'  && \
     pip install jupyterlab-github==0.6.1 && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
