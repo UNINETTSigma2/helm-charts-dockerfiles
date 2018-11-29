@@ -88,7 +88,6 @@ RUN conda install --quiet --yes -c caffe2 \
     'faiss-gpu=1.2*' && \
     # conda install --quiet --yes -c fastai \
     # 'fastprogress' && \
-    conda remove --force --yes pillow && \
     conda clean -tipsy
 
 RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
@@ -113,7 +112,6 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     tensorflow-probability-gpu==0.4.* \
     tensorboardX==1.4 \
     opencv-python==3.4.* \
-    pillow-simd==5.3.0.post0 \
     hypothesis==3.79.*
 
 COPY start-notebook.sh /usr/local/bin/
