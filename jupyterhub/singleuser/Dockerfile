@@ -72,8 +72,7 @@ RUN conda install --quiet --yes -c conda-forge \
 
 # hadolint ignore=DL3002
 USER root
-RUN chmod go+w -R "$HOME"  && \
-    chmod go+w -Rc "$CONDA_DIR" | cut -d'/' -f 5 | cut -d' ' -f 1| sed -e "s/'//g"  | uniq
+RUN chmod go+w -R "$HOME"
 
 USER notebook
 
