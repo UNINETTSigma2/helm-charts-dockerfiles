@@ -19,4 +19,9 @@ if [ -d "/mnt/data" ]; then
 	ln -sf /mnt/data $HOME/data
 fi
 
-jupyterhub-singleuser --config $HOME/.jupyter/notebook_config.py
+
+if [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
+	jupyter-labhub --config "$HOME/.jupyter/notebook_config.py" &
+else
+	jupyterhub-singleuser --config "$HOME/.jupyter/notebook_config.py" &
+fi

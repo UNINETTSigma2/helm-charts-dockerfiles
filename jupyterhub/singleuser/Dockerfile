@@ -1,10 +1,10 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# Minimal: https://github.com/jupyter/docker-stacks/tree/5b2160dfd919/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/5b2160dfd919/base-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/14fdfbf9cfc1/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/14fdfbf9cfc1/base-notebook/Dockerfile
 
-FROM jupyter/minimal-notebook:5b2160dfd919
+FROM jupyter/r-notebook:14fdfbf9cfc1
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -55,9 +55,15 @@ RUN conda install --quiet --yes -c conda-forge \
     'jupyter_contrib_nbextensions=0.5*' \
     'tqdm=4.28*' \
     'nbdime=1.0*' \
-    'nbconvert=5.4*' && \
+    'nbconvert=5.4*' \
+    'dataclasses=0.6' && \
     conda install --quiet --yes -c damianavila82 'rise=5.4.*' && \
     conda clean -tipsy && \
+    jupyter labextension install \
+    '@jupyterlab/github@0.10.0' \
+    'nbdime-jupyterlab@0.6.0' \
+    '@jupyterlab/toc@0.6.0'  && \
+    pip install jupyterlab-github==0.6.1 && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
