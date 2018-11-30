@@ -4,7 +4,7 @@
 # Minimal: https://github.com/jupyter/docker-stacks/tree/14fdfbf9cfc1/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/14fdfbf9cfc1/base-notebook/Dockerfile
 
-FROM jupyter/r-notebook:14fdfbf9cfc1
+FROM jupyter/datascience-notebook:14fdfbf9cfc1
 
 LABEL maintainer Uninett As <system@uninett.no>
 
