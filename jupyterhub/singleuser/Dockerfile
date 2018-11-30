@@ -39,7 +39,7 @@ ENV APP_UID=999 \
 
 RUN groupadd -g "$APP_GID" notebook && \
 	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
-	chmod go+rwx -R "$CONDA_DIR/bin"
+    usermod -G users notebook && chmod go+rwx -R "$CONDA_DIR/bin"
 
 ENV HOME=/home/notebook \
     XDG_CACHE_HOME=/home/notebook/.cache/
