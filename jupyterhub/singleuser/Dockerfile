@@ -38,8 +38,7 @@ ENV APP_UID=999 \
 	PKG_JUPYTER_NOTEBOOK_VERSION=5.7.x
 
 RUN groupadd -g "$APP_GID" notebook && \
-	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
-	chmod go+w -Rc "$CONDA_DIR" | cut -d'/' -f 5 | cut -d' ' -f 1| sed -e "s/'//g"  | uniq
+	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook
 
 ENV HOME=/home/notebook \
     XDG_CACHE_HOME=/home/notebook/.cache/

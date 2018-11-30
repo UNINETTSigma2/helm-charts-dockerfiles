@@ -21,7 +21,7 @@ fi
 
 
 if [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
-	jupyter-labhub --config "$HOME/.jupyter/notebook_config.py" &
+	jupyter-labhub --config "$HOME/.jupyter/notebook_config.py"
 else
-	jupyterhub-singleuser --config "$HOME/.jupyter/notebook_config.py" &
+	jupyterhub-singleuser --config "$HOME/.jupyter/notebook_config.py"
 fi
