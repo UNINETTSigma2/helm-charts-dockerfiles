@@ -22,7 +22,7 @@ RUN apt update && apt-get install --no-install-recommends -y \
     cmake=3.10.2-1ubuntu2 \
     rsync=3.1.2-2.1ubuntu1 \
     p7zip-full=16.02+dfsg-6 \
-    tzdata=2018d-1 \
+    tzdata=2018g-0ubuntu0.18.04 \
     vim=2:8.0.1453-1ubuntu1 \
     unrar=1:5.5.8-1 && \
     ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime && \
