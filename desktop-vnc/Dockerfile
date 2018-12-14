@@ -32,23 +32,25 @@ ADD ./src/ubuntu/install/ $INST_SCRIPTS/
 RUN find $INST_SCRIPTS -name '*.sh' -exec chmod a+x {} +
 
 ### Install some common tools
-RUN $INST_SCRIPTS/tools.sh
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
-### Install custom fonts
-RUN $INST_SCRIPTS/install_custom_fonts.sh
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    chromium-browser chromium-browser-l10n
+    chromium-codecs-ffmpeg vim wget net-tools \
+    locales bzip2 python-numpy ttf-wqy-zenhei \
+    supervisor xfce4 xfce4-terminal xterm \
+    libnss-wrapper gettext \
+    && apt-get purge -y pm-utils xscreensaver* \
+    && apt-get clean -y
 
 ### Install xvnc-server & noVNC - HTML5 based VNC viewer
 RUN $INST_SCRIPTS/tigervnc.sh
 RUN $INST_SCRIPTS/no_vnc.sh
+RUN locale-gen en_US.UTF-8
 
 ### Install firefox and chrome browser
 RUN $INST_SCRIPTS/firefox.sh
 RUN $INST_SCRIPTS/chrome.sh
-
-### Install xfce UI
-RUN $INST_SCRIPTS/xfce_ui.sh
-ADD ./src/common/xfce/ $HOME/
 
 ### configure startup
 RUN $INST_SCRIPTS/libnss_wrapper.sh
