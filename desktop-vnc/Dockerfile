@@ -1,6 +1,6 @@
 # This Dockerfile is used to build an headles vnc image based on Ubuntu
 
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 MAINTAINER Simon Hofmann "simon.hofmann@consol.de"
 ENV REFRESHED_AT 2018-10-29
@@ -29,11 +29,12 @@ ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
 # Install some common tools
 RUN apt-get update && apt-get install --no-install-recommends -y \
-    locales \
+    locales firefox ca-certificates xauth \
+    x11-xserver-utils \
     chromium-browser chromium-browser-l10n \
     chromium-codecs-ffmpeg vim wget net-tools \
     locales bzip2 python-numpy ttf-wqy-zenhei \
-    supervisor xfce4 xfce4-terminal xterm \
+    supervisor xfce4 xfce4-terminal xterm dbus-x11 \
     libnss-wrapper gettext \
     && apt-get clean -y
 
@@ -41,11 +42,11 @@ RUN locale-gen en_US.UTF-8
 
 ADD ./src/common/install/ $INST_SCRIPTS/
 ADD ./src/ubuntu/install/ $INST_SCRIPTS/
+ADD ./src/common/xfce/ $HOME/
 
 ### Install xvnc-server & noVNC - HTML5 based VNC viewer
-RUN $INST_SCRIPTS/tigervnc.sh && \
+RUN $INST_SCRIPTS/tigervnc.sh &&   \
     $INST_SCRIPTS/no_vnc.sh &&   \
-    $INST_SCRIPTS/firefox.sh &&  \
     $INST_SCRIPTS/chrome.sh &&   \
     $INST_SCRIPTS/libnss_wrapper.sh
 
