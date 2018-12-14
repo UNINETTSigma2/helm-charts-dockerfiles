@@ -2,8 +2,7 @@
 
 FROM ubuntu:18.04
 
-MAINTAINER Simon Hofmann "simon.hofmann@consol.de"
-ENV REFRESHED_AT 2018-10-29
+LABEL maintainer Uninett As <system@uninett.no>
 
 ## Connection ports for controlling the UI:
 # VNC port:5901
