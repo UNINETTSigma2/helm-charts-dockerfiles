@@ -21,7 +21,8 @@ ENV HOME=/headless \
     VNC_COL_DEPTH=24 \
     VNC_RESOLUTION=1280x1024 \
     VNC_PW=vncpassword \
-    VNC_VIEW_ONLY=false
+    VNC_VIEW_ONLY=false \
+    XFCE_PANEL_MIGRATE_DEFAULT=true
 WORKDIR $HOME
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
