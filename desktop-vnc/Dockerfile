@@ -33,15 +33,17 @@ RUN find $INST_SCRIPTS -name '*.sh' -exec chmod a+x {} +
 
 ### Install some common tools
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
-RUN locale-gen en_US.UTF-8
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
+    locales \
     chromium-browser chromium-browser-l10n \
     chromium-codecs-ffmpeg vim wget net-tools \
     locales bzip2 python-numpy ttf-wqy-zenhei \
     supervisor xfce4 xfce4-terminal xterm \
     libnss-wrapper gettext \
     && apt-get clean -y
+
+RUN locale-gen en_US.UTF-8
 
 ### Install xvnc-server & noVNC - HTML5 based VNC viewer
 RUN $INST_SCRIPTS/tigervnc.sh
