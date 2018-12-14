@@ -35,7 +35,7 @@ RUN find $INST_SCRIPTS -name '*.sh' -exec chmod a+x {} +
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-    chromium-browser chromium-browser-l10n
+    chromium-browser chromium-browser-l10n \
     chromium-codecs-ffmpeg vim wget net-tools \
     locales bzip2 python-numpy ttf-wqy-zenhei \
     supervisor xfce4 xfce4-terminal xterm \
