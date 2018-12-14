@@ -13,7 +13,6 @@ ENV DISPLAY=:1 \
     NO_VNC_PORT=6901
 EXPOSE $VNC_PORT $NO_VNC_PORT
 
-### Envrionment config
 ENV HOME=/headless \
     TERM=xterm \
     STARTUPDIR=/dockerstartup \
@@ -26,14 +25,9 @@ ENV HOME=/headless \
     VNC_VIEW_ONLY=false
 WORKDIR $HOME
 
-### Add all install scripts for further steps
-ADD ./src/common/install/ $INST_SCRIPTS/
-ADD ./src/ubuntu/install/ $INST_SCRIPTS/
-RUN find $INST_SCRIPTS -name '*.sh' -exec chmod a+x {} +
-
-### Install some common tools
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
+# Install some common tools
 RUN apt-get update && apt-get install --no-install-recommends -y \
     locales \
     chromium-browser chromium-browser-l10n \
@@ -45,16 +39,17 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 
 RUN locale-gen en_US.UTF-8
 
+ADD ./src/common/install/ $INST_SCRIPTS/
+ADD ./src/ubuntu/install/ $INST_SCRIPTS/
+
 ### Install xvnc-server & noVNC - HTML5 based VNC viewer
-RUN $INST_SCRIPTS/tigervnc.sh
-RUN $INST_SCRIPTS/no_vnc.sh
+RUN $INST_SCRIPTS/tigervnc.sh && \
+    $INST_SCRIPTS/no_vnc.sh &&   \
+    $INST_SCRIPTS/firefox.sh &&  \
+    $INST_SCRIPTS/chrome.sh &&   \
+    $INST_SCRIPTS/libnss_wrapper.sh
 
-### Install firefox and chrome browser
-RUN $INST_SCRIPTS/firefox.sh
-RUN $INST_SCRIPTS/chrome.sh
-
-### configure startup
-RUN $INST_SCRIPTS/libnss_wrapper.sh
+# configure startup
 ADD ./src/common/scripts $STARTUPDIR
 RUN $INST_SCRIPTS/set_user_permission.sh $STARTUPDIR $HOME
 
