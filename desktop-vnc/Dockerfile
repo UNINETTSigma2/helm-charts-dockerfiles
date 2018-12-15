@@ -30,7 +30,7 @@ ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 # Install some common tools
 RUN apt-get update && apt-get install --no-install-recommends -y \
     locales firefox ca-certificates xauth \
-    x11-xserver-utils \
+    x11-xserver-utils adwaita-icon-theme-full \
     chromium-browser chromium-browser-l10n \
     chromium-codecs-ffmpeg vim wget net-tools \
     locales bzip2 python-numpy ttf-wqy-zenhei \
