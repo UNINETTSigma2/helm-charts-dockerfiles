@@ -76,7 +76,6 @@ RUN conda install --quiet --yes -c caffe2 \
     'pygpu=0.7*' \
     'imagehash=4.0*' \
     'theano=1.0*' \
-    'pytorch=1.0*' \
     'bcolz=1.2.*' \
     'python-graphviz=0.8*' \
     'libjpeg-turbo=2.0*' \
@@ -86,7 +85,9 @@ RUN conda install --quiet --yes -c caffe2 \
     conda install --quiet --yes -c pytorch \
     'magma-cuda91=2.3*' \
     'faiss-gpu=1.2*' && \
-    conda install --quiet --yes -c 'fastai=1.0*' \
+    conda install --quiet --yes -c pytorch -c fastai \
+    'fastai=1.0*' \
+    'pytorch=1.0*' \
     'torchvision=0.2*' \
     'fastprogress=0.1*' && \
     conda clean -tipsy
