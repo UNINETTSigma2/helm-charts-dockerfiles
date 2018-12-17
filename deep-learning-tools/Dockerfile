@@ -58,10 +58,11 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     PKG_KERAS_VERSION=2.2.4 \
     PKG_TENSORFLOW_VERSION=1.12.0 \
     PKG_TENSORFLOW_PROBABILITY_VERSION=0.4.0 \
-    PKG_PYTORCH_VERSION=0.4.1 \
+    PKG_PYTORCH_VERSION=1.0.0 \
     PKG_MXNET_VERSION=1.3.0 \
     PKG_ONNX_VERSION=1.3.0 \
     PKG_CNTK_VERSION=2.6.0 \
+    PKG_FASTAI_VERSION=1.0.37 \
     PKG_CAFFE2_VERSION=0.8.dev
 
 ENV PATH /usr/local/mpi/bin:$PATH
@@ -75,8 +76,7 @@ RUN conda install --quiet --yes -c caffe2 \
     'pygpu=0.7*' \
     'imagehash=4.0*' \
     'theano=1.0*' \
-    'pytorch=0.4*' \
-    'torchvision=0.2*' \
+    'pytorch=1.0*' \
     'bcolz=1.2.*' \
     'python-graphviz=0.8*' \
     'libjpeg-turbo=2.0*' \
@@ -86,8 +86,9 @@ RUN conda install --quiet --yes -c caffe2 \
     conda install --quiet --yes -c pytorch \
     'magma-cuda91=2.3*' \
     'faiss-gpu=1.2*' && \
-    # conda install --quiet --yes -c fastai \
-    # 'fastprogress' && \
+    conda install --quiet --yes -c 'fastai=1.0*' \
+    'torchvision=0.2*' \
+    'fastprogress=0.1*' && \
     conda clean -tipsy
 
 RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
@@ -110,7 +111,7 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     mxboard==0.1.* \
     tensorflow-gpu==1.12.* \
     tensorflow-probability-gpu==0.4.* \
-    tensorboardX==1.4 \
+    tensorboardX==1.5 \
     opencv-python==3.4.* \
     hypothesis==3.79.*
 
