@@ -91,7 +91,7 @@ RUN conda install --quiet --yes -c caffe2 \
     'torchvision=0.2*' \
     'fastprogress=0.1*' && \
     conda uninstall --force jpeg libtiff -y && \
-    conda install --c conda-forge 'libjpeg-turbo=2.*' && \
+    conda install -c conda-forge 'libjpeg-turbo=2.*' && \
     conda clean -tipsy
 
 RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
