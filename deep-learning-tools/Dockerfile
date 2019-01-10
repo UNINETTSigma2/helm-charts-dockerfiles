@@ -78,8 +78,8 @@ RUN conda install --quiet --yes -c caffe2 \
     'theano=1.0*' \
     'bcolz=1.2.*' \
     'python-graphviz=0.8*' \
-    'libjpeg-turbo=2.0*' \
     'spacy=2.0.*' \
+    'tensorflow-gpu=1.12.*' \
     'pydot=1.2.*' && \
     conda clean -tipsy && \
     conda install --quiet --yes -c pytorch \
@@ -90,6 +90,8 @@ RUN conda install --quiet --yes -c caffe2 \
     'pytorch=1.0*' \
     'torchvision=0.2*' \
     'fastprogress=0.1*' && \
+    conda uninstall --force jpeg libtiff -y && \
+    conda install --c conda-forge 'libjpeg-turbo=2.*' && \
     conda clean -tipsy
 
 RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
@@ -110,7 +112,6 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     keras-mxnet==2.2.* \
     onnx-mxnet==0.4.* \
     mxboard==0.1.* \
-    tensorflow-gpu==1.12.* \
     tensorflow-probability-gpu==0.4.* \
     tensorboardX==1.5 \
     opencv-python==3.4.* \
