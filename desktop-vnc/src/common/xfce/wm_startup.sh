@@ -9,6 +9,11 @@ xset -dpms &
 xset s noblank &
 xset s off &
 
-/usr/bin/startxfce4 --replace > $HOME/wm.log &
-sleep 1
+(
+  while true; do
+    /usr/bin/startxfce4 --replace > $HOME/wm.log
+    sleep 1
+  done
+) &
+
 cat $HOME/wm.log
