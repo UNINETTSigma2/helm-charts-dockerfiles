@@ -105,6 +105,7 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     pandas-summary==0.0.5 \
     sklearn_pandas==1.6.* \
     feather-format==0.4.* \
+    jupyterlab_iframe==0.0.11 \
     plotnine==0.3.0 \
     isoweek==1.3.3 \
     torchtext==0.3.1 \
