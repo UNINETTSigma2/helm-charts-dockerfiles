@@ -6,31 +6,39 @@ USER root
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends gnupg2=2.2.4-1ubuntu1 && \
-    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1710/x86_64/7fa2af80.pub | apt-key add - && \
-    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1710/x86_64 /" > /etc/apt/sources.list.d/cuda.list && \
+    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub | apt-key add - && \
+    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
-# Refer here for versions https://gitlab.com/nvidia/cuda/blob/ubuntu18.04/9.2/base/Dockerfile
-ENV PKG_CUDA_VERSION=9.2.148 \
-    NCCL_VERSION=2.3.7 \
-    PKG_CUDNN_VERSION=7.4.1.5
+# Refer here for versions https://gitlab.com/nvidia/cuda/blob/ubuntu16.04/9.0/base/Dockerfile,
+# note that this uses Ubuntu 16.04.
+#
+# https://www.tensorflow.org/install/gpu
+#  and
+# https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
+# might also be useful for CUDA packages
+# 
+ENV PKG_CUDA_VERSION=9.0.176 \
+    NCCL_VERSION=2.2.13 \
+    PKG_CUDNN_VERSION=7.2.1.38
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        "cuda-cupti-9-2=$PKG_CUDA_VERSION-1" \
-        "cuda-cudart-9-2=$PKG_CUDA_VERSION-1" \
-        "cuda-cudart-dev-9-2=$PKG_CUDA_VERSION-1" \
-        "libcudnn7=$PKG_CUDNN_VERSION-1+cuda9.2" \
-        "libcudnn7-dev=$PKG_CUDNN_VERSION-1+cuda9.2" \
-        "cuda-libraries-9-2=$PKG_CUDA_VERSION-1" \
-        "cuda-libraries-dev-9-2=$PKG_CUDA_VERSION-1" \
-        "cuda-nvml-dev-9-2=$PKG_CUDA_VERSION-1" \
-        "cuda-minimal-build-9-2=$PKG_CUDA_VERSION-1" \
-        "cuda-command-line-tools-9-2=$PKG_CUDA_VERSION-1" \
-        "libnccl2=$NCCL_VERSION-1+cuda9.2" \
-        "libnccl-dev=$NCCL_VERSION-1+cuda9.2" \
+        "cuda-cudart-9-0=$PKG_CUDA_VERSION-1" \
+        "cuda-cublas-9-0=$PKG_CUDA_VERSION-1" \
+        "cuda-cublas-dev-9-0=$PKG_CUDA_VERSION-1" \
+        "cuda-cudart-dev-9-0=$PKG_CUDA_VERSION-1" \
+        "libcudnn7=$PKG_CUDNN_VERSION-1+cuda9.0" \
+        "libcudnn7-dev=$PKG_CUDNN_VERSION-1+cuda9.0" \
+        "cuda-libraries-9-0=$PKG_CUDA_VERSION-1" \
+        "cuda-libraries-dev-9-0=$PKG_CUDA_VERSION-1" \
+        "cuda-nvml-dev-9-0=$PKG_CUDA_VERSION-1" \
+        "cuda-minimal-build-9-0=$PKG_CUDA_VERSION-1" \
+        "cuda-command-line-tools-9-0=$PKG_CUDA_VERSION-1" \
+        "libnccl2=$NCCL_VERSION-1+cuda9.0" \
+        "libnccl-dev=$NCCL_VERSION-1+cuda9.0" \
         "openmpi-bin=2.1.1-8" && \
-    ln -s cuda-9.2 /usr/local/cuda && \
+    ln -s cuda-9.0 /usr/local/cuda && \
     apt-get -y autoremove && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
@@ -116,6 +124,7 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     tensorflow-probability-gpu==0.4.* \
     tensorboardX==1.5 \
     opencv-python==3.4.* \
+    numpy==1.15.4 \
     hypothesis==3.79.*
 
 COPY start-notebook.sh /usr/local/bin/
