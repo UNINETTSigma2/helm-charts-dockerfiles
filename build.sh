@@ -17,7 +17,7 @@ function build_image() {
 	    MAYBE_ARGS="--label $v $MAYBE_ARGS"
 	done
 
-	docker build $MAYBE_ARGS -t $img .
+	docker build $MAYBE_ARGS --cache-from="quay.io/uninett/$1:$3" -t $img .
 
 	if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
 	    echo "Skipping push, as this is a pull request"
@@ -40,8 +40,9 @@ do
     if test -f "$directory/Dockerfile"
     then
         tag="$(git log -n 1 --pretty=format:%cd --date=short -- $directory| sed s/-//g)-$(git log -n 1 --pretty=format:%h -- $directory)"
+        tag_prev="$(git log --skip 1 -n 1 --pretty=format:%cd --date=short -- $directory| sed s/-//g)-$(git log --skip 1 -n 1 --pretty=format:%h -- $directory)"
         cd $directory
-        build_image "$directory" "$tag"
+        build_image "$directory" "$tag" "$tag_prev"
         cd ..
     else
         cd $directory
@@ -49,8 +50,9 @@ do
         do
             innerdir=$(echo $innerawd|sed 's/\///')
             tag="$(git log -n 1 --pretty=format:%cd --date=short -- $innerdir| sed s/-//g)-$(git log -n 1 --pretty=format:%h -- $innerdir)"
+            tag_prev="$(git log --skip 1 -n 1 --pretty=format:%cd --date=short -- $innerdir| sed s/-//g)-$(git log --skip 1 -n 1 --pretty=format:%h -- $innerdir)"
             cd $innerdir
-            build_image "$directory-$innerdir" "$tag"
+            build_image "$directory-$innerdir" "$tag" "$tag_prev"
             cd ..
         done
         cd ..
