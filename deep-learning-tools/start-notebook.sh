@@ -35,4 +35,7 @@ else
 	jupyter notebook --config "$HOME/.jupyter/notebook_config.py" "$*" &
 fi
 
+mlflow server --file-store "$MLFLOW_DATADIR" --host 0.0.0.0 &
+export MLFLOW_TRACKING_URI="http://localhost:5000"
+
 sleep inf

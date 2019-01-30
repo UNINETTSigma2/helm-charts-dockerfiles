@@ -125,6 +125,8 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     tensorboardX==1.5 \
     opencv-python==3.4.* \
     numpy==1.15.4 \
-    hypothesis==3.79.*
+    hypothesis==3.79.* \
+    mlflow==0.8.* \
+    git+https://github.com/Pendar2/fastai-tensorboard-callback.git
 
 COPY start-notebook.sh /usr/local/bin/
