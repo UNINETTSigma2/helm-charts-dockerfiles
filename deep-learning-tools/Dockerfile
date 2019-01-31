@@ -76,13 +76,9 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 ENV PATH /usr/local/mpi/bin:$PATH
 ENV LD_LIBRARY_PATH /usr/local/mpi/lib:$LD_LIBRARY_PATH
 
-RUN conda install --quiet --yes -c caffe2 \
-    'caffe2-cuda9.0-cudnn7=0.8.dev' && \
-    conda clean -tipsy && \
-    conda install --quiet --yes -c conda-forge \
+RUN conda install --quiet --yes -c conda-forge \
     'mkl-service=1.1*' \
     'pygpu=0.7*' \
-    'imagehash=4.0*' \
     'theano=1.0*' \
     'bcolz=1.2.*' \
     'python-graphviz=0.8*' \
