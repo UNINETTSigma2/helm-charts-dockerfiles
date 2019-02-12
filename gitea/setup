@@ -1,18 +1,18 @@
 #!/bin/bash
 
-
-if [ ! -d /data/git/.ssh ]; then
-    mkdir -p /data/git/.ssh
-    chmod 700 /data/git/.ssh
+if [ ! -d /home/git/.ssh ]; then
+    mkdir -p /home/git/.ssh
+    chmod 700 /home/git/.ssh
 fi
 
-if [ ! -f /data/git/.ssh/environment ]; then
-    echo "GITEA_CUSTOM=/data/gitea" >| /data/git/.ssh/environment
-    chmod 600 /data/git/.ssh/environment
+if [ ! -f /home/git/.ssh/environment ]; then
+    echo "GITEA_CUSTOM=/etc/gitea" >| /home/git/.ssh/environment
+    chmod 600 /home/git/.ssh/environment
 fi
 
-if [ ! -f /data/gitea/conf/app.ini ]; then
-    mkdir -p /data/gitea/conf
+if [ ! -f /etc/gitea/app.ini ]; then
+  if [ ! -f /etc/gitea/conf/app.ini ]; then
+    mkdir -p /etc/gitea/
 
     # Set INSTALL_LOCK to true only if SECRET_KEY is not empty and
     # INSTALL_LOCK is empty
@@ -33,10 +33,15 @@ if [ ! -f /data/gitea/conf/app.ini ]; then
     DB_NAME=${DB_NAME:-"gitea"} \
     DB_USER=${DB_USER:-"root"} \
     DB_PASSWD=${DB_PASSWD:-""} \
-    INSTALL_LOCK=${INSTALL_LOCK:-"false"} \
+    DB_PATH=${DB_PATH:-"/var/lib/gitea/gitea.db"} \
+    INSTALL_LOCK=${INSTALL_LOCK:-"true"} \
     DISABLE_REGISTRATION=${DISABLE_REGISTRATION:-"false"} \
     REQUIRE_SIGNIN_VIEW=${REQUIRE_SIGNIN_VIEW:-"false"} \
     SECRET_KEY=${SECRET_KEY:-""} \
-    envsubst < /etc/templates/app.ini > /data/gitea/conf/app.ini
+
+    envsubst < /etc/templates/app.ini > /etc/gitea/app.ini
+  else
+    cp /etc/gitea/conf/app.ini /etc/gitea/app.ini
+  fi
 fi
 
