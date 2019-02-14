@@ -1,10 +1,10 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# Minimal: https://github.com/jupyter/docker-stacks/tree/14fdfbf9cfc1/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/14fdfbf9cfc1/base-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/base-notebook/Dockerfile
 
-FROM jupyter/datascience-notebook:14fdfbf9cfc1
+FROM jupyter/datascience-notebook:83ed2c63671f
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -53,7 +53,8 @@ USER notebook
 RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda install --quiet --yes -c conda-forge \
     'jupyter_contrib_nbextensions=0.5*' \
-    'tqdm=4.28*' \
+    'tqdm=4.31*' \
+    'yapf=0.26*' \
     'nbdime=1.0*' \
     'nbconvert=5.4*' \
     'dataclasses=0.6' && \
