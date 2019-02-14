@@ -106,8 +106,8 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     hypothesis==3.79.* \
     mlflow==0.8.* \
     lightgbm==2.2.* \
-    xgboost==0.81* \
-    catboost==0.12* \
+    xgboost==0.81 \
+    catboost==0.12.* \
     git+https://github.com/Pendar2/fastai-tensorboard-callback.git
 
 COPY start-notebook.sh /usr/local/bin/
