@@ -35,6 +35,7 @@ else
 	jupyter notebook --config "$HOME/.jupyter/notebook_config.py" "$*" &
 fi
 
+tensorboard --logdir="$TENSORBOARD_LOGDIR" --port=6006 &
 mlflow server --file-store "$MLFLOW_DATADIR" --host 0.0.0.0 &
 export MLFLOW_TRACKING_URI="http://localhost:5000"
 
