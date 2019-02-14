@@ -69,14 +69,16 @@ RUN conda install --quiet --yes -c conda-forge \
     'yapf=0.26*' \
     'nbdime=1.0*' \
     'nbconvert=5.4*' \
+    'plotly=3.6*' \
     'dataclasses=0.6' && \
     conda install --quiet --yes -c damianavila82 'rise=5.4*' && \
     conda clean -tipsy && \
     jupyter labextension install \
     '@jupyterlab/github@0.10.0' \
     'nbdime-jupyterlab@0.6.0' \
+    '@jupyterlab/plotly-extension@0.18.2' \
     '@jupyterlab/toc@0.6.0'  && \
-    pip install jupyterlab-github==0.6.1 && \
+    pip install jupyterlab-github==0.6.* cufflinks==0.14.* && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
