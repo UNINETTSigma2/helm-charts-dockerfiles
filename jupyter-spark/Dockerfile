@@ -1,13 +1,13 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# All Spark: https://github.com/jupyter/docker-stacks/tree/e8613d84128b/all-spark-notebook/Dockerfile
-# PySpark: https://github.com/jupyter/docker-stacks/tree/e8613d84128b/pyspark-notebook/Dockerfile
-# SciPy: https://github.com/jupyter/docker-stacks/tree/e8613d84128b/scipy-notebook/Dockerfile
-# Minimal: https://github.com/jupyter/docker-stacks/tree/e8613d84128b/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/e8613d84128b/base-notebook/Dockerfile
+# All Spark: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/all-spark-notebook/Dockerfile
+# PySpark: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/pyspark-notebook/Dockerfile
+# SciPy: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/scipy-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/base-notebook/Dockerfile
 
-FROM jupyter/all-spark-notebook:e8613d84128b
+FROM jupyter/all-spark-notebook:83ed2c63671f
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -42,8 +42,7 @@ ENV APP_UID=999 \
 	PKG_SPARK_VERSION=2.4.0 \
 	PKG_HADOOP_VERSION=2.7 \
 	PKG_TOREE_VERSION=0.3.0-incubating \
-	PKG_SPYLON_VERSION=0.4.x \
-	PKG_R_VERSION=3.4.1
+	PKG_R_VERSION=3.5.1
 
 RUN groupadd -g "$APP_GID" notebook && \
 	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
@@ -65,13 +64,13 @@ RUN conda update conda python && pip install -U 'pip==18.*'
 
 #hadolint ignore=DL3013
 RUN conda install --quiet --yes -c conda-forge \
-    'jupyter_contrib_nbextensions=0.5.0' \
-    'tqdm=4.28*' \
-    'yapf=0.24*' \
+    'jupyter_contrib_nbextensions=0.5*' \
+    'tqdm=4.31*' \
+    'yapf=0.26*' \
     'nbdime=1.0*' \
     'nbconvert=5.4*' \
     'dataclasses=0.6' && \
-    conda install --quiet --yes -c damianavila82 'rise=5.4.*' && \
+    conda install --quiet --yes -c damianavila82 'rise=5.4*' && \
     conda clean -tipsy && \
     jupyter labextension install \
     '@jupyterlab/github@0.10.0' \
