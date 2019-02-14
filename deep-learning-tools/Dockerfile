@@ -1,4 +1,4 @@
-FROM quay.io/uninett/jupyter-spark:20181124-1ccd691
+FROM quay.io/uninett/jupyter-spark:20190214-73f6071
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -48,30 +48,19 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     ln -s /usr/local/cuda/include/* /usr/include/
 
-#hadolint ignore=DL3003
-# RUN OPENMPI_VERSION=1.10.3 && \
-#     curl -fsSL https://www.open-mpi.org/software/ompi/v1.10/downloads/openmpi-${OPENMPI_VERSION}.tar.gz | tar -xzf - && \
-#     cd openmpi-${OPENMPI_VERSION} && \
-#     ./configure --prefix=/usr/local/mpi >/dev/null && \
-#     make -j"$(nproc)" install >/dev/null && \
-#     cd "$OLDPWD" && \
-#     rm -rf ./openmpi-${OPENMPI_VERSION}
-
 USER notebook
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all \
-    PKG_THEANO_VERSION=1.0.2 \
     PKG_KERAS_VERSION=2.2.4 \
     PKG_TENSORFLOW_VERSION=1.12.0 \
     PKG_TENSORFLOW_PROBABILITY_VERSION=0.4.0 \
-    PKG_PYTORCH_VERSION=1.0.0 \
-    PKG_MXNET_VERSION=1.3.0 \
-    PKG_ONNX_VERSION=1.3.0 \
-    PKG_CNTK_VERSION=2.6.0 \
-    PKG_FASTAI_VERSION=1.0.37 \
-    PKG_CAFFE2_VERSION=0.8.dev
+    PKG_PYTORCH_VERSION=1.0.1 \
+    PKG_XGBOOST_VERSION=0.81 \
+    PKG_CATBOOST_VERSION=0.12.2 \
+    PKG_LIGHTGBM_VERSION=2.2.3 \
+    PKG_FASTAI_VERSION=1.0.45
 
 ENV PATH /usr/local/mpi/bin:$PATH
 ENV LD_LIBRARY_PATH /usr/local/mpi/lib:$LD_LIBRARY_PATH
@@ -101,28 +90,24 @@ RUN conda install --quiet --yes -c conda-forge \
 RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     hyperopt==0.1 \
     pycuda==2018.1.1 \
-    cntk-gpu==2.6.* \
-    onnx==1.3.* \
     keras==2.2.* \
     keras-tqdm==2.0.* \
     kaggle==1.5.* \
-    pandas-summary==0.0.5 \
-    sklearn_pandas==1.6.* \
+    pandas-summary==0.0.6 \
+    sklearn_pandas==1.8.* \
     feather-format==0.4.* \
     jupyterlab_iframe==0.0.11 \
     plotnine==0.3.0 \
     isoweek==1.3.3 \
     torchtext==0.3.1 \
-    mxnet-cu92==1.3.* \
-    keras-mxnet==2.2.* \
-    onnx-mxnet==0.4.* \
-    mxboard==0.1.* \
     tensorflow-probability-gpu==0.4.* \
     tensorboardX==1.5 \
     opencv-python==3.4.* \
-    numpy==1.15.4 \
     hypothesis==3.79.* \
     mlflow==0.8.* \
+    lightgbm==2.2.* \
+    xgboost==0.81* \
+    catboost==0.12* \
     git+https://github.com/Pendar2/fastai-tensorboard-callback.git
 
 COPY start-notebook.sh /usr/local/bin/
