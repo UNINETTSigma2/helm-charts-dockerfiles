@@ -111,4 +111,7 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     catboost==0.12.* \
     git+https://github.com/Pendar2/fastai-tensorboard-callback.git
 
+RUN jupyter labextension install jupyterlab_iframe && \
+    jupyter serverextension enable --py jupyterlab_iframe
+
 COPY start-notebook.sh /usr/local/bin/
