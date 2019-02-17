@@ -81,6 +81,8 @@ fi
 echo "$VNC_PW" | vncpasswd -f >> $PASSWD_PATH
 chmod 600 $PASSWD_PATH
 
+sed "s/PASSWORD_FROM_ENV/$VNC_PW/" -i $NO_VNC_HOME/index.html
+
 
 ## start vncserver and noVNC webclient
 echo -e "\n------------------ start noVNC  ----------------------------"
