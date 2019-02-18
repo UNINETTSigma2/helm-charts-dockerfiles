@@ -144,7 +144,17 @@
             }
         }
 
+        var disconnectRetries = 0;
+
         function disconnected(e) {
+            // Attempt to reconnect if we have been disconnected,
+            // but don't try forever.
+            if (disconnectRetries < 20) {
+              setTimeout(createConnection, disconnectRetries*500);
+              disconnectRetries++;
+              return;
+            }
+
             document.getElementById('sendCtrlAltDelButton').disabled = true;
             updatePowerButtons();
             if (e.detail.clean) {
@@ -186,7 +196,6 @@
             }
         }
 
-        var password = "PASSWORD_FROM_ENV";
         var path = WebUtil.getConfigVar('path', 'websockify');
 
         // If a token variable is passed in, set the parameter in a cookie.
@@ -199,7 +208,10 @@
             WebUtil.createCookie('token', token, 1)
         }
 
-        (function() {
+        function createConnection() {
+           if (rfb !== undefined) {
+              rfb.disconnect();
+           }
 
             status("Connecting", "normal");
 
@@ -225,7 +237,8 @@
             rfb = new RFB(document.body, url,
                           { repeaterID: WebUtil.getConfigVar('repeaterID', ''),
                             shared: WebUtil.getConfigVar('shared', true),
-                            credentials: { password: password } });
+                            credentials: { password: "PASSWORD_FROM_ENV" } });
+
             rfb.viewOnly = WebUtil.getConfigVar('view_only', false);
             rfb.addEventListener("connect",  connected);
             rfb.addEventListener("disconnect", disconnected);
@@ -234,6 +247,10 @@
             rfb.addEventListener("desktopname", updateDesktopName);
             rfb.scaleViewport = WebUtil.getConfigVar('scale', false);
             rfb.resizeSession = WebUtil.getConfigVar('resize', false);
+        }
+
+        (function() {
+            createConnection();
 	})();
     </script>
 </head>
