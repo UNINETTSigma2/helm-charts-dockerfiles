@@ -15,3 +15,5 @@ c.NotebookApp.allow_origin = '*'
 c.NotebookApp.allow_remote_access = True
 c.NotebookApp.token = ''
 c.NotebookApp.password = ''
+# Run all nodes interactively
+c.InteractiveShell.ast_node_interactivity = "all"

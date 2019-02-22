@@ -17,3 +17,5 @@ c.NotebookApp.tornado_settings = {'static_url_prefix': '/static/'}
 c.NotebookApp.notebook_dir = '/home/notebook'
 c.NotebookApp.allow_origin = '*'
 c.NotebookApp.allow_remote_access = True
+# Run all nodes interactively
+c.InteractiveShell.ast_node_interactivity = "all"
