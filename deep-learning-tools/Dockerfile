@@ -76,9 +76,6 @@ RUN conda install --quiet --yes -c conda-forge \
     'spacy=2.0.*' \
     'pydot=1.2.*' && \
     conda clean -tipsy && \
-    conda install --quiet --yes -c pytorch \
-    'magma-cuda91=2.3*' \
-    'faiss-gpu=1.2*' && \
     conda install --quiet --yes -c pytorch -c fastai \
     'fastai=1.0*' \
     'pytorch=1.0*' \
