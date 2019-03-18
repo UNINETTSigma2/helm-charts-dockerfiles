@@ -1,13 +1,13 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# All Spark: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/all-spark-notebook/Dockerfile
-# PySpark: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/pyspark-notebook/Dockerfile
-# SciPy: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/scipy-notebook/Dockerfile
-# Minimal: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/base-notebook/Dockerfile
+# All Spark: https://github.com/jupyter/docker-stacks/tree/a330137134e7/all-spark-notebook/Dockerfile
+# PySpark: https://github.com/jupyter/docker-stacks/tree/a330137134e7/pyspark-notebook/Dockerfile
+# SciPy: https://github.com/jupyter/docker-stacks/tree/a330137134e7/scipy-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/a330137134e7/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/a330137134e7/base-notebook/Dockerfile
 
-FROM jupyter/all-spark-notebook:83ed2c63671f
+FROM jupyter/all-spark-notebook:a330137134e7
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -58,11 +58,13 @@ COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
 RUN chmod go+rwx -R "$CONDA_DIR/bin" && chown notebook:notebook -R "$CONDA_DIR/bin" && \
     mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
 
+RUN wget -q https://github.com/codercom/code-server/releases/download/1.32.0-282/code-server-1.32.0-282-linux-x64.tar.gz && \
+    tar zxf code-server-1.32.0-282-linux-x64.tar.gz && \
+    mv code-server-1.32.0-282-linux-x64/code-server /usr/local/bin/ && \
+    rm -rf code-server-1.32.0-282-linux-x64* && locale-gen en_US.UTF-8
+
 USER notebook
 
-RUN conda update conda python && pip install -U 'pip==18.*'
-
-#hadolint ignore=DL3013
 RUN conda install --quiet --yes -c conda-forge \
     'jupyter_contrib_nbextensions=0.5*' \
     'tqdm=4.31*' \
@@ -72,25 +74,32 @@ RUN conda install --quiet --yes -c conda-forge \
     'plotly=3.6*' \
     'dataclasses=0.6' && \
     conda install --quiet --yes -c damianavila82 'rise=5.4*' && \
-    conda clean -tipsy && \
+    conda clean -tipsy
+
+#hadolint ignore=DL3013
+RUN pip install jupyterlab-github==0.6.* cufflinks==0.14.* \
+    jupyter-server-proxy==1.0 jupyterlab_iframe==0.0.11 && \
+    jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe && \
     jupyter labextension install \
     '@jupyterlab/github@0.10.0' \
     'nbdime-jupyterlab@0.6.0' \
     '@jupyterlab/plotly-extension@0.18.2' \
-    '@jupyterlab/toc@0.6.0'  && \
-    pip install jupyterlab-github==0.6.* cufflinks==0.14.* && \
+    '@jupyterlab/toc@0.6.0' \
+    'jupyterlab-server-proxy@1.0.0' \
+    'jupyterlab_iframe' && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
     jupyter lab build
 
+WORKDIR $HOME
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
-
 # Ensure that the default config files are available.
 COPY --chown=notebook:notebook .jupyter/ /etc/default/jupyter
-RUN chmod go+w -R "$HOME" /usr/local/spark/conf/spark-defaults.conf && \
-    mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*
 
-WORKDIR $HOME
+RUN chmod go+w -R "$HOME" mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*
+
+ENV LANG=en_US.UTF-8
+
 CMD ["/usr/local/bin/start-notebook.sh"]
