@@ -61,7 +61,7 @@ RUN chmod go+rwx -R "$CONDA_DIR/bin" && chown notebook:notebook -R "$CONDA_DIR/b
 RUN wget -q https://github.com/codercom/code-server/releases/download/1.32.0-282/code-server-1.32.0-282-linux-x64.tar.gz && \
     tar zxf code-server-1.32.0-282-linux-x64.tar.gz && \
     mv code-server-1.32.0-282-linux-x64/code-server /usr/local/bin/ && \
-    rm -rf code-server-1.32.0-282-linux-x64* && locale-gen en_US.UTF-8
+    rm -rf code-server-1.32.0-282-linux-x64* "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
 
 USER notebook
 
