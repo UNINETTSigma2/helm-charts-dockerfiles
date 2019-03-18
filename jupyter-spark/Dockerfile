@@ -98,7 +98,7 @@ COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
 # Ensure that the default config files are available.
 COPY --chown=notebook:notebook .jupyter/ /etc/default/jupyter
 
-RUN chmod go+w -R "$HOME" mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*
+RUN chmod go+w -R "$HOME" && mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*
 
 ENV LANG=en_US.UTF-8
 
