@@ -83,6 +83,7 @@ RUN conda install --quiet --yes -c conda-forge \
     'fastprogress=0.1*' && \
     conda uninstall --force jpeg libtiff -y && \
     conda install -c conda-forge 'libjpeg-turbo=2.*' && \
+    conda install -y jpeg libtiff && \
     conda clean -tipsy
 
 RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
@@ -107,5 +108,6 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     xgboost==0.81 \
     catboost==0.12.*
 
+RUN pip uninstall -y numpy && pip install --no-cache-dir -I -U numpy==1.16.*
 
 COPY start-notebook.sh /usr/local/bin/
