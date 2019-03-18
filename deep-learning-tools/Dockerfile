@@ -1,4 +1,4 @@
-FROM quay.io/uninett/jupyter-spark:20190214-73f6071
+FROM quay.io/uninett/jupyter-spark:20190318-144efc8
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends gnupg2=2.2.4-1u
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
-# Refer here for versions https://gitlab.com/nvidia/cuda/blob/ubuntu16.04/9.0/base/Dockerfile,
+# Refer here for versions https://gitlab.com/nvidia/cuda/blob/ubuntu16.04/10.0/base/Dockerfile,
 # note that this uses Ubuntu 16.04.
 #
 # https://www.tensorflow.org/install/gpu
@@ -19,26 +19,27 @@ RUN apt-get update && apt-get install -y --no-install-recommends gnupg2=2.2.4-1u
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
 # might also be useful for CUDA packages
 # 
-ENV PKG_CUDA_VERSION=9.0.176 \
-    NCCL_VERSION=2.2.13 \
-    PKG_CUDNN_VERSION=7.2.1.38
+ENV PKG_CUDA_VERSION=10.0.130 \
+    NCCL_VERSION=2.4.2 \
+    PKG_CUDNN_VERSION=7.5.0.56
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        "cuda-cudart-9-0=$PKG_CUDA_VERSION-1" \
-        "cuda-cublas-9-0=$PKG_CUDA_VERSION-1" \
-        "cuda-cublas-dev-9-0=$PKG_CUDA_VERSION-1" \
-        "cuda-cudart-dev-9-0=$PKG_CUDA_VERSION-1" \
-        "libcudnn7=$PKG_CUDNN_VERSION-1+cuda9.0" \
-        "libcudnn7-dev=$PKG_CUDNN_VERSION-1+cuda9.0" \
-        "cuda-libraries-9-0=$PKG_CUDA_VERSION-1" \
-        "cuda-libraries-dev-9-0=$PKG_CUDA_VERSION-1" \
-        "cuda-nvml-dev-9-0=$PKG_CUDA_VERSION-1" \
-        "cuda-minimal-build-9-0=$PKG_CUDA_VERSION-1" \
-        "cuda-command-line-tools-9-0=$PKG_CUDA_VERSION-1" \
-        "libnccl2=$NCCL_VERSION-1+cuda9.0" \
-        "libnccl-dev=$NCCL_VERSION-1+cuda9.0" \
+        "cuda-cudart-10-0=$PKG_CUDA_VERSION-1" \
+        "cuda-cublas-10-0=$PKG_CUDA_VERSION-1" \
+        "cuda-cublas-dev-10-0=$PKG_CUDA_VERSION-1" \
+        "cuda-cudart-dev-10-0=$PKG_CUDA_VERSION-1" \
+        "libcudnn7=$PKG_CUDNN_VERSION-1+cuda10.0" \
+        "libcudnn7-dev=$PKG_CUDNN_VERSION-1+cuda10.0" \
+        "cuda-libraries-10-0=$PKG_CUDA_VERSION-1" \
+        "cuda-libraries-dev-10-0=$PKG_CUDA_VERSION-1" \
+        "cuda-nvml-dev-10-0=$PKG_CUDA_VERSION-1" \
+        "cuda-minimal-build-10-0=$PKG_CUDA_VERSION-1" \
+        "cuda-command-line-tools-10-0=$PKG_CUDA_VERSION-1" \
+        "libnccl2=$NCCL_VERSION-1+cuda10.0" \
+        "libnccl-dev=$NCCL_VERSION-1+cuda10.0" \
+        "cuda-compat-10-0=410.48-1" \
         "openmpi-bin=2.1.1-8" && \
-    ln -s cuda-9.0 /usr/local/cuda && \
+    ln -s cuda-10.0 /usr/local/cuda && \
     apt-get -y autoremove && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
@@ -55,13 +56,13 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all \
     PKG_KERAS_VERSION=2.2.4 \
-    PKG_TENSORFLOW_VERSION=1.12.0 \
+    PKG_TENSORFLOW_VERSION=1.13.1 \
     PKG_TENSORFLOW_PROBABILITY_VERSION=0.4.0 \
     PKG_PYTORCH_VERSION=1.0.1 \
     PKG_XGBOOST_VERSION=0.81 \
     PKG_CATBOOST_VERSION=0.12.2 \
     PKG_LIGHTGBM_VERSION=2.2.3 \
-    PKG_FASTAI_VERSION=1.0.45
+    PKG_FASTAI_VERSION=1.0.49
 
 ENV PATH /usr/local/mpi/bin:$PATH
 ENV LD_LIBRARY_PATH /usr/local/mpi/lib:$LD_LIBRARY_PATH
@@ -73,7 +74,6 @@ RUN conda install --quiet --yes -c conda-forge \
     'bcolz=1.2.*' \
     'python-graphviz=0.8*' \
     'spacy=2.0.*' \
-    'tensorflow-gpu=1.12.*' \
     'pydot=1.2.*' && \
     conda clean -tipsy && \
     conda install --quiet --yes -c pytorch \
@@ -89,7 +89,7 @@ RUN conda install --quiet --yes -c conda-forge \
     conda clean -tipsy
 
 RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
-    hyperopt==0.1 \
+    hyperopt==0.1.* \
     pycuda==2018.1.1 \
     keras==2.2.* \
     keras-tqdm==2.0.* \
@@ -97,21 +97,18 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     pandas-summary==0.0.6 \
     sklearn_pandas==1.8.* \
     feather-format==0.4.* \
-    jupyterlab_iframe==0.0.11 \
     plotnine==0.3.0 \
     isoweek==1.3.3 \
     torchtext==0.3.1 \
+    tensorflow-gpu==1.13.* \
     tensorflow-probability-gpu==0.4.* \
-    tensorboardX==1.5 \
+    tensorboardX==1.6 \
     opencv-python==3.4.* \
     hypothesis==3.79.* \
     mlflow==0.8.* \
     lightgbm==2.2.* \
     xgboost==0.81 \
-    catboost==0.12.* \
-    git+https://github.com/Pendar2/fastai-tensorboard-callback.git
+    catboost==0.12.*
 
-RUN jupyter labextension install jupyterlab_iframe && \
-    jupyter serverextension enable --py jupyterlab_iframe
 
 COPY start-notebook.sh /usr/local/bin/
