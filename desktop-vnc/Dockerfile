@@ -42,7 +42,7 @@ EXPOSE $VNC_PORT $NO_VNC_PORT
 RUN apt-get update && apt-get install -y --no-install-recommends \
     locales firefox ca-certificates xauth \
     x11-xserver-utils adwaita-icon-theme-full \
-    chromium-browser chromium-browser-l10n autoconf libtool pkg-config \
+    chromium-browser chromium-browser-l10n autoconf libtool pkg-config automake \
     chromium-codecs-ffmpeg vim wget net-tools libxrender1 mesa-utils  \
     locales bzip2 python-numpy ttf-wqy-zenhei libxext-dev libx11-dev x11proto-gl-dev \
     supervisor xfce4 xfce4-terminal xterm dbus-x11 glmark2 \
