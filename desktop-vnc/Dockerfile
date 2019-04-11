@@ -42,11 +42,11 @@ EXPOSE $VNC_PORT $NO_VNC_PORT
 RUN apt-get update && apt-get install -y --no-install-recommends \
     locales firefox ca-certificates xauth \
     x11-xserver-utils adwaita-icon-theme-full \
-    chromium-browser chromium-browser-l10n \
-    chromium-codecs-ffmpeg vim wget net-tools \
-    locales bzip2 python-numpy ttf-wqy-zenhei \
-    supervisor xfce4 xfce4-terminal xterm dbus-x11 \
-    libnss-wrapper gettext csh zsh nano libglvnd libglvnd-dev \
+    chromium-browser chromium-browser-l10n autoconf libtool pkg-config \
+    chromium-codecs-ffmpeg vim wget net-tools libxrender1 mesa-utils  \
+    locales bzip2 python-numpy ttf-wqy-zenhei libxext-dev libx11-dev x11proto-gl-dev \
+    supervisor xfce4 xfce4-terminal xterm dbus-x11 glmark2 \
+    libnss-wrapper gettext csh zsh nano \
 		"cuda-cudart-9-0=$PKG_CUDA_VERSION-1" \
 		"cuda-cublas-9-0=$PKG_CUDA_VERSION-1" \
 		"cuda-cublas-dev-9-0=$PKG_CUDA_VERSION-1" \
@@ -64,6 +64,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get -y autoremove && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
+
+RUN wget https://github.com/NVIDIA/libglvnd/archive/v1.1.1.tar.gz && \
+    tar xvf v1.1.1.tar.gz && cd libglvnd-1.1.1 && ./autogen.sh && ./configure && make && cd ..
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 RUN locale-gen en_US.UTF-8
