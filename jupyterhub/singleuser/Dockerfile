@@ -8,6 +8,8 @@ FROM jupyter/datascience-notebook:83ed2c63671f
 
 LABEL maintainer Uninett As <system@uninett.no>
 
+# hadolint ignore=DL3002
+USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends gnupg2=2.2.4-1ubuntu1 && \
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub | apt-key add - && \
