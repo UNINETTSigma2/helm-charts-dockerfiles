@@ -8,15 +8,14 @@ FROM jupyter/datascience-notebook:83ed2c63671f
 
 LABEL maintainer Uninett As <system@uninett.no>
 
-# hadolint ignore=DL3002
-USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends gnupg2=2.2.4-1ubuntu1 && \
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub | apt-key add - && \
     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
-    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
+    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
+    rm -rf /var/lib/apt/lists/*
 
-# Refer here for versions https://gitlab.com/nvidia/cuda/blob/ubuntu16.04/9.0/base/Dockerfile,
+# Refer here for versions https://gitlab.com/nvidia/cuda/blob/ubuntu16.04/10.0/base/Dockerfile,
 # note that this uses Ubuntu 16.04.
 #
 # https://www.tensorflow.org/install/gpu
@@ -24,9 +23,36 @@ RUN apt-get update && apt-get install -y --no-install-recommends gnupg2=2.2.4-1u
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
 # might also be useful for CUDA packages
 #
-ENV PKG_CUDA_VERSION=9.0.176 \
-    NCCL_VERSION=2.2.13 \
-    PKG_CUDNN_VERSION=7.2.1.38
+ENV PKG_CUDA_VERSION=10.0.130 \
+    NCCL_VERSION=2.4.2 \
+    PKG_CUDNN_VERSION=7.5.0.56
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        "cuda-cudart-10-0=$PKG_CUDA_VERSION-1" \
+        "cuda-cublas-10-0=$PKG_CUDA_VERSION-1" \
+        "cuda-cublas-dev-10-0=$PKG_CUDA_VERSION-1" \
+        "cuda-cudart-dev-10-0=$PKG_CUDA_VERSION-1" \
+        "libcudnn7=$PKG_CUDNN_VERSION-1+cuda10.0" \
+        "libcudnn7-dev=$PKG_CUDNN_VERSION-1+cuda10.0" \
+        "cuda-libraries-10-0=$PKG_CUDA_VERSION-1" \
+        "cuda-libraries-dev-10-0=$PKG_CUDA_VERSION-1" \
+        "cuda-nvml-dev-10-0=$PKG_CUDA_VERSION-1" \
+        "cuda-minimal-build-10-0=$PKG_CUDA_VERSION-1" \
+        "cuda-command-line-tools-10-0=$PKG_CUDA_VERSION-1" \
+        "libnccl2=$NCCL_VERSION-1+cuda10.0" \
+        "libnccl-dev=$NCCL_VERSION-1+cuda10.0" \
+        "cuda-compat-10-0=410.48-1" \
+        "openmpi-bin=2.1.1-8" && \
+    ln -s cuda-10.0 /usr/local/cuda && \
+    apt-get -y autoremove && \
+    apt-get -y clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
+    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
+    echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
+    ln -s /usr/local/cuda/include/* /usr/include/
+
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	openssh-client=1:7.6p1-4 \
@@ -43,30 +69,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	tzdata=2018i-0ubuntu0.18.04 \
 	vim=2:8.0.1453-1ubuntu1 \
 	unrar=1:5.5.8-1 \
-        "cuda-cudart-9-0=$PKG_CUDA_VERSION-1" \
-        "cuda-cublas-9-0=$PKG_CUDA_VERSION-1" \
-        "cuda-cublas-dev-9-0=$PKG_CUDA_VERSION-1" \
-        "cuda-cudart-dev-9-0=$PKG_CUDA_VERSION-1" \
-        "libcudnn7=$PKG_CUDNN_VERSION-1+cuda9.0" \
-        "libcudnn7-dev=$PKG_CUDNN_VERSION-1+cuda9.0" \
-        "cuda-libraries-9-0=$PKG_CUDA_VERSION-1" \
-        "cuda-libraries-dev-9-0=$PKG_CUDA_VERSION-1" \
-        "cuda-nvml-dev-9-0=$PKG_CUDA_VERSION-1" \
-        "cuda-minimal-build-9-0=$PKG_CUDA_VERSION-1" \
-        "cuda-command-line-tools-9-0=$PKG_CUDA_VERSION-1" \
-        "libnccl2=$NCCL_VERSION-1+cuda9.0" \
-        "libnccl-dev=$NCCL_VERSION-1+cuda9.0" \
         "openmpi-bin=2.1.1-8" && \
-    ln -s cuda-9.0 /usr/local/cuda && \
     apt-get -y autoremove && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* && \
     ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
-
-RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
-    ln -s /usr/local/cuda/include/* /usr/include/
 
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
