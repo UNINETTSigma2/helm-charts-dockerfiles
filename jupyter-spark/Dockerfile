@@ -72,7 +72,7 @@ RUN apt update && apt-get install --no-install-recommends -y \
     p7zip-full=16.02+dfsg-6 \
     unrar=1:5.5.8-1 \
     vim=2:8.0.1453-1ubuntu1 && \
-    apt-get clean && apt-get autoremove && rm -rf /var/lib/apt/lists/*
+    apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
 # Setup locales
 ENV TZ="Europe/Oslo"
