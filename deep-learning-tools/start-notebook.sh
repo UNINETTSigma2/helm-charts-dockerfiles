@@ -31,13 +31,13 @@ fi
 
 if [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
 	if [[ ! -z "${JUPYTER_HUB}" ]]; then
-		jupyter-labhub --config "$HOME/.jupyter/notebook_config.py" $* &
+		jupyter-labhub $* &
 	else
 		jupyter lab --config "$HOME/.jupyter/notebook_config.py" $* &
 	fi
 else
 	if [[ ! -z "${JUPYTER_HUB}" ]]; then
-		jupyterhub-singleuser --config "$HOME/.jupyter/notebook_config.py" $* &
+		jupyterhub-singleuser $* &
 	else
 		jupyter notebook --config "$HOME/.jupyter/notebook_config.py" $* &
 	fi
