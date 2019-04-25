@@ -30,9 +30,17 @@ if [ ! -d "$HOME/.keras" ]; then
 fi
 
 if [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
-	jupyter lab --config "$HOME/.jupyter/notebook_config.py" "$*" &
+	if [[ ! -z "${JUPYTER_HUB}" ]]; then
+		jupyter-labhub --config "$HOME/.jupyter/notebook_config.py" "$*" &
+	else
+		jupyter lab --config "$HOME/.jupyter/notebook_config.py" "$*" &
+	fi
 else
-	jupyter notebook --config "$HOME/.jupyter/notebook_config.py" "$*" &
+	if [[ ! -z "${JUPYTER_HUB}" ]]; then
+		jupyterhub-singleuser --config "$HOME/.jupyter/notebook_config.py" "$*" &
+	else
+		jupyter notebook --config "$HOME/.jupyter/notebook_config.py" "$*" &
+	fi
 fi
 
 tensorboard --logdir="$TENSORBOARD_LOGDIR" --port=6006 &
