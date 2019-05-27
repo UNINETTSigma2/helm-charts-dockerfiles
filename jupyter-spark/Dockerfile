@@ -114,8 +114,7 @@ RUN conda install --quiet --yes -c conda-forge \
     'yapf=0.26*' \
     'nbdime=1.0*' \
     'nbconvert=5.4*' \
-    'plotly=3.6*' \
-    'dataclasses=0.6' && \
+    'plotly=3.6*' && \
     conda install --quiet --yes -c damianavila82 'rise=5.4*' && \
     conda clean -tipsy
 
