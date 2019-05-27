@@ -7,7 +7,8 @@
 # Minimal: https://github.com/jupyter/docker-stacks/tree/a330137134e7/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/a330137134e7/base-notebook/Dockerfile
 
-FROM jupyter/all-spark-notebook:a330137134e7
+#FROM jupyter/all-spark-notebook:a330137134e7
+FROM jupyter/all-spark-notebook:abdb27a6dfbb
 
 LABEL maintainer Uninett As <system@uninett.no>
 
