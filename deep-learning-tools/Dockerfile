@@ -1,4 +1,4 @@
-FROM quay.io/uninett/jupyter-spark:20190318-144efc8
+FROM quay.io/uninett/jupyter-spark:20190527-1bc373e
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -38,7 +38,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         "libnccl2=$NCCL_VERSION-1+cuda10.0" \
         "libnccl-dev=$NCCL_VERSION-1+cuda10.0" \
         "cuda-compat-10-0=410.48-1" \
-        "openmpi-bin=2.1.1-8" && \
+        "openmpi-bin=2.1.1-8" \
+        "libglfw3" && \
     ln -s cuda-10.0 /usr/local/cuda && \
     apt-get -y autoremove && \
     apt-get -y clean && \
@@ -58,11 +59,11 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     PKG_KERAS_VERSION=2.2.4 \
     PKG_TENSORFLOW_VERSION=1.13.1 \
     PKG_TENSORFLOW_PROBABILITY_VERSION=0.4.0 \
-    PKG_PYTORCH_VERSION=1.0.1 \
+    PKG_PYTORCH_VERSION=1.1.0 \
     PKG_XGBOOST_VERSION=0.81 \
     PKG_CATBOOST_VERSION=0.12.2 \
     PKG_LIGHTGBM_VERSION=2.2.3 \
-    PKG_FASTAI_VERSION=1.0.49
+    PKG_FASTAI_VERSION=1.0.52
 
 ENV PATH /usr/local/mpi/bin:$PATH
 ENV LD_LIBRARY_PATH /usr/local/mpi/lib:$LD_LIBRARY_PATH
@@ -78,8 +79,8 @@ RUN conda install --quiet --yes -c conda-forge \
     conda clean -tipsy && \
     conda install --quiet --yes -c pytorch -c fastai \
     'fastai=1.0*' \
-    'pytorch=1.0*' \
-    'torchvision=0.2*' \
+    'pytorch=1.1*' \
+    'torchvision=0.3*' \
     'fastprogress=0.1*' && \
     conda uninstall --force jpeg libtiff -y && \
     conda install -c conda-forge 'libjpeg-turbo=2.*' && \
@@ -100,10 +101,10 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     torchtext==0.3.1 \
     tensorflow-gpu==1.13.* \
     tensorflow-probability-gpu==0.4.* \
-    tensorboardX==1.6 \
+    tensorboardX==1.7 \
     opencv-python==3.4.* \
     hypothesis==3.79.* \
-    mlflow==0.8.* \
+    mlflow==1.0.* \
     lightgbm==2.2.* \
     xgboost==0.81 \
     catboost==0.12.*
