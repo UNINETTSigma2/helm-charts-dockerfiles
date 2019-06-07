@@ -4,51 +4,12 @@ LABEL maintainer Uninett As <system@uninett.no>
 
 USER root
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN apt-get update && apt-get install -y --no-install-recommends gnupg2=2.2.4-1ubuntu1 && \
-    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub | apt-key add - && \
-    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
-    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
-    rm -rf /var/lib/apt/lists/*
-
-# Refer here for versions https://gitlab.com/nvidia/cuda/blob/ubuntu16.04/10.0/base/Dockerfile,
-# note that this uses Ubuntu 16.04.
-#
-# https://www.tensorflow.org/install/gpu
-#  and
-# https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
-# might also be useful for CUDA packages
-# 
-ENV PKG_CUDA_VERSION=10.0.130 \
-    NCCL_VERSION=2.4.2 \
-    PKG_CUDNN_VERSION=7.5.0.56
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        "cuda-cudart-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-cublas-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-cublas-dev-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-cudart-dev-10-0=$PKG_CUDA_VERSION-1" \
-        "libcudnn7=$PKG_CUDNN_VERSION-1+cuda10.0" \
-        "libcudnn7-dev=$PKG_CUDNN_VERSION-1+cuda10.0" \
-        "cuda-libraries-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-libraries-dev-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-nvml-dev-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-minimal-build-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-command-line-tools-10-0=$PKG_CUDA_VERSION-1" \
-        "libnccl2=$NCCL_VERSION-1+cuda10.0" \
-        "libnccl-dev=$NCCL_VERSION-1+cuda10.0" \
-        "cuda-compat-10-0=410.48-1" \
         "openmpi-bin=2.1.1-8" \
         "libglfw3" && \
-    ln -s cuda-10.0 /usr/local/cuda && \
     apt-get -y autoremove && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
-
-RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
-    ln -s /usr/local/cuda/include/* /usr/include/
 
 RUN mkdir -p /var/log/tensorboard/ && chmod o+w /var/log/tensorboard/
 USER notebook
