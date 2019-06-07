@@ -61,7 +61,7 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     isoweek==1.3.3 \
     torchtext==0.3.1 \
     tensorflow-gpu==1.13.* \
-    tensorflow-probability-gpu==0.4.* \
+    tensorflow-probability==0.6.* \
     tensorboardX==1.7 \
     opencv-python==3.4.* \
     hypothesis==3.79.* \
