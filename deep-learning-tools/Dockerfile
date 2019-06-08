@@ -40,7 +40,7 @@ RUN conda install --quiet --yes -c conda-forge \
     conda clean -tipsy && \
     conda install --quiet --yes -c pytorch -c fastai \
     'fastai=1.0*' \
-    'pytorch=1.1*' \
+    'pytorch=1.1.0=py3.7_cuda10.0.130_cudnn7.5.1_0' \
     'torchvision=0.3*' \
     'fastprogress=0.1*' && \
     conda uninstall --force jpeg libtiff -y && \
@@ -59,7 +59,6 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     feather-format==0.4.* \
     plotnine==0.3.0 \
     isoweek==1.3.3 \
-    torchtext==0.3.1 \
     tensorflow-gpu==1.13.* \
     tensorflow-probability==0.6.* \
     tensorboardX==1.7 \
@@ -68,7 +67,8 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     mlflow==1.0.* \
     lightgbm==2.2.* \
     xgboost==0.81 \
-    catboost==0.12.*
+    catboost==0.12.* \
+    nvidia-ml-py3
 
 RUN pip uninstall -y numpy && pip install numpy==1.16.*
 
