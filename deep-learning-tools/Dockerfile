@@ -68,7 +68,8 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     lightgbm==2.2.* \
     xgboost==0.81 \
     catboost==0.12.* \
-    nvidia-ml-py3
+    nvidia-ml-py3 \
+    torchtext
 
 RUN pip uninstall -y numpy && pip install numpy==1.16.*
 
