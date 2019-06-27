@@ -8,8 +8,50 @@
 # Base: https://github.com/jupyter/docker-stacks/tree/d4cbf2f80a2a/base-notebook/Dockerfile
 
 #FROM jupyter/all-spark-notebook:a330137134e7
-FROM jupyter/all-spark-notebook:d4cbf2f80a2a
+FROM jupyter/base-notebook as miniconda
+USER root
+ENV DEBIAN_FRONTEND noninteractive \
+    NB_UID=999 \
+    NB_GID=999
+RUN apt-get update && apt-get -yq dist-upgrade \
+ && apt-get install -yq --no-install-recommends \
+    wget \
+    bzip2 \
+    git \
+    gcc \
+    build-essential \
+&& rm -rf /var/lib/apt/lists/
 
+RUN conda install --quiet --yes -c conda-forge \
+    'jupyter_contrib_nbextensions=0.5*' \
+    'tqdm=4.31*' \
+    'yapf=0.26*' \
+    'nbdime=1.0*' \
+    'nbconvert=5.4*' \
+    'plotly=3.6*' && \
+    conda install --quiet --yes -c damianavila82 'rise=5.4*' && \
+    conda clean -tipsy
+
+#hadolint ignore=DL3013
+RUN pip install jupyterlab-github==0.6.* cufflinks==0.14.* \
+    jupyter-server-proxy==1.0 jupyterlab_iframe==0.0.11 && \
+    jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe && \
+    jupyter labextension install \
+    '@jupyterlab/github@0.10.0' \
+    'nbdime-jupyterlab@0.6.0' \
+    '@jupyterlab/plotly-extension@0.18.2' \
+    '@jupyterlab/toc@0.6.0' \
+    'jupyterlab-server-proxy@1.0.0' \
+    'jupyterlab_iframe' && \
+    git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
+    jupyter serverextension enable --py nbresuse --sys-prefix && \
+    jupyter nbextension install --py nbresuse --sys-prefix && \
+    jupyter nbextension enable --py nbresuse --sys-prefix && \
+    jupyter lab build
+
+RUN fix-permissions $CONDA_DIR
+
+FROM jupyter/all-spark-notebook:abdb27a6dfbb
 LABEL maintainer Uninett As <system@uninett.no>
 
 USER root
@@ -72,7 +114,7 @@ RUN apt update && apt-get install --no-install-recommends -y \
     rsync=3.1.2-2.1ubuntu1 \
     p7zip-full=16.02+dfsg-6 \
     unrar=1:5.5.8-1 \
-    vim=2:8.0.1453-1ubuntu1 && \
+    vim && \
     apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
 # Setup locales
@@ -98,8 +140,8 @@ ENV HOME=/home/notebook \
 COPY start-*.sh /usr/local/bin/
 COPY mem_parser.py /usr/local/bin/
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
-RUN chmod go+rwx -R "$CONDA_DIR/bin" && chown notebook:notebook -R "$CONDA_DIR/bin" && \
-    mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
+COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
+RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
 
 RUN wget -q https://github.com/codercom/code-server/releases/download/1.32.0-282/code-server-1.32.0-282-linux-x64.tar.gz && \
     tar zxf code-server-1.32.0-282-linux-x64.tar.gz && \
@@ -107,33 +149,6 @@ RUN wget -q https://github.com/codercom/code-server/releases/download/1.32.0-282
     rm -rf code-server-1.32.0-282-linux-x64* "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
 
 USER notebook
-
-RUN conda install --quiet --yes -c conda-forge \
-    'jupyter_contrib_nbextensions=0.5*' \
-    'tqdm=4.31*' \
-    'yapf=0.26*' \
-    'nbdime=1.0*' \
-    'nbconvert=5.4*' \
-    'plotly=3.6*' && \
-    conda install --quiet --yes -c damianavila82 'rise=5.4*' && \
-    conda clean -tipsy
-
-#hadolint ignore=DL3013
-RUN pip install jupyterlab-github==0.6.* cufflinks==0.14.* \
-    jupyter-server-proxy==1.0 jupyterlab_iframe==0.0.11 && \
-    jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe && \
-    jupyter labextension install \
-    '@jupyterlab/github@0.10.0' \
-    'nbdime-jupyterlab@0.6.0' \
-    '@jupyterlab/plotly-extension@0.18.2' \
-    '@jupyterlab/toc@0.6.0' \
-    'jupyterlab-server-proxy@1.0.0' \
-    'jupyterlab_iframe' && \
-    git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
-    jupyter serverextension enable --py nbresuse --sys-prefix && \
-    jupyter nbextension install --py nbresuse --sys-prefix && \
-    jupyter nbextension enable --py nbresuse --sys-prefix && \
-    jupyter lab build
 
 WORKDIR $HOME
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
