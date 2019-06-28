@@ -8,19 +8,11 @@
 # Base: https://github.com/jupyter/docker-stacks/tree/d4cbf2f80a2a/base-notebook/Dockerfile
 
 #FROM jupyter/all-spark-notebook:a330137134e7
-FROM jupyter/base-notebook as miniconda
+FROM jupyter/all-spark-notebook:abdb27a6dfbb as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
     NB_GID=999
-RUN apt-get update && apt-get -yq dist-upgrade \
- && apt-get install -yq --no-install-recommends \
-    wget \
-    bzip2 \
-    git \
-    gcc \
-    build-essential \
-&& rm -rf /var/lib/apt/lists/
 
 RUN conda install --quiet --yes -c conda-forge \
     'jupyter_contrib_nbextensions=0.5*' \
