@@ -81,7 +81,7 @@ ENV APP_UID=999 \
 	APP_GID=999 \
 	PKG_JUPYTER_NOTEBOOK_VERSION=5.7.x
 
-ENV HOME=/headless \
+ENV HOME=/home/vncuser \
     TERM=xterm \
     STARTUPDIR=/dockerstartup \
     INST_SCRIPTS=/headless/install \
@@ -106,7 +106,8 @@ RUN $INST_SCRIPTS/tigervnc.sh &&   \
 
 # configure startup
 ADD ./src/common/scripts $STARTUPDIR
-RUN $INST_SCRIPTS/set_user_permission.sh $STARTUPDIR $HOME
+RUN $INST_SCRIPTS/set_user_permission.sh $STARTUPDIR $HOME /headless
+ENV HOME=""
 
 USER 1000
 

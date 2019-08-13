@@ -10,4 +10,4 @@ wget -O- https://github.com/novnc/noVNC/archive/v1.0.0.tar.gz | tar xz --strip 1
 wget -O- https://github.com/novnc/websockify/archive/v0.6.1.tar.gz | tar xz --strip 1 -C $NO_VNC_HOME/utils/websockify
 chmod +x -v $NO_VNC_HOME/utils/*.sh
 
-cp ./install/vnc_lite.html $NO_VNC_HOME/index.html
+cp $INST_SCRIPTS/vnc_lite.html $NO_VNC_HOME/index.html
