@@ -31,6 +31,14 @@ if [ ! -d "$HOME/.jupyter/nbconfig" ]; then
 	cp -r /etc/default/jupyter/nbconfig $HOME/.jupyter/
 fi
 
+# Add a kernel for python3 without conda
+OLDPATH=$PATH
+PATH="/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/spark/bin"
+/usr/bin/python3 -m venv --system-site-packages $HOME/.jupyter/sysvenv
+source $HOME/.jupyter/sysvenv/bin/activate
+python -m IPython kernel install --user --name=sysvenv --display-name='Python 3 (no conda)'
+PATH=$OLDPATH
+
 if [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
 	jupyter lab --config $HOME/.jupyter/notebook_config.py $* &
 else

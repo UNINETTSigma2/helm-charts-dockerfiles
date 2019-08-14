@@ -19,7 +19,7 @@ RUN conda install --quiet --yes -c conda-forge \
     'tqdm=4.31*' \
     'yapf=0.26*' \
     'nbdime=1.0*' \
-    'nbconvert=5.4*' \
+    'nbconvert=5.5*' \
     'plotly=3.6*' && \
     conda install --quiet --yes -c damianavila82 'rise=5.4*' && \
     conda clean -tipsy
@@ -90,6 +90,12 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     ln -s /usr/local/cuda/include/* /usr/include/
 
 RUN apt update && apt-get install --no-install-recommends -y \
+    python3 \
+    python3-dev \
+    python3-venv \
+    python3-pip \
+    python3-wheel \
+    python3-ipykernel \
     openssh-client=1:7.6p1-4 \
     nano=2.9.3-2 \
     htop=2.1.0-3 \
@@ -102,7 +108,7 @@ RUN apt update && apt-get install --no-install-recommends -y \
     liblapack-dev=3.7.1-4ubuntu1 \
     libopenblas-dev=0.2.20+ds-4 \
     graphviz=2.40.1-2 \
-    cmake=3.10.2-1ubuntu2 \
+    cmake \
     rsync=3.1.2-2.1ubuntu1 \
     p7zip-full=16.02+dfsg-6 \
     unrar=1:5.5.8-1 \
