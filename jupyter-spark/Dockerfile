@@ -146,6 +146,7 @@ RUN wget -q https://github.com/codercom/code-server/releases/download/1.32.0-282
     mv code-server-1.32.0-282-linux-x64/code-server /usr/local/bin/ && \
     rm -rf code-server-1.32.0-282-linux-x64* "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
 
+RUN chown notebook:notebook $CONDA_DIR "$CONDA_DIR/.condatmp"
 USER notebook
 
 WORKDIR $HOME
