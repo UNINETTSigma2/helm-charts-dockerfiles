@@ -1,4 +1,4 @@
-FROM quay.io/uninett/jupyter-spark:20190628-ba9526c
+FROM quay.io/uninett/jupyter-spark:20190815-ea0ec80
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -40,8 +40,9 @@ RUN conda install --quiet --yes -c conda-forge \
     conda clean -tipsy && \
     conda install --quiet --yes -c pytorch -c fastai \
     'fastai=1.0*' \
-    'pytorch=1.1.0=py3.7_cuda10.0.130_cudnn7.5.1_0' \
-    'torchvision=0.3*' \
+    'cudatoolkit=10.0' \
+    'pytorch=1.2.0' \
+    'torchvision=0.4*' \
     'fastprogress=0.1*' && \
     conda uninstall --force jpeg libtiff -y && \
     conda install -c conda-forge 'libjpeg-turbo=2.*' && \
