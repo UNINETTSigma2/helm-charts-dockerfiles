@@ -4,30 +4,29 @@
 # Minimal: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/base-notebook/Dockerfile
 
-FROM jupyter/datascience-notebook:83ed2c63671f as miniconda
+FROM jupyter/datascience-notebook:2ce7c06a61a1 as miniconda
 RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda install --quiet --yes -c conda-forge \
     'jupyter_contrib_nbextensions=0.5*' \
-    'tqdm=4.31*' \
+    'tqdm=4.35*' \
     'yapf=0.26*' \
     'nbdime=1.0*' \
-    'nbconvert=5.4*' \
-    'dataclasses=0.6' && \
+    'nbconvert=5.5*' && \
     conda install --quiet --yes -c damianavila82 'rise=5.4.*' && \
     conda clean -tipsy && \
     jupyter labextension install \
-    '@jupyterlab/github@0.10.0' \
-    'nbdime-jupyterlab@0.6.0' \
-    '@jupyterlab/toc@0.6.0' \
-    '@jupyterlab/hub-extension@0.12.0' && \
-    pip install jupyterlab-github==0.6.1 && \
+    '@jupyterlab/github@1.0.1' \
+    'nbdime-jupyterlab@1.0.0' \
+    '@jupyterlab/toc@1.0.1' \
+    '@jupyterlab/hub-extension@1.0.5' && \
+    pip install jupyterlab-github==1.0.0 && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix
 
 
-FROM jupyter/datascience-notebook:83ed2c63671f
+FROM jupyter/datascience-notebook:2ce7c06a61a1
 LABEL maintainer Uninett As <system@uninett.no>
 USER root
 
@@ -98,7 +97,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	cmake \
 	rsync=3.1.2-2.1ubuntu1 \
 	p7zip-full=16.02+dfsg-6 \
-	tzdata=2018i-0ubuntu0.18.04 \
+	tzdata \
 	vim \
 	unrar=1:5.5.8-1 \
         "openmpi-bin=2.1.1-8" && \
