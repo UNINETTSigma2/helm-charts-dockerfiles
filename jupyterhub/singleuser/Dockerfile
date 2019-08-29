@@ -8,6 +8,7 @@ FROM jupyter/datascience-notebook:2ce7c06a61a1 as miniconda
 RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda install --quiet --yes -c conda-forge \
     'jupyter_contrib_nbextensions=0.5*' \
+    'jupyterlab=1.1.0' \
     'tqdm=4.35*' \
     'yapf=0.26*' \
     'nbdime=1.0*' \
