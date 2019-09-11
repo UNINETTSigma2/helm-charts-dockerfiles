@@ -13,6 +13,10 @@ if [ ! -d "$HOME/.jupyter" ]; then
 	cp -r /opt/.jupyter $HOME/.jupyter
 fi
 
+if [ ! -f "$HOME/.jupyter/notebook_config.py" ]; then
+	cp -r /opt/.jupyter/notebook_config.py $HOME/.jupyter
+fi
+
 # If we have shared data mounted, the link it to current directory to have it visible in notebook
 if [ -d "/mnt/data" ]; then
 	rm -f $HOME/data
