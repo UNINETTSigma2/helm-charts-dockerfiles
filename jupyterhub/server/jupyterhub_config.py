@@ -22,6 +22,8 @@ c.ConfigurableHTTPProxy.should_start = False
 # Do not shut down user pods when hub is restarted
 c.JupyterHub.cleanup_servers = False
 
+c.JupyterHub.cookie_secret_file = os.environ.get("COOKIE_SECRET_FILE_PATH", "/src/jupyterhub")
+
 # Check that the proxy has routes appropriately setup
 # This isn't the best named setting :D
 c.JupyterHub.last_activity_interval = 60
