@@ -63,6 +63,10 @@ c.KubeSpawner.events_enabled = get_config('singleuser.events', False)
 
 c.KubeSpawner.extra_labels = get_config('singleuser.extra-labels', {})
 
+extra_containers = get_config('singleuser.extra-containers', None)
+if extra_containers:
+    c.KubeSpawner.extra_containers  = extra_containers
+
 c.KubeSpawner.uid = get_config('singleuser.uid')
 c.KubeSpawner.fs_gid = get_config('singleuser.fs-gid')
 c.KubeSpawner.supplemental_gids = get_config('singleuser.supplemental-gids', [])

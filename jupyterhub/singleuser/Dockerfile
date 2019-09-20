@@ -12,6 +12,7 @@ RUN conda install --quiet --yes -c conda-forge \
     'tqdm=4.35*' \
     'yapf=0.26*' \
     'nbdime=1.0*' \
+    'jupyter-server-proxy=1.1.0' \
     'nbconvert=5.5*' && \
     conda install --quiet --yes -c damianavila82 'rise=5.4.*' && \
     conda clean -tipsy && \
@@ -23,6 +24,7 @@ RUN conda install --quiet --yes -c conda-forge \
     pip install jupyterlab-github==1.0.0 && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
+    jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix
 
