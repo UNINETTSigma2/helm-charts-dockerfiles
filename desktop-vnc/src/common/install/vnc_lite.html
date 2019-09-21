@@ -196,7 +196,11 @@
             }
         }
 
-        var path = WebUtil.getConfigVar('path', 'websockify');
+        var extraPath = window.location.pathname;
+        if (extraPath === '/') {
+            extraPath = '';
+        }
+        var path = WebUtil.getConfigVar('path', extraPath + 'websockify');
 
         // If a token variable is passed in, set the parameter in a cookie.
         // This is used by nova-novncproxy.
