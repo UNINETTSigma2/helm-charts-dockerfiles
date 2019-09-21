@@ -1,4 +1,4 @@
-FROM jupyterhub/k8s-hub:cc865bd
+FROM jupyterhub/k8s-hub:0.9-ec3b97d
 
 USER root
 COPY dataporten.py /usr/local/lib/python3.6/dist-packages/oauthenticator/
