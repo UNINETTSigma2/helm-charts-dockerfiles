@@ -10,17 +10,24 @@ else
 fi
 
 if [ ! -d "$HOME/.jupyter" ]; then
-	cp -r /opt/.jupyter $HOME/.jupyter
+	cp -r "/opt/.jupyter" "$HOME/.jupyter"
 fi
 
 if [ ! -f "$HOME/.jupyter/notebook_config.py" ]; then
-	cp -r /opt/.jupyter/notebook_config.py $HOME/.jupyter
+	cp -r "/opt/.jupyter/notebook_config.py" "$HOME/.jupyter"
 fi
 
-# If we have shared data mounted, the link it to current directory to have it visible in notebook
-if [ -d "/mnt/data" ]; then
-	rm -f $HOME/data
-	ln -sf /mnt/data $HOME/data
+# If we have shared data directories mounted, make the folders available in the users home directory.
+if [ -d "/mnt" ]; then
+    for dir in /mnt/*/; do
+      dirname=${dir%*/}     # remove the trailing "/"
+      dirname=${dirname##*/}    # everything after the final "/"
+      if [ -f "$HOME/shared-$dirname" ]; then
+        rm -f "$HOME/shared-$dirname"
+      fi
+
+      ln -sf "/mnt/$dirname" "$HOME/shared-$dirname"
+    done
 fi
 
 
