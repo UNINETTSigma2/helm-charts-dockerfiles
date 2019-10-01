@@ -235,7 +235,7 @@ if storage_type == 'dynamic':
 elif storage_type == 'static':
     c.KubeSpawner.volume_mounts = [{
         'mountPath': get_config('singleuser.storage.homeMountPath'),
-        'name': 'shared',
+        'name': get_config('singleuser.storage.static.pvcName', 'shared'),
         'subPath': get_config('singleuser.storage.static.subPath', "dataporten-home/{username}").format(username="{username}")
     }]
 
