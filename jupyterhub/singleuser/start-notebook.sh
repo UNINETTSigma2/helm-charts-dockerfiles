@@ -22,7 +22,7 @@ if [ -d "/mnt" ]; then
     for dir in /mnt/*/; do
       dirname=${dir%*/}     # remove the trailing "/"
       dirname=${dirname##*/}    # everything after the final "/"
-      if [ -f "$HOME/shared-$dirname" ]; then
+      if [ -L "$HOME/shared-$dirname" ]; then
         rm -f "$HOME/shared-$dirname"
       fi
 
