@@ -20,13 +20,15 @@ fi
 # If we have shared data directories mounted, make the folders available in the users home directory.
 if [ -d "/mnt" ]; then
     for dir in /mnt/*/; do
-      dirname=${dir%*/}     # remove the trailing "/"
-      dirname=${dirname##*/}    # everything after the final "/"
-      if [ -L "$HOME/shared-$dirname" ]; then
-        rm -f "$HOME/shared-$dirname"
-      fi
+      if [ -d "$dir" ]; then
+        dirname=${dir%*/}     # remove the trailing "/"
+        dirname=${dirname##*/}    # everything after the final "/"
+        if [ -L "$HOME/shared-$dirname" ]; then
+          rm -f "$HOME/shared-$dirname"
+        fi
 
-      ln -sf "/mnt/$dirname" "$HOME/shared-$dirname"
+        ln -sf "/mnt/$dirname" "$HOME/shared-$dirname"
+      fi
     done
 fi
 
