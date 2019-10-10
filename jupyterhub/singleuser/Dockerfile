@@ -119,7 +119,7 @@ ENV HOME=/home/notebook \
     XDG_CACHE_HOME=/home/notebook/.cache/
 COPY start-notebook.sh /usr/local/bin/
 COPY --chown=notebook:notebook .jupyter/ /opt/.jupyter/
-RUN chmod go+rwx -R "$CONDA_DIR/bin" && chown notebook:notebook -R "$CONDA_DIR/bin" && \
+RUN mkdir -p /home/notebook/.ipython/profile_default/security/ && chmod go+rwx -R "$CONDA_DIR/bin" && chown notebook:notebook -R "$CONDA_DIR/bin" "$HOME" && \
     mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" && chown notebook:notebook "$CONDA_DIR"
 
 # hadolint ignore=DL3002
