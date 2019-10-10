@@ -21,7 +21,7 @@ RUN conda install --quiet --yes -c conda-forge \
     'nbdime-jupyterlab@1.0.0' \
     '@jupyterlab/toc@1.0.1' \
     '@jupyterlab/hub-extension@1.0.5' && \
-    pip install jupyterlab-github==1.0.0 && \
+    pip install ipyparallel==6.2.* jupyterlab-github==1.0.0 && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
