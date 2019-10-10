@@ -25,7 +25,7 @@ RUN conda install --quiet --yes -c conda-forge \
     conda clean -tipsy
 
 #hadolint ignore=DL3013
-RUN pip install jupyterlab-github==0.6.* cufflinks==0.14.* \
+RUN pip install ipyparallel==6.2.* jupyterlab-github==0.6.* cufflinks==0.14.* \
     jupyter-server-proxy==1.0 jupyterlab_iframe==0.0.11 && \
     jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe && \
     jupyter labextension install \
