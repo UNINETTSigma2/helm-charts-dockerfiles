@@ -1,8 +1,17 @@
 #!/bin/bash
 
 set -e
+
+# Since the name of the volume is escaped wrongly, we have to wrongly escape the
+# usename elsewhere as well.
+# https://github.com/jupyterhub/kubespawner/pull/309
+if [ -n "$JUPYTERHUB_USER" ]; then
+  JUPYTERHUB_USER=$(python normalize-username.py $JUPYTERHUB_USER)
+fi
+
 HOME=$(eval echo "$HOME")
 mkdir -p "$HOME/.ipython/profile_default/security/"
+
 
 # Exec the specified command or fall back on bash
 if [ $# -eq 0 ]; then
