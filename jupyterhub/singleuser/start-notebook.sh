@@ -1,6 +1,8 @@
 #!/bin/bash
 
 set -e
+HOME=$(eval echo "$HOME")
+mkdir -p "$HOME/.ipython/profile_default/security/"
 
 # Exec the specified command or fall back on bash
 if [ $# -eq 0 ]; then
