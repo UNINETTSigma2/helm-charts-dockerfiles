@@ -13,6 +13,7 @@ fi
 HOME=$(eval echo "$HOME")
 JUPYTERHUB_USER=$REAL_JUPYTERHUB_USER # Swich back after expanding, as Jupyterhub breaks otherwise.
 
+mkdir -p "$HOME"
 rm -r /home/notebook
 ln -s "$HOME" /home/notebook
 
@@ -53,6 +54,7 @@ if [ -d "/mnt" ]; then
 fi
 
 
+cd "$HOME"
 if [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
 	jupyter-labhub --config "$HOME/.jupyter/notebook_config.py"
 else
