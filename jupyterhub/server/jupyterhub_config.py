@@ -120,6 +120,7 @@ for trait, cfg_key in (
     ('fs_gid', None),
     ('service_account', 'serviceAccountName'),
     ('storage_extra_labels', 'storage.extraLabels'),
+    ('working_dir', None),
     ('tolerations', 'extraTolerations'),
     ('node_selector', None),
     ('node_affinity_required', 'extraNodeAffinity.required'),
