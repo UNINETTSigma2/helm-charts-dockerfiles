@@ -5,13 +5,16 @@ set -e
 # Since the name of the volume is escaped wrongly, we have to wrongly escape the
 # usename elsewhere as well.
 # https://github.com/jupyterhub/kubespawner/pull/309
+REAL_JUPYTERHUB_USER=$JUPYTERHUB_USER
 if [ -n "$JUPYTERHUB_USER" ]; then
-  JUPYTERHUB_USER=$(python normalize-username.py $JUPYTERHUB_USER)
+  JUPYTERHUB_USER=$(python /usr/local/bin/normalize-username.py $JUPYTERHUB_USER)
 fi
 
 HOME=$(eval echo "$HOME")
-mkdir -p "$HOME/.ipython/profile_default/security/"
+JUPYTERHUB_USER=$REAL_JUPYTERHUB_USER # Swich back after expanding, as Jupyterhub breaks otherwise.
 
+rm -r /home/notebook
+ln -s "$HOME" /home/notebook
 
 # Exec the specified command or fall back on bash
 if [ $# -eq 0 ]; then
@@ -22,6 +25,12 @@ fi
 
 if [ ! -d "$HOME/.jupyter" ]; then
 	cp -r "/opt/.jupyter" "$HOME/.jupyter"
+fi
+
+if [ -f "/tmp/ipcontroller-client.json" ]; then
+  mkdir -p "$HOME/.ipython/profile_default/security/"
+  ls -lah "$HOME/.ipython/profile_default/security/"
+  cp "/tmp/ipcontroller-client.json" "$HOME/.ipython/profile_default/security/" || true
 fi
 
 if [ ! -f "$HOME/.jupyter/notebook_config.py" ]; then
