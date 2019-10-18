@@ -123,7 +123,7 @@ RUN mkdir -p /home/notebook/.ipython/profile_default/security/ && chmod go+rwx -
     mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" && chown notebook:notebook "$CONDA_DIR"
 
 # hadolint ignore=DL3002
-RUN chmod go+w -R "$HOME" && chmod o+w /home
+RUN chmod go+w -R "$HOME" && chmod o+w /home && rm -r /home/notebook
 
 USER notebook
 WORKDIR $HOME

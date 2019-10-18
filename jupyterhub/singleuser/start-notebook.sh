@@ -14,7 +14,7 @@ HOME=$(eval echo "$HOME")
 JUPYTERHUB_USER=$REAL_JUPYTERHUB_USER # Swich back after expanding, as Jupyterhub breaks otherwise.
 
 mkdir -p "$HOME"
-rm -r /home/notebook
+mv /home/notebook /home/oldnotebook
 ln -s "$HOME" /home/notebook
 
 # Exec the specified command or fall back on bash
