@@ -105,9 +105,6 @@ c.KubeSpawner.pod_name_template = get_config('singleuser.pod-name-template', 'ju
 c.KubeSpawner.namespace = os.environ.get('POD_NAMESPACE', 'default')
 
 safe_chars = set(string.ascii_lowercase + string.digits)
-c.KubeSpawner.environment = {
-       'HOME' : lambda spawner: "/home/{}".format(escapism.escape(str(spawner.user.name), safe=safe_chars, escape_char='-').lower()),
-}
 
 # Max number of consecutive failures before the Hub restarts itself
 # requires jupyterhub 0.9.2
@@ -152,6 +149,8 @@ for trait, cfg_key in (
     if cfg_key is None:
         cfg_key = camelCaseify(trait)
     set_config_if_not_none(c.KubeSpawner, trait, 'singleuser.' + cfg_key)
+
+c.KubeSpawner.environment["HOME"] = lambda spawner: "/home/{}".format(escapism.escape(str(spawner.user.name), safe=safe_chars, escape_char='-').lower())
 
 image = get_config("singleuser.image.name")
 if image:
