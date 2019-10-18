@@ -1,6 +1,8 @@
 import os
 import re
 import sys
+import string
+import escapism
 
 from tornado.httpclient import AsyncHTTPClient
 from kubernetes import client
@@ -102,8 +104,9 @@ if release:
 c.KubeSpawner.pod_name_template = get_config('singleuser.pod-name-template', 'jupyter-{username}{servername}')
 c.KubeSpawner.namespace = os.environ.get('POD_NAMESPACE', 'default')
 
+safe_chars = set(string.ascii_lowercase + string.digits)
 c.KubeSpawner.environment = {
-       'HOME' : lambda spawner: "/home/{}".format(str(spawner.user.name)),
+       'HOME' : lambda spawner: "/home/{}".format(escapism.escape(str(spawner.user.name), safe=safe_chars, escape_char='-').lower()),
 }
 
 # Max number of consecutive failures before the Hub restarts itself
