@@ -102,6 +102,10 @@ if release:
 c.KubeSpawner.pod_name_template = get_config('singleuser.pod-name-template', 'jupyter-{username}{servername}')
 c.KubeSpawner.namespace = os.environ.get('POD_NAMESPACE', 'default')
 
+c.KubeSpawner.environment = {
+       'HOME' : lambda spawner: "/home/{}".format(str(spawner.user.name)),
+}
+
 # Max number of consecutive failures before the Hub restarts itself
 # requires jupyterhub 0.9.2
 set_config_if_not_none(
