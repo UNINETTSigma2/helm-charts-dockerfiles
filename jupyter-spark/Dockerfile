@@ -24,6 +24,7 @@ RUN conda install --quiet --yes -c conda-forge \
     conda install --quiet --yes -c damianavila82 'rise=5.4*' && \
     conda clean -tipsy
 
+# Add a minimal conda environment in order to make it easier to add custom pages.
 RUN conda create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda deactivate'
 
 #hadolint ignore=DL3013
