@@ -1,4 +1,0 @@
-# Matches the exact files either package.json or .travis.yml
-[*.yaml]
-indent_style = space
-indent_size = 2

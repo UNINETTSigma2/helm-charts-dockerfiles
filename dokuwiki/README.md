@@ -1,1 +1,0 @@
-Dokuwiki Dockerfile for Appstore
