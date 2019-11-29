@@ -24,9 +24,11 @@ RUN conda install --quiet --yes -c conda-forge \
     conda install --quiet --yes -c damianavila82 'rise=5.4*' && \
     conda clean -tipsy
 
+RUN conda create -n minimal -y && source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda deactivate
+
 #hadolint ignore=DL3013
 RUN pip install ipyparallel==6.2.* jupyterlab-github==0.6.* cufflinks==0.14.* \
-    jupyter-server-proxy==1.0 jupyterlab_iframe==0.0.11 && \
+    jupyter-server-proxy==1.2.0 jupyterlab_iframe==0.0.11 && \
     jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe && \
     jupyter labextension install \
     '@jupyterlab/github@0.10.0' \
@@ -125,7 +127,8 @@ ENV APP_UID=999 \
 	PKG_SPARK_VERSION=2.4.0 \
 	PKG_HADOOP_VERSION=2.7 \
 	PKG_TOREE_VERSION=0.3.0-incubating \
-	PKG_R_VERSION=3.5.1
+	PKG_R_VERSION=3.5.1 \
+	PKG_VS_CODE_VERSION=2.1692-vsc1.39.2
 
 RUN groupadd -g "$APP_GID" notebook && \
 	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
@@ -141,21 +144,23 @@ COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
 COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
 RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
 
-RUN wget -q https://github.com/codercom/code-server/releases/download/1.32.0-282/code-server-1.32.0-282-linux-x64.tar.gz && \
-    tar zxf code-server-1.32.0-282-linux-x64.tar.gz && \
-    mv code-server-1.32.0-282-linux-x64/code-server /usr/local/bin/ && \
-    rm -rf code-server-1.32.0-282-linux-x64* "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
+RUN wget -q "https://github.com/cdr/code-server/releases/download/$PKG_VS_CODE_VERSION/code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz"  && \
+    tar zxf "code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
+    mv "code-server$PKG_VS_CODE_VERSION-linux-x86_64/code-server" /usr/local/bin/ && \
+    rm -rf "code-server$PKG_VS_CODE_VERSION-linux-x86_64/*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
 
 RUN chown notebook:notebook $CONDA_DIR "$CONDA_DIR/.condatmp"
-USER notebook
-
-WORKDIR $HOME
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
+
 # Ensure that the default config files are available.
 COPY --chown=notebook:notebook .jupyter/ /etc/default/jupyter
+RUN chmod go+w -R "$HOME"
 
-RUN chmod go+w -R "$HOME" && mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*
+USER notebook
+RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*
 
+RUN conda init bash
+WORKDIR $HOME
 ENV LANG=en_US.UTF-8 \
     PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
