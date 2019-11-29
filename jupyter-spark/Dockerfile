@@ -24,7 +24,7 @@ RUN conda install --quiet --yes -c conda-forge \
     conda install --quiet --yes -c damianavila82 'rise=5.4*' && \
     conda clean -tipsy
 
-RUN conda create -n minimal -y && source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda deactivate
+RUN conda create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda deactivate'
 
 #hadolint ignore=DL3013
 RUN pip install ipyparallel==6.2.* jupyterlab-github==0.6.* cufflinks==0.14.* \
