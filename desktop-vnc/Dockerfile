@@ -40,7 +40,7 @@ EXPOSE $VNC_PORT $NO_VNC_PORT
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    locales firefox ca-certificates xauth \
+    locales firefox ca-certificates xauth ssh \
     x11-xserver-utils adwaita-icon-theme-full \
     chromium-browser chromium-browser-l10n autoconf libtool pkg-config automake \
     chromium-codecs-ffmpeg vim wget net-tools libxrender1 mesa-utils  \
