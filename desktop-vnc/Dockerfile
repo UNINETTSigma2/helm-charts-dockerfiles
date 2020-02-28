@@ -46,7 +46,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     chromium-codecs-ffmpeg vim wget net-tools libxrender1 mesa-utils  \
     locales bzip2 python-numpy ttf-wqy-zenhei libxext-dev libx11-dev x11proto-gl-dev \
     supervisor xfce4 xfce4-terminal xterm dbus-x11 glmark2 \
-    libnss-wrapper gettext csh zsh nano gv openssh-client tcsh rsync less nco cdo \
+    libnss-wrapper gettext csh zsh nano gv openssh-client tcsh rsync less ncl cdo \
 		"cuda-cudart-9-0=$PKG_CUDA_VERSION-1" \
 		"cuda-cublas-9-0=$PKG_CUDA_VERSION-1" \
 		"cuda-cublas-dev-9-0=$PKG_CUDA_VERSION-1" \
