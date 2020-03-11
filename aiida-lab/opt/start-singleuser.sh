@@ -12,6 +12,7 @@ set -x
 #===============================================================================
 # environment
 export SHELL=/bin/bash
+APP_DIR="$(/opt/get-app-dir.sh)"
 
 #===============================================================================
 # setup AiiDA
@@ -53,7 +54,7 @@ verdi computer show $computer_name || verdi computer setup \
     --hostname ${computer_name}                            \
     --transport local                                      \
     --scheduler direct                                     \
-    --work-dir /home/aiida/aiida_run/                      \
+    --work-dir "$APP_DIR/aiida_run"
     --mpirun-command "mpirun -np {tot_num_mpiprocs}"       \
     --mpiprocs-per-machine 1 &&                            \
     verdi computer configure local ${computer_name}        \

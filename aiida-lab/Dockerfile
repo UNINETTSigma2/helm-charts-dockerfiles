@@ -19,7 +19,7 @@ RUN groupadd -g "$APP_GID" notebook && \
   useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
   usermod -G users notebook
 
-RUN chown 999:999 -R /etc/container_environment* /etc/service /etc/runit/runsvdir/default /var/run /var/log && chown 999:999 /opt /var/run /etc/syslog-ng
+RUN chown 999:999 -R /etc/container_environment* /etc/service /etc/runit/runsvdir/default /var/run /var/log && chown 999:999 /opt /var/run /etc/syslog-ng /home
 COPY opt/* /opt/
 COPY etc/service/jupyter-notebook/run /etc/service/jupyter-notebook/run
 COPY my_init.d/start-rabbitmq.sh /etc/my_init.d/10_start-rabbitmq.sh
@@ -28,6 +28,7 @@ COPY my_init.d/start-postgres.sh /etc/my_init.d/30_start-postgres.sh
 RUN mkdir -p /home/notebook/.aiida && ln -s /home/notebook /home/aiida && chown -R 999:999 /home/notebook /home/aiida /usr/lib/rabbitmq/ /var/lib/rabbitmq
 COPY my_init.d/configure-aiida.sh /etc/my_init.d/40_configure-aiida.sh
 COPY my_init.d/prepare-aiidalab.sh /etc/my_init.d/80_prepare-aiidalab.sh
+COPY my_init.d/create-app-dirs.sh /etc/my_init.d/01_create-app-dirs.sh
 
 # Remove the rabbitmq server that requires root, as we instead want to use the one stored in /usr/lib/rabbitmq/bin/
 RUN mv /usr/sbin/rabbitmqctl /usr/sbin/dont_use_abbitmqctl && \

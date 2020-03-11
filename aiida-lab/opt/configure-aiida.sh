@@ -5,6 +5,10 @@
 # Debugging.
 set -x
 
+APP_DIR="$(/opt/get-app-dir.sh)"
+export AIIDA_PATH="$APP_DIR/.aiida"
+mkdir -p $AIIDA_PATH
+
 # Environment.
 export SHELL=/bin/bash
 
@@ -23,22 +27,16 @@ fi
 
 # Setup AiiDA profile if needed.
 if [[ ${NEED_SETUP_PROFILE} == true ]]; then
-    verdi setup \
-        --profile default                      \
-        --non-interactive                      \
-        --email some.body@xyz.com              \
-        --first-name Some                      \
-        --last-name Body                       \
-        --institution XYZ                      \
-        --db-backend django                    \
-        --db-username $AIIDA_DB_USER           \
-        --db-password $AIIDA_DB_PASSWD         \
-        --db-name $AIIDA_DB_NAME               \
-        --db-host $AIIDA_DB_HOST               \
-        --db-port 5432                         \
-        --repository /home/aiida/aiida_repository
 
-   verdi profile setdefault default
+    # Create AiiDA profile.
+    verdi quicksetup                           \
+        --non-interactive                      \
+        --profile "${PROFILE_NAME}"            \
+        --email "${USER_EMAIL}"                \
+        --first-name "${USER_FIRST_NAME}"      \
+        --last-name "${USER_LAST_NAME}"        \
+        --institution "${USER_INSTITUTION}"    \
+        --db-backend "${AIIDADB_BACKEND}"
 
     # Setup and configure local computer.
     computer_name=localhost
@@ -49,7 +47,7 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
         --hostname "${computer_name}"                              \
         --transport local                                          \
         --scheduler direct                                         \
-        --work-dir /home/aiida/aiida_run/                          \
+        --work-dir "$APP_DIR/aiida_run"                          \
         --mpirun-command "mpirun -np {tot_num_mpiprocs}"           \
         --mpiprocs-per-machine 1 &&                                \
     verdi computer configure local "${computer_name}"              \

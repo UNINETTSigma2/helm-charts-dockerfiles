@@ -1,4 +1,4 @@
 #!/bin/bash
 set -em
 
-HOME=/home/notebook /usr/lib/rabbitmq/bin/rabbitmq-server start &
+HOME=$(/opt/get-app-dir.sh) /usr/lib/rabbitmq/bin/rabbitmq-server start &

@@ -5,6 +5,10 @@ set -x
 
 # Environment.
 export SHELL=/bin/bash
+APP_DIR="$(/opt/get-app-dir.sh)"
+
+export AIIDA_PATH="$APP_DIR/.aiida"
+
 
 # Setup CP2K code.
 computer_name=localhost
@@ -28,18 +32,19 @@ verdi code show ${code_name}@${computer_name} || verdi code setup \
     --remote-abs-path `which pw.x`
 
 # Setup pseudopotentials.
-if [ ! -e /home/${SYSTEM_USER}/SKIP_IMPORT_PSEUDOS ]; then
+if [ ! -f "${APP_DIR}/SKIP_IMPORT_PSEUDOS" ]; then
    verdi import -n /opt/pseudos/SSSP_efficiency_pseudos.aiida
    verdi import -n /opt/pseudos/SSSP_precision_pseudos.aiida
-   touch /home/${SYSTEM_USER}/SKIP_IMPORT_PSEUDOS
+   touch ${APP_DIR}/SKIP_IMPORT_PSEUDOS
 fi
 
 # Setup AiiDA jupyter extension.
 # Don't forget to copy this file to .ipython/profile_default/startup/
 # aiida/tools/ipython/aiida_magic_register.py
-if [ ! -e /home/${SYSTEM_USER}/.ipython/profile_default/startup/aiida_magic_register.py ]; then
-   mkdir -p /home/${SYSTEM_USER}/.ipython/profile_default/startup/
-   cat << EOF > /home/${SYSTEM_USER}/.ipython/profile_default/startup/aiida_magic_register.py
+IPYTHONDIR=$APP_DIR/.config/ipython
+if [ ! -e $IPYTHONDIR/profile_default/startup/aiida_magic_register.py ]; then
+   mkdir -p $IPYTHONDIR/profile_default/startup/
+   cat << EOF > $IPYTHONDIR/profile_default/startup/aiida_magic_register.py
 if __name__ == "__main__":
 
     try:
@@ -61,15 +66,15 @@ EOF
 fi
 
 # Install/upgrade apps.
-if [ ! -e /home/${SYSTEM_USER}/apps ]; then
+if [ ! -e ${APP_DIR}/apps ]; then
 
   # Create apps folder and make it importable from python.
-  mkdir /home/${SYSTEM_USER}/apps
-  touch /home/${SYSTEM_USER}/apps/__init__.py
+  mkdir ${APP_DIR}/apps
+  touch ${APP_DIR}/apps/__init__.py
 
   # First install the home app.
-  git clone https://github.com/aiidalab/aiidalab-home /home/${SYSTEM_USER}/apps/home
-  cd /home/${SYSTEM_USER}/apps/home
+  git clone https://github.com/aiidalab/aiidalab-home ${APP_DIR}/apps/home
+  cd ${APP_DIR}/apps/home
   git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
   cd -
 
@@ -80,15 +85,19 @@ if [ ! -e /home/${SYSTEM_USER}/apps ]; then
       "aiidalab-widgets-base",
       "quantum-espresso"
     ]
-  }' > /home/${SYSTEM_USER}/apps/home/.launcher.json
+  }' > ${APP_DIR}/apps/home/.launcher.json
 
-  git clone https://github.com/aiidalab/aiidalab-widgets-base /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
-  cd /home/${SYSTEM_USER}/apps/aiidalab-widgets-base
+  git clone https://github.com/aiidalab/aiidalab-widgets-base ${APP_DIR}/apps/aiidalab-widgets-base
+  cd ${APP_DIR}/apps/aiidalab-widgets-base
   git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
   cd -
 
-  git clone https://github.com/aiidalab/aiidalab-qe.git /home/${SYSTEM_USER}/apps/quantum-espresso
-  cd /home/${SYSTEM_USER}/apps/quantum-espresso
+  git clone https://github.com/aiidalab/aiidalab-qe.git ${APP_DIR}/apps/quantum-espresso
+  cd ${APP_DIR}/apps/quantum-espresso
   git checkout ${AIIDALAB_DEFAULT_GIT_BRANCH}
  cd -
 fi
+
+# Since aiidalab-home reaches the notebook base path using hardcoded relative path traversers (i.e. ../../'s),
+# we have to add more of these in order to ensure that the correct notebook base path is actually reached.
+sed -i 's${jupbase}$../../{jupbase}$g' ${APP_DIR}/apps/home/start.py
