@@ -100,4 +100,4 @@ fi
 
 # Since aiidalab-home reaches the notebook base path using hardcoded relative path traversers (i.e. ../../'s),
 # we have to add more of these in order to ensure that the correct notebook base path is actually reached.
-sed -i 's${jupbase}$../../{jupbase}$g' ${APP_DIR}/apps/home/start.py
+sed -i 's$"{jupbase}$"../../{jupbase}$g' ${APP_DIR}/apps/home/start.py
