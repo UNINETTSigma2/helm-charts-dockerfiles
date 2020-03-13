@@ -24,6 +24,24 @@ export AIIDALAB_APPS=$APP_DIR/apps
 # Enter home folder and start jupyterhub-singleuser.
 cd /home/${SYSTEM_USER}
 
+home=/home/${SYSTEM_USER}
+
+# If we have shared data directories mounted, make the folders available in the users home directory.
+if [ -d "/mnt" ]; then
+    for dir in /mnt/*/; do
+      if [ -d "$dir" ]; then
+        dirname=${dir%*/}     # remove the trailing "/"
+        dirname=${dirname##*/}    # everything after the final "/"
+
+        if [ -L "$home/shared-$dirname" ]; then
+          rm -f "$home/shared-$dirname"
+        fi
+
+        ln -sf "/mnt/$dirname" "$home/shared-$dirname"
+      fi
+    done
+fi
+
 if [[ ! -z "${JUPYTERHUB_API_TOKEN}" ]]; then
 
   # Launched by JupyterHub, use single-user entrypoint.
