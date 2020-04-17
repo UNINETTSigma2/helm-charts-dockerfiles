@@ -7,36 +7,39 @@
 # Minimal: https://github.com/jupyter/docker-stacks/tree/d4cbf2f80a2a/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/d4cbf2f80a2a/base-notebook/Dockerfile
 
-#FROM jupyter/all-spark-notebook:a330137134e7
-FROM jupyter/all-spark-notebook:abdb27a6dfbb as miniconda
+FROM jupyter/all-spark-notebook:dc9744740e12 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
     NB_GID=999
 
 RUN conda install --quiet --yes -c conda-forge \
-    'jupyter_contrib_nbextensions=0.5*' \
-    'tqdm=4.31*' \
-    'yapf=0.26*' \
-    'nbdime=1.0*' \
-    'nbconvert=5.5*' \
-    'plotly=3.6*' && \
-    conda install --quiet --yes -c damianavila82 'rise=5.4*' && \
-    conda clean -tipsy
+    'tqdm=4.45*' \
+    'yapf=0.29.0' \
+    'nbdime=2.*' \
+    'nbconvert=5.6*' \
+    'plotly=4.6*' \
+    'rise=5.6*' \
+    'ipywidgets' \
+    'jupyter-server-proxy' \
+    && conda clean -tipsy
 
 # Add a minimal conda environment in order to make it easier to add custom pages.
 RUN conda create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda deactivate'
 
 #hadolint ignore=DL3013
-RUN pip install ipyparallel==6.2.* jupyterlab-github==0.6.* cufflinks==0.14.* \
-    jupyter-server-proxy==1.2.0 jupyterlab_iframe==0.0.11 && \
+ENV NODE_OPTIONS --max-old-space-size=4096
+RUN pip install ipyparallel==6.2.* cufflinks==0.14.* \
+    jupyterlab_iframe==0.2.2 && \
     jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe && \
     jupyter labextension install \
-    '@jupyterlab/github@0.10.0' \
-    'nbdime-jupyterlab@0.6.0' \
-    '@jupyterlab/plotly-extension@0.18.2' \
-    '@jupyterlab/toc@0.6.0' \
-    'jupyterlab-server-proxy@1.0.0' \
+    '@jupyter-widgets/jupyterlab-manager' \
+    'plotlywidget@4.6.0' \
+    'jupyterlab-plotly@4.6.0' \
+    '@jupyterlab/github' \
+    'nbdime-jupyterlab' \
+    '@jupyterlab/toc' \
+    '@jupyterlab/server-proxy' \
     'jupyterlab_iframe' && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
@@ -46,7 +49,7 @@ RUN pip install ipyparallel==6.2.* jupyterlab-github==0.6.* cufflinks==0.14.* \
 
 RUN fix-permissions $CONDA_DIR
 
-FROM jupyter/all-spark-notebook:abdb27a6dfbb
+FROM jupyter/all-spark-notebook:dc9744740e12
 LABEL maintainer Uninett As <system@uninett.no>
 
 USER root
@@ -169,4 +172,5 @@ ENV LANG=en_US.UTF-8 \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all
 
+RUN pip install jupyterlab_github && jupyter serverextension enable --sys-prefix jupyterlab_github
 CMD ["/usr/local/bin/start-notebook.sh"]
