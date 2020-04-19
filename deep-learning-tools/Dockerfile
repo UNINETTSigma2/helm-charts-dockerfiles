@@ -1,4 +1,4 @@
-FROM quay.io/uninett/jupyter-spark:20190815-ea0ec80
+FROM quay.io/uninett/jupyter-spark:20200417-63dfa40
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -29,22 +29,24 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 ENV PATH /usr/local/mpi/bin:$PATH
 ENV LD_LIBRARY_PATH /usr/local/mpi/lib:$LD_LIBRARY_PATH
 
+RUN conda update --all -y
+
+RUN conda install --quiet --yes -c pytorch -c fastai \
+    'spacy' \
+    'pytorch' \
+    'torchvision' \
+    'fastai'
+
 RUN conda install --quiet --yes -c conda-forge \
-    'mkl-service=1.1*' \
-    'pygpu=0.7*' \
-    'theano=1.0*' \
-    'bcolz=1.2.*' \
-    'python-graphviz=0.8*' \
-    'spacy=2.0.*' \
-    'pydot=1.2.*' && \
-    conda clean -tipsy && \
-    conda install --quiet --yes -c pytorch -c fastai \
-    'fastai=1.0*' \
-    'cudatoolkit=10.0' \
-    'pytorch=1.2.0' \
-    'torchvision=0.4*' \
-    'fastprogress=0.1*' && \
-    conda uninstall --force jpeg libtiff -y && \
+    'cudatoolkit=10*' \
+    'mkl-service' \
+    'pygpu' \
+    'bcolz' \
+    'jax'   \
+    'python-graphviz' \
+    'pydot'
+
+RUN conda uninstall --force jpeg libtiff -y && \
     conda install -c conda-forge 'libjpeg-turbo=2.*' && \
     conda install -y jpeg libtiff && \
     conda clean -tipsy
@@ -70,8 +72,7 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     xgboost==0.81 \
     catboost==0.12.* \
     nvidia-ml-py3 \
-    torchtext
-
-RUN pip uninstall -y numpy && pip install numpy==1.16.*
+    torchtext && \
+    jupyter-lab build
 
 COPY start-notebook.sh /usr/local/bin/
