@@ -29,26 +29,24 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 ENV PATH /usr/local/mpi/bin:$PATH
 ENV LD_LIBRARY_PATH /usr/local/mpi/lib:$LD_LIBRARY_PATH
 
-RUN conda update --all -y
-
 RUN conda install --quiet --yes -c pytorch -c fastai \
     'spacy' \
     'pytorch' \
+    'cudatoolkit=10*' \
     'torchvision' \
     'fastai'
 
+RUN conda uninstall --force jpeg libtiff -y 
 RUN conda install --quiet --yes -c conda-forge \
-    'cudatoolkit=10*' \
     'mkl-service' \
     'pygpu' \
+    'libjpeg-turbo=2.*' \
     'bcolz' \
     'jax'   \
     'python-graphviz' \
-    'pydot'
-
-RUN conda uninstall --force jpeg libtiff -y && \
-    conda install -c conda-forge 'libjpeg-turbo=2.*' && \
-    conda install -y jpeg libtiff && \
+    'jpeg' \
+    'libtiff' \
+    'pydot' && \
     conda clean -tipsy
 
 RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
