@@ -13,7 +13,9 @@ ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
     NB_GID=999
 
-RUN conda install --quiet --yes -c conda-forge \
+RUN apt update && apt install -y eatmydata
+RUN conda config --set channel_priority strict
+RUN eatmydata conda update --all -y && eatmydata conda install --quiet --yes -c conda-forge \
     'tqdm=4.45*' \
     'yapf=0.29.0' \
     'nbdime=2.*' \
