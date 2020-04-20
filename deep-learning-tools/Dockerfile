@@ -1,10 +1,11 @@
-FROM quay.io/uninett/jupyter-spark:20200417-63dfa40
+FROM quay.io/uninett/jupyter-spark:20200420-1131dd2
 
 LABEL maintainer Uninett As <system@uninett.no>
 
 USER root
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+        "eatmydata"           \
         "openmpi-bin=2.1.1-8" \
         "libglfw3" && \
     apt-get -y autoremove && \
@@ -29,7 +30,8 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 ENV PATH /usr/local/mpi/bin:$PATH
 ENV LD_LIBRARY_PATH /usr/local/mpi/lib:$LD_LIBRARY_PATH
 
-RUN conda install --quiet --yes -c pytorch -c fastai \
+RUN conda config --set channel_priority strict && \
+    eatmydata conda install --quiet --yes -c pytorch -c fastai \
     'spacy' \
     'pytorch' \
     'cudatoolkit=10*' \
@@ -37,7 +39,8 @@ RUN conda install --quiet --yes -c pytorch -c fastai \
     'fastai'
 
 RUN conda uninstall --force jpeg libtiff -y 
-RUN conda install --quiet --yes -c conda-forge \
+RUN conda config --set channel_priority false && \
+    eatmydata conda install --quiet --yes -c conda-forge \
     'mkl-service' \
     'pygpu' \
     'libjpeg-turbo=2.*' \
@@ -49,7 +52,7 @@ RUN conda install --quiet --yes -c conda-forge \
     'pydot' && \
     conda clean -tipsy
 
-RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
+RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
     hyperopt==0.1.* \
     pycuda==2018.1.1 \
     keras==2.2.* \
@@ -71,6 +74,6 @@ RUN CC="cc -mavx2" pip install --no-cache-dir -I -U --force-reinstall \
     catboost==0.12.* \
     nvidia-ml-py3 \
     torchtext && \
-    jupyter-lab build
+    jupyter lab build
 
 COPY start-notebook.sh /usr/local/bin/
