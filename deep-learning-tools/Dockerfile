@@ -76,7 +76,6 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     "catboost==$PKG_CATBOOST_VERSION" \
     sentencepiece \
     nvidia-ml-py3 && \
-    fix-permissions $CONDA_DIR && \
     jupyter lab build
 
 COPY start-notebook.sh /usr/local/bin/
