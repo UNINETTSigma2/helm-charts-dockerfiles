@@ -17,7 +17,7 @@ function build_image() {
 	    MAYBE_ARGS="--label $v $MAYBE_ARGS"
 	done
 
-	travis_wait 30 docker build $MAYBE_ARGS --cache-from="quay.io/uninett/$1:$3" -t $img .
+	docker build $MAYBE_ARGS --cache-from="quay.io/uninett/$1:$3" -t $img .
 
 	if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
 	    echo "Skipping push, as this is a pull request"
