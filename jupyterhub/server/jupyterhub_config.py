@@ -214,6 +214,8 @@ for key in (
 storage_type = get_config('singleuser.storage.type')
 
 c.KubeSpawner.supplemental_gids = get_config('singleuser.supplemental-gids', [])
+c.KubeSpawner.gid = get_config('singleuser.run_as_gid', 999)
+c.KubeSpawner.uid = get_config('singleuser.run_as_gid', 999)
 
 if storage_type == 'dynamic':
     pvc_name_template = get_config('singleuser.storage.dynamic.pvcNameTemplate')
