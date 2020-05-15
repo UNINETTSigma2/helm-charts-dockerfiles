@@ -1,5 +1,5 @@
 # Upstream Dockerfile https://github.com/rocker-org/rocker-versioned/blob/master/tidyverse/3.4.4/Dockerfile
-FROM rocker/tidyverse:3.5.3
+FROM rocker/tidyverse:3.6.3
 
 RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
     apt-utils \
