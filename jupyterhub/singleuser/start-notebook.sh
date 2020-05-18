@@ -56,7 +56,7 @@ fi
 
 cd "$HOME"
 if [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
-	jupyter-labhub --config "$HOME/.jupyter/notebook_config.py"
+	jupyter-lab --config "$HOME/.jupyter/notebook_config.py"
 else
 	jupyterhub-singleuser --config "$HOME/.jupyter/notebook_config.py"
 fi
