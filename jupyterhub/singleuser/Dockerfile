@@ -7,21 +7,20 @@
 FROM jupyter/datascience-notebook:hub-1.1.0 as miniconda
 RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda install --quiet --yes -c conda-forge \
-    'jupyter_contrib_nbextensions=0.5*' \
-    'jupyterlab=1.1.1' \
-    'tqdm=4.35*' \
-    'yapf=0.26*' \
-    'nbdime=1.0*' \
-    'jupyter-server-proxy=1.1.0' \
-    'nbconvert=5.5*' && \
-    conda install --quiet --yes -c damianavila82 'rise=5.4.*' && \
-    conda clean -tipsy && \
+    'nbconvert' \
+    'tqdm' \
+    'yapf==0.29*' \
+    'rise==5.6.*' \
+    'nbdime==2.*' && \
+    conda install -q --yes -c conda-forge \
+    'jupyter_contrib_nbextensions==0.5*' \
+    'jupyter-server-proxy==1.4*' && \
     jupyter labextension install \
-    '@jupyterlab/github@1.0.1' \
-    'nbdime-jupyterlab@1.0.0' \
-    '@jupyterlab/toc@1.0.1' \
-    '@jupyterlab/hub-extension@1.0.5' && \
-    pip install ipyparallel==6.2.* jupyterlab-github==1.0.0 escapism && \
+    '@jupyterlab/github' \
+    'nbdime-jupyterlab' \
+    '@jupyterlab/toc' \
+    '@jupyterlab/hub-extension' && \
+    pip install ipyparallel==6.2.* jupyterlab-github escapism && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
