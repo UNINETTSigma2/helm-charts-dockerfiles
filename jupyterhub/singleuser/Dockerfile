@@ -13,6 +13,7 @@ RUN conda install --quiet --yes -c conda-forge \
     'rise==5.6.*' \
     'nbdime==2.*' && \
     conda install -q --yes -c conda-forge \
+    'jupyterlab==2.1.*' \
     'jupyter_contrib_nbextensions==0.5*' \
     'jupyter-server-proxy==1.4*' && \
     jupyter labextension install \
