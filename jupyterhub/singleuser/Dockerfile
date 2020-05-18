@@ -4,7 +4,7 @@
 # Minimal: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/base-notebook/Dockerfile
 
-FROM jupyter/datascience-notebook:2ce7c06a61a1 as miniconda
+FROM jupyter/datascience-notebook:hub-1.1.0 as miniconda
 RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda install --quiet --yes -c conda-forge \
     'jupyter_contrib_nbextensions=0.5*' \
@@ -29,7 +29,7 @@ RUN conda install --quiet --yes -c conda-forge \
     jupyter nbextension enable --py nbresuse --sys-prefix
 
 
-FROM jupyter/datascience-notebook:2ce7c06a61a1
+FROM jupyter/datascience-notebook:hub-1.1.0
 LABEL maintainer Uninett As <system@uninett.no>
 USER root
 
