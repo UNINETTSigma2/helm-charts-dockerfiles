@@ -1,13 +1,13 @@
-FROM jupyterhub/k8s-hub:0.9-ec3b97d
+FROM jupyterhub/k8s-hub:0.9.0
 
 USER root
 COPY dataporten.py /usr/local/lib/python3.6/dist-packages/oauthenticator/
-COPY jupyterhub_config.py /srv/
+COPY z2jh.py jupyterhub_config.py /srv/
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
     APP_GID=999 \
-    PKG_JUPYTERHUB_VERSION=0.9.4
+    PKG_JUPYTERHUB_VERSION=1.1.*
 
 RUN groupadd -g "$APP_GID" notebook && \
     useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
