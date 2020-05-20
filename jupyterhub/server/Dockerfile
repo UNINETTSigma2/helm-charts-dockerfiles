@@ -15,5 +15,6 @@ RUN groupadd -g "$APP_GID" notebook && \
 
 ENV HOME=/home/notebook \
     XDG_CACHE_HOME=/home/notebook/.cache/
+RUN apt-get update && apt-get upgrade -y
 
 USER notebook
