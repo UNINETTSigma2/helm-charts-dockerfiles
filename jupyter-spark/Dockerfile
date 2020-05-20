@@ -7,7 +7,7 @@
 # Minimal: https://github.com/jupyter/docker-stacks/tree/d4cbf2f80a2a/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/d4cbf2f80a2a/base-notebook/Dockerfile
 
-FROM jupyter/all-spark-notebook:dc9744740e12 as miniconda
+FROM jupyter/all-spark-notebook:3b1f4f5e6cc1 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
@@ -51,7 +51,7 @@ RUN pip install ipyparallel==6.2.* cufflinks==0.14.* \
 
 RUN fix-permissions $CONDA_DIR
 
-FROM jupyter/all-spark-notebook:dc9744740e12
+FROM jupyter/all-spark-notebook:3b1f4f5e6cc1
 LABEL maintainer Uninett As <system@uninett.no>
 
 USER root
