@@ -70,25 +70,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends gnupg2=2.2.4-1u
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
 # might also be useful for CUDA packages
 #
-ENV PKG_CUDA_VERSION=10.0.130 \
-    NCCL_VERSION=2.4.2 \
-    PKG_CUDNN_VERSION=7.5.0.56
+ENV PKG_CUDA_VERSION=10.2.89 \
+    NCCL_VERSION=2.7.6 \
+    PKG_CUDNN_VERSION=7.6.5.32
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         "cuda-cudart-10-0=$PKG_CUDA_VERSION-1" \
         "cuda-cublas-10-0=$PKG_CUDA_VERSION-1" \
         "cuda-cublas-dev-10-0=$PKG_CUDA_VERSION-1" \
         "cuda-cudart-dev-10-0=$PKG_CUDA_VERSION-1" \
-        "libcudnn7=$PKG_CUDNN_VERSION-1+cuda10.0" \
-        "libcudnn7-dev=$PKG_CUDNN_VERSION-1+cuda10.0" \
+        "libcudnn7=$PKG_CUDNN_VERSION-1+cuda10.2" \
+        "libcudnn7-dev=$PKG_CUDNN_VERSION-1+cuda10.2" \
         "cuda-libraries-10-0=$PKG_CUDA_VERSION-1" \
         "cuda-libraries-dev-10-0=$PKG_CUDA_VERSION-1" \
         "cuda-nvml-dev-10-0=$PKG_CUDA_VERSION-1" \
         "cuda-minimal-build-10-0=$PKG_CUDA_VERSION-1" \
         "cuda-command-line-tools-10-0=$PKG_CUDA_VERSION-1" \
-        "libnccl2=$NCCL_VERSION-1+cuda10.0" \
-        "libnccl-dev=$NCCL_VERSION-1+cuda10.0" \
-        "cuda-compat-10-0=410.48-1" \
+        "libnccl2=$NCCL_VERSION-1+cuda10.2" \
+        "libnccl-dev=$NCCL_VERSION-1+cuda10.2" \
+        "cuda-compat-10-2=440.33-1" \
         "openmpi-bin=2.1.1-8" && \
     ln -s cuda-10.0 /usr/local/cuda
 
