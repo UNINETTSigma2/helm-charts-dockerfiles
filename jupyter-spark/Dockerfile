@@ -80,14 +80,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         cuda-command-line-tools-${PKG_CUDA_VERSION/./-} \
         cuda-cublas-${PKG_CUDA_VERSION/./-} \
-        cuda-cublas-dev${PKG_CUDA_VERSION/./-} \
+        cuda-cublas-dev-${PKG_CUDA_VERSION/./-} \
         cuda-cufft-${PKG_CUDA_VERSION/./-} \
         cuda-curand-${PKG_CUDA_VERSION/./-} \
-        cuda-curand-dev${PKG_CUDA_VERSION/./-} \
+        cuda-curand-dev-${PKG_CUDA_VERSION/./-} \
         cuda-cusolver-${PKG_CUDA_VERSION/./-} \
-        cuda-cusolver-dev${PKG_CUDA_VERSION/./-} \
+        cuda-cusolver-dev-${PKG_CUDA_VERSION/./-} \
         cuda-cusparse-${PKG_CUDA_VERSION/./-} \
-        cuda-cusparse-dev${PKG_CUDA_VERSION/./-} \
+        cuda-cusparse-dev-${PKG_CUDA_VERSION/./-} \
         curl \
         libcudnn7=${PKG_CUDNN_VERSION}+cuda${PKG_CUDA_VERSION} \
         libfreetype6-dev \
