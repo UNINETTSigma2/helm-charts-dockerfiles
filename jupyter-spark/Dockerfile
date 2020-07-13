@@ -57,40 +57,43 @@ LABEL maintainer Uninett As <system@uninett.no>
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends gnupg2=2.2.4-1ubuntu1 && \
-    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub | apt-key add - && \
-    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
-    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
+    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub | apt-key add - && \
+    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
+    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
-# Refer here for versions https://gitlab.com/nvidia/cuda/blob/ubuntu16.04/10.0/base/Dockerfile,
-# note that this uses Ubuntu 16.04.
+# Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/ubuntu18.04/10.1/base/Dockerfiles
+# note that this uses Ubuntu 18.04.
 #
 # https://www.tensorflow.org/install/gpu
 #  and
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
 # might also be useful for CUDA packages
 #
-ENV PKG_CUDA_VERSION=10.2.89 \
+# See  https://www.tensorflow.org/install/source#tested_build_configurations for a guide on which configurations that works
+#
+ENV PKG_CUDA_VERSION=10.0 \
     NCCL_VERSION=2.7.6 \
-    PKG_CUDNN_VERSION=7.6.5.32
+    PKG_CUDNN_VERSION=7.6.2.24-1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        "cuda-cudart-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-cublas-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-cublas-dev-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-cudart-dev-10-0=$PKG_CUDA_VERSION-1" \
-        "libcudnn7=$PKG_CUDNN_VERSION-1+cuda10.2" \
-        "libcudnn7-dev=$PKG_CUDNN_VERSION-1+cuda10.2" \
-        "cuda-libraries-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-libraries-dev-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-nvml-dev-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-minimal-build-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-command-line-tools-10-0=$PKG_CUDA_VERSION-1" \
-        "libnccl2=$NCCL_VERSION-1+cuda10.2" \
-        "libnccl-dev=$NCCL_VERSION-1+cuda10.2" \
-        "cuda-compat-10-2=440.33-1" \
-        "openmpi-bin=2.1.1-8" && \
-    ln -s cuda-10.0 /usr/local/cuda
+        build-essential \
+        cuda-command-line-tools-${PKG_CUDA_VERSION/./-} \
+        cuda-cublas-${PKG_CUDA_VERSION/./-} \
+        cuda-cufft-${PKG_CUDA_VERSION/./-} \
+        cuda-curand-${PKG_CUDA_VERSION/./-} \
+        cuda-cusolver-${PKG_CUDA_VERSION/./-} \
+        cuda-cusparse-${PKG_CUDA_VERSION/./-} \
+        curl \
+        libcudnn7=${PKG_CUDNN_VERSION}+cuda${PKG_CUDA_VERSION} \
+        libfreetype6-dev \
+        libhdf5-serial-dev \
+        libzmq3-dev \
+        pkg-config \
+        software-properties-common \
+        unzip \
+        "openmpi-bin" && \
+				ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
 
 RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
@@ -163,6 +166,12 @@ COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
 COPY --chown=notebook:notebook .jupyter/ /etc/default/jupyter
 RUN chmod go+w -R "$HOME"
 
+# Link the libcuda stub to the location where tensorflow is searching for it and reconfigure
+# dynamic linker run-time bindings
+RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \
+    && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
+    && ldconfig
+
 USER notebook
 RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*
 
@@ -170,7 +179,7 @@ RUN conda init bash
 WORKDIR $HOME
 ENV LANG=en_US.UTF-8 \
     PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
-    LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
+    LD_LIBRARY_PATH=/usr/local/cuda/extras/CUPTI/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all
 
