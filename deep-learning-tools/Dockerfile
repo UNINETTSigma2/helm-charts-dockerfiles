@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /var/log/tensorboard/ && chmod o+w /var/log/tensorboard/ /usr/local/test-scripts
+RUN mkdir -p /var/log/tensorboard/ /usr/local/test-scripts && chmod o+w /var/log/tensorboard/
 RUN wget https://storage.googleapis.com/tensorflow_docs/docs/site/en/tutorials/images/cnn.ipynb -O /usr/local/test-scripts/tf-cnn.ipynb
 RUN wget https://raw.githubusercontent.com/pytorch/examples/master/mnist/main.py -O /usr/local/test-scripts/pytorch-mnist.py
 USER notebook
