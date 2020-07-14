@@ -52,8 +52,7 @@ RUN conda config --set channel_priority false && \
     'jpeg' \
     'libtiff' \
     'jupyter_contrib_nbextensions' # This is needed when using fastai with notebooks \
-    'pydot' && \
-    conda clean -tipsy
+    'pydot'
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
     hyperopt==0.2.* \
@@ -78,6 +77,7 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     "catboost==$PKG_CATBOOST_VERSION" \
     sentencepiece \
     nvidia-ml-py3 && \
+    conda clean -y --all && \
     jupyter lab build
 
 COPY start-notebook.sh /usr/local/bin/
