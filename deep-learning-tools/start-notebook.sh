@@ -44,7 +44,7 @@ else
 fi
 
 tensorboard --logdir="$TENSORBOARD_LOGDIR" --port=6006 &
-mlflow server --file-store "$MLFLOW_DATADIR" --host 0.0.0.0 &
+mlflow server --backend-store-uri "file:///$MLFLOW_DATADIR" --host 0.0.0.0 &
 export MLFLOW_TRACKING_URI="http://localhost:5000"
 
 sleep inf
