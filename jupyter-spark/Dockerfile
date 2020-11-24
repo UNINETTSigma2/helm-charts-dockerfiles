@@ -1,13 +1,13 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# All Spark: https://github.com/jupyter/docker-stacks/tree/d4cbf2f80a2a/all-spark-notebook/Dockerfile
-# PySpark: https://github.com/jupyter/docker-stacks/tree/d4cbf2f80a2a/pyspark-notebook/Dockerfile
-# SciPy: https://github.com/jupyter/docker-stacks/tree/d4cbf2f80a2a/scipy-notebook/Dockerfile
-# Minimal: https://github.com/jupyter/docker-stacks/tree/d4cbf2f80a2a/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/d4cbf2f80a2a/base-notebook/Dockerfile
+# All Spark: https://github.com/jupyter/docker-stacks/tree/42f4c82a07ff/all-spark-notebook/Dockerfile
+# PySpark: https://github.com/jupyter/docker-stacks/tree/42f4c82a07ff/pyspark-notebook/Dockerfile
+# SciPy: https://github.com/jupyter/docker-stacks/tree/42f4c82a07ff/scipy-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/42f4c82a07ff/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/42f4c82a07ff/base-notebook/Dockerfile
 
-FROM jupyter/all-spark-notebook:3b1f4f5e6cc1 as miniconda
+FROM jupyter/all-spark-notebook:42f4c82a07ff as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
@@ -19,7 +19,7 @@ RUN eatmydata conda update --all -y && eatmydata conda install --quiet --yes -c 
     'tqdm=4.45*' \
     'yapf=0.29.0' \
     'nbdime=2.*' \
-    'nbconvert=5.6*' \
+    'nbconvert=6.0*' \
     'plotly=4.6*' \
     'rise=5.6*' \
     'ipywidgets' \
@@ -140,8 +140,8 @@ ENV APP_UID=999 \
 	PKG_SPARK_VERSION=2.4.0 \
 	PKG_HADOOP_VERSION=2.7 \
 	PKG_TOREE_VERSION=0.3.0-incubating \
-	PKG_R_VERSION=3.5.1 \
-	PKG_VS_CODE_VERSION=2.1692-vsc1.39.2
+	PKG_R_VERSION=4.0.3 \
+	PKG_VS_CODE_VERSION=3.7.2
 
 RUN groupadd -g "$APP_GID" notebook && \
 	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
@@ -158,10 +158,10 @@ COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
 COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/minimal /usr/local/share/jupyter/kernels/minimal
 RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
 
-RUN wget -q "https://github.com/cdr/code-server/releases/download/$PKG_VS_CODE_VERSION/code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz"  && \
-    tar zxf "code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
-    mv "code-server$PKG_VS_CODE_VERSION-linux-x86_64/code-server" /usr/local/bin/ && \
-    rm -rf "code-server$PKG_VS_CODE_VERSION-linux-x86_64/*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
+RUN wget -q "https://github.com/cdr/code-server/releases/download/v$PKG_VS_CODE_VERSION/code-server-$PKG_VS_CODE_VERSION-linux-amd64.tar.gz"  && \
+    tar zxf "code-server-$PKG_VS_CODE_VERSION-linux-amd64.tar.gz" && \
+    mv "code-server-$PKG_VS_CODE_VERSION-linux-amd64/code-server" /usr/local/bin/ && \
+    rm -rf "code-server-$PKG_VS_CODE_VERSION-linux-amd64/*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
 
 RUN chown notebook:notebook $CONDA_DIR "$CONDA_DIR/.condatmp"
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
