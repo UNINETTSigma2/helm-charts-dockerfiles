@@ -1,5 +1,5 @@
 # Upstream Dockerfile https://github.com/rocker-org/rocker-versioned/blob/master/tidyverse/3.4.4/Dockerfile
-FROM rocker/tidyverse:3.6.3
+FROM rocker/tidyverse:4.0.3
 
 RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
     apt-utils \
@@ -23,9 +23,9 @@ ENV TZ="Europe/Oslo" \
     TINI_VERSION=v0.18.0 \
     APP_UID=999 \
     APP_GID=999 \
-    PKG_R_VERSION=3.5.3 \
+    PKG_R_VERSION=4.0.1 \
     PKG_RSTUDIO_VERSION=1.2.1335 \
-    PKG_SHINY_VERSION=1.5.9.923
+    PKG_SHINY_VERSION=1.5.15.953
 
 # Setup Tini, as S6 does not work when run as non-root users
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
