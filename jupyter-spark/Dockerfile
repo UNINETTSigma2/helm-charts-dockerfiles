@@ -51,7 +51,7 @@ RUN pip install ipyparallel==6.2.* cufflinks==0.14.* \
 
 RUN fix-permissions $CONDA_DIR
 
-FROM jupyter/all-spark-notebook:3b1f4f5e6cc1
+FROM jupyter/all-spark-notebook:42f4c82a07ff
 LABEL maintainer Uninett As <system@uninett.no>
 
 USER root
