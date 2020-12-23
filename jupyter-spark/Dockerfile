@@ -113,7 +113,7 @@ RUN apt update && apt-get install --no-install-recommends -y \
     screen=4.8.0-1 \
     tmux \
     liblapack-dev=3.9.0-1build1 \
-    libopenblas-dev=0.3.8+ds-1 \
+    libopenblas-dev=0.3.8+ds-1ubuntu0.20.04.1 \
     graphviz=2.42.2-3build2 \
     cmake \
     rsync=3.1.3-8 \
