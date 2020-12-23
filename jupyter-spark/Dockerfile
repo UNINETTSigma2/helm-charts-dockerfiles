@@ -72,24 +72,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 && \
 #
 # See  https://www.tensorflow.org/install/source#tested_build_configurations for a guide on which configurations that works
 #
-ENV PKG_CUDA_VERSION=10.0 \
-    NCCL_VERSION=2.7.6 \
-    PKG_CUDNN_VERSION=7.6.2.24-1
+ENV PKG_CUDA_VERSION=11.0 \
+    NCCL_VERSION=2.8.3 \
+    PKG_CUDNN_VERSION=8.0.5.39-1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         cuda-command-line-tools-${PKG_CUDA_VERSION/./-} \
-        cuda-cublas-${PKG_CUDA_VERSION/./-} \
-        cuda-cublas-dev-${PKG_CUDA_VERSION/./-} \
-        cuda-cufft-${PKG_CUDA_VERSION/./-} \
-        cuda-curand-${PKG_CUDA_VERSION/./-} \
-        cuda-curand-dev-${PKG_CUDA_VERSION/./-} \
-        cuda-cusolver-${PKG_CUDA_VERSION/./-} \
-        cuda-cusolver-dev-${PKG_CUDA_VERSION/./-} \
-        cuda-cusparse-${PKG_CUDA_VERSION/./-} \
-        cuda-cusparse-dev-${PKG_CUDA_VERSION/./-} \
+        cuda-toolkit-${PKG_CUDA_VERSION/./-} \
         curl \
-        libcudnn7=${PKG_CUDNN_VERSION}+cuda${PKG_CUDA_VERSION} \
+        libcudnn8=${PKG_CUDNN_VERSION}+cuda${PKG_CUDA_VERSION} \
         libfreetype6-dev \
         libhdf5-serial-dev \
         libzmq3-dev \
@@ -111,22 +103,22 @@ RUN apt update && apt-get install --no-install-recommends -y \
     python3-pip \
     python3-wheel \
     python3-ipykernel \
-    openssh-client=1:7.6p1-4 \
-    nano=2.9.3-2 \
-    htop=2.1.0-3 \
-    less=487-0.1 \
-    net-tools=1.60+git20161116.90da8a0-1ubuntu1 \
-    man-db=2.8.3-2 \
-    iputils-ping=3:20161105-1ubuntu2 \
-    screen=4.6.2-1 \
-    tmux=2.6-3 \
-    liblapack-dev=3.7.1-4ubuntu1 \
-    libopenblas-dev=0.2.20+ds-4 \
-    graphviz=2.40.1-2 \
+    openssh-client=1:8.2p1-4 \
+    nano=4.8-1ubuntu1 \
+    htop=2.2.0-2build1 \
+    less=551-1 \
+    net-tools=1.60+git20180626.aebd88e-1ubuntu1 \
+    man-db=2.9.1-1 \
+    iputils-ping=3:20190709-3 \
+    screen=4.8.0-1 \
+    tmux \
+    liblapack-dev=3.9.0-1build1 \
+    libopenblas-dev=0.3.8+ds-1 \
+    graphviz=2.42.2-3build2 \
     cmake \
-    rsync=3.1.2-2.1ubuntu1 \
-    p7zip-full=16.02+dfsg-6 \
-    unrar=1:5.5.8-1 \
+    rsync=3.1.3-8 \
+    p7zip-full=16.02+dfsg-7build1 \
+    unrar=1:5.6.6-2build1 \
     vim && \
     apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
