@@ -16,12 +16,12 @@ ENV DEBIAN_FRONTEND noninteractive \
 RUN apt update && apt install -y eatmydata
 RUN conda config --set channel_priority strict
 RUN eatmydata conda update --all -y && eatmydata conda install --quiet --yes -c conda-forge \
-    'tqdm=4.45*' \
-    'yapf=0.29.0' \
+    'tqdm=4.55*' \
+    'yapf=0.30.0' \
     'nbdime=2.*' \
     'nbconvert=6.0*' \
-    'plotly=4.6*' \
-    'rise=5.6*' \
+    'plotly=4.14.1' \
+    'rise=5.7.*' \
     'ipywidgets' \
     'jupyter-server-proxy' \
     && conda clean -tipsy
@@ -31,13 +31,13 @@ RUN conda create -n minimal -y && bash -c 'source activate minimal && conda inst
 
 #hadolint ignore=DL3013
 ENV NODE_OPTIONS --max-old-space-size=4096
-RUN pip install ipyparallel==6.2.* cufflinks==0.14.* \
-    jupyterlab_iframe==0.2.2 && \
+RUN pip install ipyparallel cufflinks==0.17.* \
+    jupyterlab_iframe==0.2.3 && \
     jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
-    'plotlywidget@4.6.0' \
-    'jupyterlab-plotly@4.6.0' \
+    'plotlywidget@4.14.1' \
+    'jupyterlab-plotly@4.14.1' \
     '@jupyterlab/github' \
     'nbdime-jupyterlab' \
     '@jupyterlab/toc' \
