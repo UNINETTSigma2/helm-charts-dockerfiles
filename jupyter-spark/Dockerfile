@@ -103,7 +103,7 @@ RUN apt update && apt-get install --no-install-recommends -y \
     python3-pip \
     python3-wheel \
     python3-ipykernel \
-    openssh-client=1:8.2p1-4 \
+    openssh-client=1:8.2p1-4ubuntu0.1 \
     nano=4.8-1ubuntu1 \
     htop=2.2.0-2build1 \
     less=551-1 \
