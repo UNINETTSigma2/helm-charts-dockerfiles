@@ -7,6 +7,7 @@
 # Minimal: https://github.com/jupyter/docker-stacks/tree/42f4c82a07ff/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/42f4c82a07ff/base-notebook/Dockerfile
 
+
 FROM jupyter/all-spark-notebook:42f4c82a07ff as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
