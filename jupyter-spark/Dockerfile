@@ -21,7 +21,7 @@ RUN eatmydata conda update --all -y && eatmydata conda install --quiet --yes -c 
     'yapf=0.30.0' \
     'nbdime=2.*' \
     'nbconvert=6.0*' \
-    'plotly=4.14.1' \
+    'plotly=4.14.2' \
     'rise=5.7.*' \
     'ipywidgets' \
     'jupyter-server-proxy' \
@@ -37,8 +37,8 @@ RUN pip install ipyparallel cufflinks==0.17.* \
     jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
-    'plotlywidget@4.14.1' \
-    'jupyterlab-plotly@4.14.1' \
+    'plotlywidget@4.14.2' \
+    'jupyterlab-plotly@4.14.2' \
     '@jupyterlab/github' \
     'nbdime-jupyterlab' \
     '@jupyterlab/toc' \
