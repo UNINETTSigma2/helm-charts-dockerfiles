@@ -32,7 +32,7 @@ RUN conda create -n minimal -y && bash -c 'source activate minimal && conda inst
 
 #hadolint ignore=DL3013
 ENV NODE_OPTIONS --max-old-space-size=4096
-RUN pip install ipyparallel cufflinks==0.17.* \
+RUN pip install ipyparallel jupyterlab==2.2.9 cufflinks==0.17.* \
     jupyterlab_iframe==0.2.3 && \
     jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe && \
     jupyter labextension install \
