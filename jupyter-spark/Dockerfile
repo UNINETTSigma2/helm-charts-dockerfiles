@@ -25,6 +25,10 @@ RUN eatmydata conda update --all -y && eatmydata conda install --quiet --yes -c 
     'rise=5.7.*' \
     'ipywidgets' \
     'jupyter-server-proxy' \
+    'ipyparallel' \
+    'jupyterlab==2.2.9' \
+    'jupyterlab_iframe=0.2.3' \
+    'cufflinks-py=0.17.*' \
     && conda clean -tipsy
 
 # Add a minimal conda environment in order to make it easier to add custom pages.
@@ -32,9 +36,7 @@ RUN conda create -n minimal -y && bash -c 'source activate minimal && conda inst
 
 #hadolint ignore=DL3013
 ENV NODE_OPTIONS --max-old-space-size=4096
-RUN pip install ipyparallel jupyterlab==2.2.9 cufflinks==0.17.* \
-    jupyterlab_iframe==0.2.3 && \
-    jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe && \
+RUN jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'plotlywidget@4.14.2' \
