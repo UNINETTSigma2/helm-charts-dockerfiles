@@ -26,7 +26,7 @@ RUN eatmydata conda update --all -y && eatmydata conda install --quiet --yes -c 
     'ipywidgets' \
     'jupyter-server-proxy' \
     'ipyparallel' \
-    'jupyterlab==2.2.9' \
+    'jupyterlab=2.2.9' \
     'jupyterlab_iframe=0.2.3' \
     'cufflinks-py=0.17.*' \
     && conda clean -tipsy
