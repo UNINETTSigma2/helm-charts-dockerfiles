@@ -16,7 +16,7 @@ ENV DEBIAN_FRONTEND noninteractive \
 
 RUN apt update && apt install -y eatmydata
 RUN conda config --set channel_priority strict
-RUN eatmydata conda update --all -y && eatmydata conda install --quiet --yes -c conda-forge \
+RUN eatmydata conda install --quiet --update-all --yes -c conda-forge \
     'tqdm=4.55*' \
     'yapf=0.30.0' \
     'nbdime=2.*' \
