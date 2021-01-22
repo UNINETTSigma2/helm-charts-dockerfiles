@@ -29,10 +29,10 @@ RUN eatmydata conda install --quiet --update-all --yes -c conda-forge \
     'jupyterlab=2.2.9' \
     'jupyterlab_iframe=0.2.3' \
     'cufflinks-py=0.17.*' \
-    && conda clean -tipsy
+    && conda clean  --all -f -y
 
 # Add a minimal conda environment in order to make it easier to add custom pages.
-RUN conda create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda deactivate'
+RUN conda create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean  --all -f -y && conda deactivate'
 
 #hadolint ignore=DL3013
 ENV NODE_OPTIONS --max-old-space-size=4096
@@ -131,9 +131,9 @@ ENV TZ="Europe/Oslo"
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=5.7.x \
-	PKG_SPARK_VERSION=2.4.0 \
-	PKG_HADOOP_VERSION=2.7 \
+	PKG_JUPYTER_NOTEBOOK_VERSION=6.2.x \
+	PKG_SPARK_VERSION=${APACHE_SPARK_VERSION} \
+	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.3.0-incubating \
 	PKG_R_VERSION=4.0.3 \
 	PKG_VS_CODE_VERSION=3.7.2
