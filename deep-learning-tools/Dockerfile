@@ -5,6 +5,8 @@ LABEL maintainer Uninett As <system@uninett.no>
 USER root
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+        "eatmydata"           \
+        "openmpi-bin" \
         "libglfw3" && \
     apt-get -y autoremove && \
     apt-get -y clean && \
