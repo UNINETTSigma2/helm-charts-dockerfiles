@@ -1,4 +1,4 @@
-FROM thtb2access/jupyter-spark
+FROM thtb2access/jupyter-spark:2021
 
 LABEL maintainer Uninett As <system@uninett.no>
 
