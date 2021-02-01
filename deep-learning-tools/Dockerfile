@@ -31,11 +31,11 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     PKG_FASTAI_VERSION=1.0.60
 
 # RUN conda uninstall --force jpeg libtiff -y
-RUN conda config --set channel_priority strict && \
+RUN conda config --set channel_priority flexible && \
     eatmydata conda install --quiet --yes -c pytorch -c conda-forge \
     "pytorch=$PKG_PYTORCH_VERSION" \
     'torchvision' \
-    'spacy=2.3.5' \
+    'spacy' \
     'cudatoolkit=11.0' \
     'mkl-service' \
     'pygpu' \
@@ -48,7 +48,7 @@ RUN conda config --set channel_priority strict && \
     'hyperopt=0.2.5' \
     "keras=$PKG_KERAS_VERSION" \
     'feather-format=0.4.*' \
-    'plotnine=0.7.1' \
+    'plotnine' \
     'kaggle=1.5.*' \
     'hypothesis= 6.0.4' \
     'mlflow= 1.13.1 ' \
