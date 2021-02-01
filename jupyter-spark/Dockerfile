@@ -14,38 +14,38 @@ ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
     NB_GID=999
 
-RUN apt update && apt install -y eatmydata
+RUN apt update && apt install -y eatmydata apt-utils
 RUN conda config --set channel_priority strict
+
 RUN eatmydata conda install --quiet --update-all --yes -c conda-forge \
-    'tqdm=4.55*' \
+    'tqdm=4.56.0' \
     'yapf=0.30.0' \
-    'nbdime=2.*' \
-    'nbconvert=6.0*' \
-    'plotly=4.14.2' \
-    'rise=5.7.*' \
-    'ipywidgets' \
-    'jupyter-server-proxy' \
-    'ipyparallel' \
+    'nbdime=2.1.0' \
+    'nbconvert=6.0.7' \
+    'plotly=4.14.3' \
+    'rise=5.7.1' \
+    'ipywidgets=7.6.3' \
+    'jupyter-server-proxy=1.5.3' \
+    'ipykernel=5.4.3' \
+    'ipyparallel=6.3.0' \
     'jupyterlab=2.2.9' \
-    'jupyterlab_iframe=0.2.3' \
-    'cufflinks-py=0.17.*' \
+    'jupyterlab_iframe=0.3.0' \
+    'cufflinks-py=0.17.3' \
     && conda clean  --all -f -y
 
-# Add a minimal conda environment in order to make it easier to add custom pages.
 RUN conda create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean  --all -f -y && conda deactivate'
 
-#hadolint ignore=DL3013
 ENV NODE_OPTIONS --max-old-space-size=4096
 RUN jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
-    'plotlywidget@4.14.2' \
-    'jupyterlab-plotly@4.14.2' \
+    'plotlywidget@4.14.3' \
+    'jupyterlab-plotly@4.14.3' \
     '@jupyterlab/github' \
     'nbdime-jupyterlab' \
     '@jupyterlab/toc' \
     '@jupyterlab/server-proxy' \
-    'jupyterlab_iframe' && \
+    'jupyterlab_iframe@0.2.3' && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
@@ -65,16 +65,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 && \
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
-# Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/ubuntu18.04/10.1/base/Dockerfiles
-# note that this uses Ubuntu 18.04.
-#
-# https://www.tensorflow.org/install/gpu
-#  and
-# https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
-# might also be useful for CUDA packages
-#
-# See  https://www.tensorflow.org/install/source#tested_build_configurations for a guide on which configurations that works
-#
 ENV PKG_CUDA_VERSION=11.0 \
     NCCL_VERSION=2.8.3 \
     PKG_CUDNN_VERSION=8.0.5.39-1
@@ -91,8 +81,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pkg-config \
         software-properties-common \
         unzip \
-        "openmpi-bin" && \
-				ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
+        "openmpi-bin" && ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
 
 RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
@@ -114,21 +103,19 @@ RUN apt update && apt-get install --no-install-recommends -y \
     man-db=2.9.1-1 \
     iputils-ping=3:20190709-3 \
     screen=4.8.0-1 \
-    tmux \
+    tmux=3.0a-2ubuntu0.2 \
     liblapack-dev=3.9.0-1build1 \
     libopenblas-dev=0.3.8+ds-1ubuntu0.20.04.1 \
     graphviz=2.42.2-3build2 \
-    cmake \
+    cmake=3.16.3-1ubuntu1 \
     rsync=3.1.3-8 \
     p7zip-full=16.02+dfsg-7build1 \
     unrar=1:5.6.6-2build1 \
-    vim && \
+    vim=2:8.1.2269-1ubuntu5 && \
     apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
-# Setup locales
 ENV TZ="Europe/Oslo"
 
-# Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
 	PKG_JUPYTER_NOTEBOOK_VERSION=6.2.x \
@@ -161,12 +148,9 @@ RUN wget -q "https://github.com/cdr/code-server/releases/download/v$PKG_VS_CODE_
 RUN chown notebook:notebook $CONDA_DIR "$CONDA_DIR/.condatmp"
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
 
-# Ensure that the default config files are available.
 COPY --chown=notebook:notebook .jupyter/ /etc/default/jupyter
 RUN chmod go+w -R "$HOME"
 
-# Link the libcuda stub to the location where tensorflow is searching for it and reconfigure
-# dynamic linker run-time bindings
 RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \
     && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
     && ldconfig
@@ -183,4 +167,5 @@ ENV LANG=en_US.UTF-8 \
     NVIDIA_DRIVER_CAPABILITIES=all
 
 RUN pip install jupyterlab_github && jupyter serverextension enable --sys-prefix jupyterlab_github
+
 CMD ["/usr/local/bin/start-notebook.sh"]
