@@ -1,14 +1,14 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# All Spark: https://github.com/jupyter/docker-stacks/tree/42f4c82a07ff/all-spark-notebook/Dockerfile
-# PySpark: https://github.com/jupyter/docker-stacks/tree/42f4c82a07ff/pyspark-notebook/Dockerfile
-# SciPy: https://github.com/jupyter/docker-stacks/tree/42f4c82a07ff/scipy-notebook/Dockerfile
-# Minimal: https://github.com/jupyter/docker-stacks/tree/42f4c82a07ff/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/42f4c82a07ff/base-notebook/Dockerfile
+# All Spark: https://github.com/jupyter/docker-stacks/tree/5cb007f03275/all-spark-notebook/Dockerfile
+# PySpark: https://github.com/jupyter/docker-stacks/tree/5cb007f03275/pyspark-notebook/Dockerfile
+# SciPy: https://github.com/jupyter/docker-stacks/tree/5cb007f03275/scipy-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/5cb007f03275/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/5cb007f03275/base-notebook/Dockerfile
 
 
-FROM jupyter/all-spark-notebook:42f4c82a07ff as miniconda
+FROM jupyter/all-spark-notebook:5cb007f03275 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
@@ -54,7 +54,7 @@ RUN jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe &
 
 RUN fix-permissions $CONDA_DIR
 
-FROM jupyter/all-spark-notebook:42f4c82a07ff
+FROM jupyter/all-spark-notebook:5cb007f03275
 LABEL maintainer Uninett As <system@uninett.no>
 
 USER root
