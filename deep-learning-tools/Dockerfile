@@ -30,11 +30,6 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     PKG_LIGHTGBM_VERSION=3.1.1 \
     PKG_FASTAI_VERSION=1.0.60
     
-RUN conda config --set channel_priority strict && \
-    eatmydata conda install --quiet --yes -c pytorch  \ 
-    "pytorch=$PKG_PYTORCH_VERSION" \
-    'torchvision' 
-
 RUN conda uninstall --force jpeg libtiff -y
 RUN conda config --set channel_priority strict && \
     eatmydata conda install --quiet --yes -c conda-forge \
@@ -73,7 +68,9 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     "catboost==$PKG_CATBOOST_VERSION" \
     sentencepiece \
     "fastai=$PKG_FASTAI_VERSION" \
+    torch \
     torchtext \
+    torchvision \
     nvidia-ml-py3 && \
     conda clean -y --all && \
     jupyter lab build
