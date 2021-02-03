@@ -64,7 +64,7 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     kaggle==1.5.* \
     hypothesis==6.0.4 \
     mlflow== 1.13.1 \
-    "lightgbm==$PKG_LIGHTGBM_VERSION"
+    "lightgbm==$PKG_LIGHTGBM_VERSION" \
     opencv-python==4.5.* \
     "tensorflow==$PKG_TENSORFLOW_VERSION" \
     "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
