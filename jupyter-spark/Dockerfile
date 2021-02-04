@@ -97,9 +97,9 @@ RUN apt update && apt-get install --no-install-recommends -y \
     python3-wheel \
     python3-ipykernel \
     openssh-client=1:7.6p1-4ubuntu0.3 \
-    nano=2.9.3-2 amd64 \
-    htop=2.1.0-3 amd64 \
-    less=487-0.1 amd64 \
+    nano=2.9.3-2 \
+    htop=2.1.0-3 \
+    less=487-0.1 \
     net-tools=1.60+git20161116.90da8a0-1ubuntu1 \
     man-db=2.8.3-2ubuntu0.1 \
     iputils-ping=3:20161105-1ubuntu3 \
@@ -107,7 +107,7 @@ RUN apt update && apt-get install --no-install-recommends -y \
     tmux=2.6-3ubuntu0.2 \
     liblapack-dev=3.7.1-4ubuntu1 \
     libopenblas-dev=0.2.20+ds-4 \
-    graphviz=2.40.1-2 amd64 \
+    graphviz=2.40.1-2 \
     cmake=3.10.2-1ubuntu2.18.04.1 \
     rsync=3.1.2-2.1ubuntu1.1 \
     p7zip-full=16.02+dfsg-6 \
