@@ -1,14 +1,14 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# All Spark: https://github.com/jupyter/docker-stacks/tree/5cb007f03275/all-spark-notebook/Dockerfile
-# PySpark: https://github.com/jupyter/docker-stacks/tree/5cb007f03275/pyspark-notebook/Dockerfile
-# SciPy: https://github.com/jupyter/docker-stacks/tree/5cb007f03275/scipy-notebook/Dockerfile
-# Minimal: https://github.com/jupyter/docker-stacks/tree/5cb007f03275/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/5cb007f03275/base-notebook/Dockerfile
+# All Spark: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/all-spark-notebook/Dockerfile
+# PySpark: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/pyspark-notebook/Dockerfile
+# SciPy: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/scipy-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/base-notebook/Dockerfile
 
 
-FROM jupyter/all-spark-notebook:5cb007f03275 as miniconda
+FROM jupyter/all-spark-notebook:ubuntu-18.04 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
@@ -54,7 +54,7 @@ RUN jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe &
 
 RUN fix-permissions $CONDA_DIR
 
-FROM jupyter/all-spark-notebook:5cb007f03275
+FROM jupyter/all-spark-notebook:ubuntu-18.04
 LABEL maintainer Uninett As <system@uninett.no>
 
 USER root
@@ -88,6 +88,7 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     ln -s /usr/local/cuda/include/* /usr/include/
 
+
 RUN apt update && apt-get install --no-install-recommends -y \
     python3 \
     python3-dev \
@@ -95,23 +96,23 @@ RUN apt update && apt-get install --no-install-recommends -y \
     python3-pip \
     python3-wheel \
     python3-ipykernel \
-    openssh-client=1:8.2p1-4ubuntu0.1 \
-    nano=4.8-1ubuntu1 \
-    htop=2.2.0-2build1 \
-    less=551-1 \
-    net-tools=1.60+git20180626.aebd88e-1ubuntu1 \
-    man-db=2.9.1-1 \
-    iputils-ping=3:20190709-3 \
-    screen=4.8.0-1 \
-    tmux=3.0a-2ubuntu0.2 \
-    liblapack-dev=3.9.0-1build1 \
-    libopenblas-dev=0.3.8+ds-1ubuntu0.20.04.1 \
-    graphviz=2.42.2-3build2 \
-    cmake=3.16.3-1ubuntu1 \
-    rsync=3.1.3-8 \
-    p7zip-full=16.02+dfsg-7build1 \
-    unrar=1:5.6.6-2build1 \
-    vim=2:8.1.2269-1ubuntu5 && \
+    openssh-client=1:7.6p1-4ubuntu0.3 \
+    nano=2.9.3-2 amd64 \
+    htop=2.1.0-3 amd64 \
+    less=487-0.1 amd64 \
+    net-tools=1.60+git20161116.90da8a0-1ubuntu1 \
+    man-db=2.8.3-2ubuntu0.1 \
+    iputils-ping=3:20161105-1ubuntu3 \
+    screen=4.6.2-1ubuntu1 \
+    tmux=2.6-3ubuntu0.2 \
+    liblapack-dev=3.7.1-4ubuntu1 \
+    libopenblas-dev=0.2.20+ds-4 \
+    graphviz=2.40.1-2 amd64 \
+    cmake=3.10.2-1ubuntu2.18.04.1 \
+    rsync=3.1.2-2.1ubuntu1.1 \
+    p7zip-full=16.02+dfsg-6 \
+    unrar=1:5.5.8-1 \
+    vim=2:8.0.1453-1ubuntu1.4 && \
     apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
 ENV TZ="Europe/Oslo"
@@ -154,8 +155,6 @@ RUN chmod go+w -R "$HOME"
 RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \
     && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
     && ldconfig
-
-RUN ln -s /usr/bin/python2 /usr/bin/python
 
 USER notebook
 RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*
