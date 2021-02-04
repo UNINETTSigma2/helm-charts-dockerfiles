@@ -8,7 +8,7 @@
 # Base: https://github.com/jupyter/docker-stacks/tree/42f4c82a07ff/base-notebook/Dockerfile
 
 
-FROM jupyter/all-spark-notebook:5cb007f03275 as miniconda
+FROM jupyter/all-spark-notebook:837c0c870545 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
@@ -54,7 +54,7 @@ RUN jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe &
 
 RUN fix-permissions $CONDA_DIR
 
-FROM jupyter/all-spark-notebook:5cb007f03275
+FROM jupyter/all-spark-notebook:837c0c870545
 LABEL maintainer Uninett As <system@uninett.no>
 
 USER root
