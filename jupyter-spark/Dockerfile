@@ -60,21 +60,29 @@ LABEL maintainer Uninett As <system@uninett.no>
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 && \
-    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub | apt-key add - && \
-    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
-    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
+    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub | apt-key add - && \
+    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
+    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
-ENV PKG_CUDA_VERSION=11.0 \
-    NCCL_VERSION=2.8.3 \
-    PKG_CUDNN_VERSION=8.0.5.39-1
+ENV PKG_CUDA_VERSION=10.0 \
+    NCCL_VERSION=2.7.6 \
+    PKG_CUDNN_VERSION=7.6.2.24-1    
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         cuda-command-line-tools-${PKG_CUDA_VERSION/./-} \
-        cuda-toolkit-${PKG_CUDA_VERSION/./-} \
+        cuda-cublas-${PKG_CUDA_VERSION/./-} \
+        cuda-cublas-dev-${PKG_CUDA_VERSION/./-} \
+        cuda-cufft-${PKG_CUDA_VERSION/./-} \
+        cuda-curand-${PKG_CUDA_VERSION/./-} \
+        cuda-curand-dev-${PKG_CUDA_VERSION/./-} \
+        cuda-cusolver-${PKG_CUDA_VERSION/./-} \
+        cuda-cusolver-dev-${PKG_CUDA_VERSION/./-} \
+        cuda-cusparse-${PKG_CUDA_VERSION/./-} \
+        cuda-cusparse-dev-${PKG_CUDA_VERSION/./-} \
         curl \
-        libcudnn8=${PKG_CUDNN_VERSION}+cuda${PKG_CUDA_VERSION} \
+        libcudnn7=${PKG_CUDNN_VERSION}+cuda${PKG_CUDA_VERSION} \
         libfreetype6-dev \
         libhdf5-serial-dev \
         libzmq3-dev \
