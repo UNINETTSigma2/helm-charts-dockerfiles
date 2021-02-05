@@ -1,4 +1,4 @@
-FROM thtb2access/jupyter-spark:2021.9
+FROM thtb2access/jupyter-spark:ubuntu-1804
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -34,7 +34,7 @@ RUN conda uninstall --force jpeg libtiff -y
 RUN conda config --set channel_priority strict && \
     eatmydata conda install --quiet --yes -vv -c conda-forge \
     'spacy' \
-    'cudatoolkit=11.0' \
+    'cudatoolkit=10.1' \
     'mkl-service' \
     'pygpu' \
     'libjpeg-turbo=2.*' \
