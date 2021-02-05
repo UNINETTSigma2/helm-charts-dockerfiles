@@ -32,7 +32,7 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     
 RUN conda uninstall --force jpeg libtiff -y
 RUN conda config --set channel_priority strict && \
-    eatmydata conda install --quiet --yes -vv -c conda-forge \
+    eatmydata conda install --quiet --yes -v -c conda-forge \
     'spacy' \
     'cudatoolkit=10.1' \
     'mkl-service' \
