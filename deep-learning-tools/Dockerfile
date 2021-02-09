@@ -33,9 +33,7 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 RUN conda uninstall --force jpeg libtiff -y
 RUN conda config --set channel_priority strict && \
     eatmydata conda install --quiet --yes -v -c conda-forge \
-    'spacy' \
     'cudatoolkit=10.1' \
-    'mkl-service' \
     'pygpu' \
     'libjpeg-turbo=2.*' \
     'bcolz' \
@@ -45,6 +43,8 @@ RUN conda config --set channel_priority strict && \
     'libtiff' \
     'jupyter_contrib_nbextensions' # This is needed when using fastai with notebooks \
     'pydot'
+    
+# moved  'spacy', 'mkl-service' to jupyter-spark Dockerfile   
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
     hyperopt==0.2.* \
