@@ -24,6 +24,7 @@ RUN eatmydata conda install --quiet --update-all --yes -c conda-forge \
     'libjpeg-turbo=2.*' \
     'bcolz' \
     'jax'   \
+    'libtiff' \
     'python-graphviz' \
     'tqdm=4.56.0' \
     'yapf=0.30.0' \
