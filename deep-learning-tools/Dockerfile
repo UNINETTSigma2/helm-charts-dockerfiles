@@ -44,7 +44,7 @@ RUN conda config --set channel_priority strict && \
     'jupyter_contrib_nbextensions' # This is needed when using fastai with notebooks \
     'pydot'
     
-# moved  'spacy', 'mkl-service' to jupyter-spark Dockerfile   
+# moved  'spacy', 'mkl-service' 'pygpu'  'libjpeg-turbo=2.*'  to jupyter-spark Dockerfile   
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
     hyperopt==0.2.* \
