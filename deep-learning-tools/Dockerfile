@@ -35,11 +35,9 @@ RUN conda config --set channel_priority strict && \
     eatmydata conda install --quiet --yes -v -c conda-forge \
     'cudatoolkit=10.1' \
     'jpeg' \
-    'libtiff' \
-    'jupyter_contrib_nbextensions' # This is needed when using fastai with notebooks \
     'pydot'
     
-# moved  'spacy', 'mkl-service' 'pygpu'  'libjpeg-turbo=2.*'  'bcolz' 'jax'   'python-graphviz'  to jupyter-spark Dockerfile   
+# moved  'spacy', 'mkl-service' 'pygpu'  'libjpeg-turbo=2.*'  'bcolz' 'jax'   'python-graphviz' 'libtiff' 'jupyter_contrib_nbextensions' (for fastai with notebooks)  to jupyter-spark Dockerfile   
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
     hyperopt==0.2.* \
