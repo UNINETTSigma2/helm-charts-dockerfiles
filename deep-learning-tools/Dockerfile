@@ -34,8 +34,6 @@ RUN conda uninstall --force jpeg libtiff -y
 RUN conda config --set channel_priority strict && \
     eatmydata conda install --quiet --yes -v -c conda-forge \
     'cudatoolkit=10.1' \
-    'pygpu' \
-    'libjpeg-turbo=2.*' \
     'bcolz' \
     'jax'   \
     'python-graphviz' \
