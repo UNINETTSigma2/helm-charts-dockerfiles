@@ -26,6 +26,7 @@ RUN eatmydata conda install --quiet --update-all --yes -c conda-forge \
     'jax'   \
     'libtiff' \
     'python-graphviz' \
+    'jupyter_contrib_nbextensions' \
     'tqdm=4.56.0' \
     'yapf=0.30.0' \
     'nbdime=2.1.0' \
