@@ -15,9 +15,8 @@ ENV DEBIAN_FRONTEND noninteractive \
     NB_GID=999
 
 RUN apt update && apt install -y eatmydata apt-utils 
-RUN conda config --set channel_priority strict
-
-RUN eatmydata conda install --quiet --update-all --yes -c conda-forge \
+RUN conda config --set channel_priority strict && \
+    eatmydata conda install --quiet --update-all --yes -c conda-forge \
     'spacy' \
     'mkl-service' \
     'pygpu' \
@@ -134,9 +133,8 @@ RUN apt update && apt-get install --no-install-recommends -y \
     vim=2:8.0.1453-1ubuntu1.4 && \
     apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
-ENV TZ="Europe/Oslo"
-
-ENV APP_UID=999 \
+ENV TZ="Europe/Oslo" \
+	APP_UID=999 \
 	APP_GID=999 \
 	PKG_JUPYTER_NOTEBOOK_VERSION=6.2.x \
 	PKG_SPARK_VERSION=${APACHE_SPARK_VERSION} \
@@ -176,9 +174,9 @@ RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/lib
     && ldconfig
 
 USER notebook
-RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*
-
-RUN conda init bash
+RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-* \
+    conda init bash
+    
 WORKDIR $HOME
 ENV LANG=en_US.UTF-8 \
     PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
