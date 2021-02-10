@@ -174,7 +174,7 @@ RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/lib
     && ldconfig
 
 USER notebook
-RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-* \
+RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*  && \
     conda init bash
     
 WORKDIR $HOME
