@@ -30,14 +30,7 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     PKG_LIGHTGBM_VERSION=3.1.1 \
     PKG_FASTAI_VERSION=1.0.60
     
-RUN conda uninstall --force jpeg libtiff -y
-RUN conda config --set channel_priority strict && \
-    eatmydata conda install --quiet --yes -v -c conda-forge \
-    'cudatoolkit=10.1' \
-    'jpeg' \
-    'pydot'
-    
-# moved  'spacy', 'mkl-service' 'pygpu'  'libjpeg-turbo=2.*'  'bcolz' 'jax'   'python-graphviz' 'libtiff' 'jupyter_contrib_nbextensions' (for fastai with notebooks)  to jupyter-spark Dockerfile   
+# moved  installation of 'spacy', 'mkl-service' 'pygpu'  'libjpeg-turbo=2.*'  'bcolz' 'jax'   'python-graphviz' 'libtiff' 'jupyter_contrib_nbextensions' (for fastai with notebooks) 'cudatoolkit=10.1' 'jpeg' 'pydot' to jupyter-spark Dockerfile   
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
     hyperopt==0.2.* \
