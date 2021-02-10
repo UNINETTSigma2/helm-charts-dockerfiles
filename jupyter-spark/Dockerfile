@@ -28,7 +28,7 @@ RUN eatmydata conda install --quiet --update-all --yes -c conda-forge \
     'python-graphviz' \
     'jupyter_contrib_nbextensions' \
     'pydot' \
-    'cudatoolkit=10.1' \
+    'cudatoolkit=10.0' \
     'tqdm=4.56.0' \
     'yapf=0.30.0' \
     'nbdime=2.1.0' \
