@@ -4,6 +4,7 @@ USER root
 COPY dataporten.py /usr/local/lib/python3.6/dist-packages/oauthenticator/
 COPY z2jh.py jupyterhub_config.py /srv/
 
+
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
     APP_GID=999 \

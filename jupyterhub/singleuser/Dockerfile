@@ -30,6 +30,7 @@ RUN conda install --quiet --yes -c conda-forge \
 
 
 FROM jupyter/datascience-notebook:hub-1.1.0
+
 LABEL maintainer Uninett As <system@uninett.no>
 USER root
 
