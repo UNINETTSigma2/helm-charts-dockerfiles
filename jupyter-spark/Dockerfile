@@ -11,6 +11,7 @@
 FROM jupyter/all-spark-notebook:ubuntu-18.04 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
+    NODE_OPTIONS --max-old-space-size=4096 \
     NB_UID=999 \
     NB_GID=999
 
@@ -45,7 +46,7 @@ RUN conda config --set channel_priority strict && \
 
 RUN conda create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean  --all -f -y && conda deactivate'
 
-ENV NODE_OPTIONS --max-old-space-size=4096
+
 RUN jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
@@ -99,39 +100,38 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pkg-config \
         software-properties-common \
         unzip \
-        "openmpi-bin" && ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
+	python3 \
+    	python3-dev \
+    	python3-venv \
+    	python3-pip \
+    	python3-wheel \
+    	python3-ipykernel \
+    	openssh-client=1:7.6p1-4ubuntu0.3 \
+    	nano=2.9.3-2 \
+    	htop=2.1.0-3 \
+    	less=487-0.1 \
+    	net-tools=1.60+git20161116.90da8a0-1ubuntu1 \
+    	man-db=2.8.3-2ubuntu0.1 \
+    	iputils-ping=3:20161105-1ubuntu3 \
+    	screen=4.6.2-1ubuntu1 \
+    	tmux=2.6-3ubuntu0.2 \
+    	liblapack-dev=3.7.1-4ubuntu1 \
+    	libopenblas-dev=0.2.20+ds-4 \
+    	graphviz=2.40.1-2 \
+    	cmake=3.10.2-1ubuntu2.18.04.1 \
+    	rsync=3.1.2-2.1ubuntu1.1 \
+    	p7zip-full=16.02+dfsg-6 \
+    	unrar=1:5.5.8-1 \
+    	vim=2:8.0.1453-1ubuntu1.4 \
+        "openmpi-bin" && \ 
+	apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*  && \ 
+	ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
 
 RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     ln -s /usr/local/cuda/include/* /usr/include/
 
-
-RUN apt update && apt-get install --no-install-recommends -y \
-    python3 \
-    python3-dev \
-    python3-venv \
-    python3-pip \
-    python3-wheel \
-    python3-ipykernel \
-    openssh-client=1:7.6p1-4ubuntu0.3 \
-    nano=2.9.3-2 \
-    htop=2.1.0-3 \
-    less=487-0.1 \
-    net-tools=1.60+git20161116.90da8a0-1ubuntu1 \
-    man-db=2.8.3-2ubuntu0.1 \
-    iputils-ping=3:20161105-1ubuntu3 \
-    screen=4.6.2-1ubuntu1 \
-    tmux=2.6-3ubuntu0.2 \
-    liblapack-dev=3.7.1-4ubuntu1 \
-    libopenblas-dev=0.2.20+ds-4 \
-    graphviz=2.40.1-2 \
-    cmake=3.10.2-1ubuntu2.18.04.1 \
-    rsync=3.1.2-2.1ubuntu1.1 \
-    p7zip-full=16.02+dfsg-6 \
-    unrar=1:5.5.8-1 \
-    vim=2:8.0.1453-1ubuntu1.4 && \
-    apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
 ENV TZ="Europe/Oslo" \
 	APP_UID=999 \
@@ -141,15 +141,14 @@ ENV TZ="Europe/Oslo" \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.3.0-incubating \
 	PKG_R_VERSION=4.0.3 \
-	PKG_VS_CODE_VERSION=3.7.2
+	PKG_VS_CODE_VERSION=3.7.2  \
+	HOME=/home/notebook \
+    	PATH=$PATH:$SPARK_HOME/bin \
+    	XDG_CACHE_HOME=/home/notebook/.cache/
 
 RUN groupadd -g "$APP_GID" notebook && \
 	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
 	usermod -G users notebook
-
-ENV HOME=/home/notebook \
-    PATH=$PATH:$SPARK_HOME/bin \
-    XDG_CACHE_HOME=/home/notebook/.cache/
 
 COPY start-*.sh /usr/local/bin/
 COPY mem_parser.py /usr/local/bin/
