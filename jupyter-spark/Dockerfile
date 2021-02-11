@@ -63,7 +63,7 @@ RUN jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe &
     jupyter nbextension enable --py nbresuse --sys-prefix && \
     jupyter lab build
 
-RUN fix-permissions $CONDA_DIR
+
 
 FROM jupyter/all-spark-notebook:ubuntu-18.04
 LABEL maintainer Uninett As <system@uninett.no>
@@ -136,7 +136,9 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
 ENV TZ="Europe/Oslo" \
 	APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=6.2.x \
+	NB_UID=999 \
+	NB_GID=999 \
+    PKG_JUPYTER_NOTEBOOK_VERSION=6.2.x \
 	PKG_SPARK_VERSION=${APACHE_SPARK_VERSION} \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.3.0-incubating \
@@ -171,6 +173,8 @@ RUN chmod go+w -R "$HOME"
 RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \
     && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
     && ldconfig
+
+RUN fix-permissions $CONDA_DIR
 
 USER notebook
 RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*  && \
