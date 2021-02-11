@@ -43,7 +43,7 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     isoweek==1.3.3 \
     kaggle==1.5.* \
     hypothesis==6.0.4 \
-    mlflow== 1.13.1 \
+    mlflow==1.13.1 \
     "lightgbm==$PKG_LIGHTGBM_VERSION" \
     opencv-python==4.5.* \
     "tensorflow==$PKG_TENSORFLOW_VERSION" \
