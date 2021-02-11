@@ -1,4 +1,4 @@
-FROM thtb2access/jupyter-spark:ubuntu-1804-mod
+FROM quay.io/uninett/jupyter-spark:20210211-fcb9f28
 
 LABEL maintainer Uninett As <system@uninett.no>
 
@@ -52,7 +52,7 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     "xgboost==$PKG_XGBOOST_VERSION" \
     "catboost==$PKG_CATBOOST_VERSION" \
     sentencepiece \
-    "fastai=$PKG_FASTAI_VERSION" \
+    "fastai==$PKG_FASTAI_VERSION" \
     torch \
     torchtext \
     torchvision \
