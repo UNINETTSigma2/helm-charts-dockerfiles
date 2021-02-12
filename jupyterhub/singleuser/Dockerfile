@@ -4,15 +4,15 @@
 # Minimal: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/base-notebook/Dockerfile
 
-FROM jupyter/datascience-notebook:hub-1.1.0 as miniconda
+FROM jupyter/datascience-notebook:ubuntu-18.04 as miniconda
 RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda install --quiet --yes -c conda-forge \
     'nbconvert' \
     'tqdm' \
     'yapf==0.29*' \
     'rise==5.6.*' \
-    'nbdime==2.*' && \
-    conda install -q --yes -c conda-forge \
+    'nbdime==2.*' \
+    'jupyterhub=1.1.0' \
     'jupyterlab==2.1.*' \
     'jupyter_contrib_nbextensions==0.5*' \
     'jupyter-server-proxy==1.4*' && \
@@ -44,10 +44,10 @@ RUN groupadd -g "$APP_GID" notebook && \
 COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
 # hadolint ignore=DL3002
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN apt-get update && apt-get install -y --no-install-recommends gnupg2=2.2.4-1ubuntu1 && \
-    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub | apt-key add - && \
-    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
-    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
+RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 && \
+    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub | apt-key add - && \
+    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
+    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
 # Refer here for versions https://gitlab.com/nvidia/cuda/blob/ubuntu16.04/10.0/base/Dockerfile,
@@ -90,19 +90,19 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-	openssh-client=1:7.6p1-4 \
+	openssh-client=1:7.6p1-4ubuntu0.3 \
 	less=487-0.1 \
 	net-tools=1.60+git20161116.90da8a0-1ubuntu1 \
-	man-db=2.8.3-2 \
-	iputils-ping=3:20161105-1ubuntu2 \
-	screen=4.6.2-1 \
-	tmux=2.6-3 \
+	man-db=2.8.3-2ubuntu0.1 \
+	iputils-ping=3:20161105-1ubuntu3 \
+	screen=4.6.2-1ubuntu1 \
+	tmux=2.6-3ubuntu0.2 \
 	graphviz=2.40.1-2 \
 	cmake \
-	rsync=3.1.2-2.1ubuntu1 \
+	rsync=3.1.2-2.1ubuntu1.1 \
 	p7zip-full=16.02+dfsg-6 \
 	tzdata \
-	vim \
+	vim=2:8.0.1453-1ubuntu1.4 \
 	unrar=1:5.5.8-1 \
         "openmpi-bin=2.1.1-8" && \
     apt-get -y autoremove && \
