@@ -28,7 +28,7 @@ RUN conda config --set channel_priority strict && \
     'python-graphviz=0.16' \
     'jupyter_contrib_nbextensions=0.5.1' \
     'pydot=1.4.1' \
-    'cudatoolkit=10.2' \
+    'cudatoolkit=10.0' \
     'tqdm=4.56.0' \
     'yapf=0.30.0' \
     'nbdime=2.1.0' \
@@ -76,9 +76,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 && \
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
-ENV PKG_CUDA_VERSION=10.2 \
+ENV PKG_CUDA_VERSION=10.0 \
     NCCL_VERSION=2.7.6 \
-    PKG_CUDNN_VERSION=8.1.0.77-1
+    PKG_CUDNN_VERSION=7.6.2.24-1
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -94,7 +94,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         cuda-cusparse-${PKG_CUDA_VERSION/./-} \
         cuda-cusparse-dev-${PKG_CUDA_VERSION/./-} \
         curl \
-        libcudnn8=${PKG_CUDNN_VERSION}+cuda${PKG_CUDA_VERSION} \
+        libcudnn7=${PKG_CUDNN_VERSION}+cuda${PKG_CUDA_VERSION} \
         libfreetype6-dev \
         libhdf5-serial-dev \
         libzmq3-dev \
