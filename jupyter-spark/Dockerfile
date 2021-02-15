@@ -124,9 +124,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     	p7zip-full=16.02+dfsg-6 \
     	unrar=1:5.5.8-1 \
     	vim=2:8.0.1453-1ubuntu1.4 \
-        "openmpi-bin" && \
+        "openmpi-bin" \
         openssl=1.1.1-1ubuntu2.1~18.04.7 \
-        sudo=1.8.21p2-3ubuntu1.4 \
+        sudo=1.8.21p2-3ubuntu1.4  && \
 	apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*  && \ 
 	ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
 
