@@ -18,17 +18,17 @@ ENV DEBIAN_FRONTEND noninteractive \
 RUN apt update && apt install -y eatmydata apt-utils 
 RUN conda config --set channel_priority strict && \
     eatmydata conda install --quiet --update-all --yes -c conda-forge \
-    'spacy' \
-    'mkl-service' \
-    'pygpu' \
+    'spacy=3.0.1' \
+    'mkl-service=2.3.0' \
+    'pygpu=0.7.6' \
     'libjpeg-turbo=2.*' \
-    'bcolz' \
-    'jax'   \
-    'libtiff' \
-    'python-graphviz' \
-    'jupyter_contrib_nbextensions' \
-    'pydot' \
-    'cudatoolkit=10.0' \
+    'bcolz=1.2.1' \
+    'jax=0.2.9'   \
+    'libtiff=4.2.0' \
+    'python-graphviz=0.16' \
+    'jupyter_contrib_nbextensions=0.5.1' \
+    'pydot=1.4.1' \
+    'cudatoolkit=10.2' \
     'tqdm=4.56.0' \
     'yapf=0.30.0' \
     'nbdime=2.1.0' \
@@ -76,9 +76,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 && \
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
-ENV PKG_CUDA_VERSION=10.0 \
+ENV PKG_CUDA_VERSION=10.2 \
     NCCL_VERSION=2.7.6 \
-    PKG_CUDNN_VERSION=7.6.2.24-1    
+    PKG_CUDNN_VERSION=8.1.0.77-1
+
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
@@ -93,7 +94,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         cuda-cusparse-${PKG_CUDA_VERSION/./-} \
         cuda-cusparse-dev-${PKG_CUDA_VERSION/./-} \
         curl \
-        libcudnn7=${PKG_CUDNN_VERSION}+cuda${PKG_CUDA_VERSION} \
+        libcudnn8=${PKG_CUDNN_VERSION}+cuda${PKG_CUDA_VERSION} \
         libfreetype6-dev \
         libhdf5-serial-dev \
         libzmq3-dev \
@@ -123,7 +124,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     	p7zip-full=16.02+dfsg-6 \
     	unrar=1:5.5.8-1 \
     	vim=2:8.0.1453-1ubuntu1.4 \
-        "openmpi-bin" && \ 
+        "openmpi-bin" && \
+        openssl=1.1.1-1ubuntu2.1~18.04.7 \
+        sudo=1.8.21p2-3ubuntu1.4 \
 	apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*  && \ 
 	ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
 
