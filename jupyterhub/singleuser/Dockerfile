@@ -5,8 +5,9 @@
 # Base: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/base-notebook/Dockerfile
 
 FROM jupyter/datascience-notebook:ubuntu-18.04 as miniconda
-RUN conda update conda python && pip install -U 'pip==18.*'
-RUN conda install --quiet --yes -c conda-forge \
+# RUN conda update conda python && pip install -U 'pip==18.*'
+RUN conda config --set channel_priority strict && \
+    conda install --quiet --yes --update-all -c conda-forge \
     'nbconvert' \
     'tqdm' \
     'yapf==0.29*' \
@@ -29,7 +30,7 @@ RUN conda install --quiet --yes -c conda-forge \
     jupyter nbextension enable --py nbresuse --sys-prefix
 
 
-FROM jupyter/datascience-notebook:hub-1.1.0
+FROM jupyter/datascience-notebook:ubuntu-18.04
 
 LABEL maintainer Uninett As <system@uninett.no>
 USER root
