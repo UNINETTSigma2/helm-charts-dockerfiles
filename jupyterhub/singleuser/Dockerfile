@@ -13,7 +13,7 @@ RUN conda config --set channel_priority strict && \
     'yapf==0.29*' \
     'rise==5.6.*' \
     'nbdime==2.*' \
-    'jupyterhub=1.1.0' \
+    'jupyterhub==1.1.0' \
     'jupyterlab==2.1.*' \
     'jupyter_contrib_nbextensions==0.5*' \
     'jupyter-server-proxy==1.4*' && \
@@ -105,7 +105,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	tzdata \
 	vim=2:8.0.1453-1ubuntu1.4 \
 	unrar=1:5.5.8-1 \
-        "openmpi-bin=2.1.1-8" && \
+	ca-certificates=20210119~18.04.1 \
+    sudo=1.8.21p2-3ubuntu1.4 \
+    inkscape=0.92.3-1 \
+    "openmpi-bin=2.1.1-8" && \
     apt-get -y autoremove && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* && \
