@@ -53,6 +53,7 @@ RUN jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe &
     'plotlywidget@4.14.3' \
     'jupyterlab-plotly@4.14.3' \
     '@jupyterlab/github' \
+    'jupyter-matplotlib' \
     'nbdime-jupyterlab' \
     '@jupyterlab/toc' \
     '@jupyterlab/server-proxy' \
@@ -164,7 +165,7 @@ RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/
 
 RUN wget -q "https://github.com/cdr/code-server/releases/download/v$PKG_VS_CODE_VERSION/code-server-$PKG_VS_CODE_VERSION-linux-amd64.tar.gz"  && \
     tar zxf "code-server-$PKG_VS_CODE_VERSION-linux-amd64.tar.gz" && \
-    mv "code-server-$PKG_VS_CODE_VERSION-linux-amd64/code-server" /usr/local/bin/ && \
+    mv "code-server-$PKG_VS_CODE_VERSION-linux-amd64/bin/code-server" /usr/local/bin/ && \
     rm -rf "code-server-$PKG_VS_CODE_VERSION-linux-amd64/*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
 
 RUN chown notebook:notebook $CONDA_DIR "$CONDA_DIR/.condatmp"
