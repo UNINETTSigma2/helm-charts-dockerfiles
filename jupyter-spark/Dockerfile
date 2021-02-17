@@ -18,6 +18,7 @@ ENV DEBIAN_FRONTEND noninteractive \
 RUN apt update && apt install -y eatmydata apt-utils 
 RUN conda config --set channel_priority strict && \
     eatmydata conda install --quiet --update-all --yes -c conda-forge \
+    'xarray' \
     'spacy=3.0.1' \
     'mkl-service=2.3.0' \
     'pygpu=0.7.6' \
@@ -128,6 +129,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         "openmpi-bin" \
         ca-certificates=20210119~18.04.1 \
         sudo=1.8.21p2-3ubuntu1.4  && \
+        apt-get install -y --only-upgrade openssl && \
 	apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*  && \ 
 	ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
 
