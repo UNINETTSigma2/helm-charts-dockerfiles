@@ -18,9 +18,9 @@ ENV DEBIAN_FRONTEND noninteractive \
 RUN apt update && apt install -y eatmydata apt-utils 
 RUN conda config --set channel_priority strict && \
     eatmydata conda install --quiet --update-all --yes -c conda-forge \
-    'xarray' \
-    'ipympl' \
-    'nodejs' \
+    'xarray=0.16.2' \
+    'ipympl=0.6.3' \
+    'nodejs=15.3.0' \
     'spacy=3.0.1' \
     'mkl-service=2.3.0' \
     'pygpu=0.7.6' \
@@ -151,7 +151,7 @@ ENV TZ="Europe/Oslo" \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.3.0-incubating \
 	PKG_R_VERSION=4.0.3 \
-	PKG_VS_CODE_VERSION=3.9.0  \
+	PKG_VS_CODE_VERSION=2.1692-vsc1.39.2  \
 	HOME=/home/notebook \
     	PATH=$PATH:$SPARK_HOME/bin \
     	XDG_CACHE_HOME=/home/notebook/.cache/
@@ -169,7 +169,7 @@ RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/
 
 RUN wget -q "https://github.com/cdr/code-server/releases/download/v$PKG_VS_CODE_VERSION/code-server-$PKG_VS_CODE_VERSION-linux-amd64.tar.gz"  && \
     tar zxf "code-server-$PKG_VS_CODE_VERSION-linux-amd64.tar.gz" && \
-    mv "code-server-$PKG_VS_CODE_VERSION-linux-amd64/bin/code-server" /usr/local/bin/ && \
+    mv "code-server-$PKG_VS_CODE_VERSION-linux-amd64/code-server" /usr/local/bin/ && \
     rm -rf "code-server-$PKG_VS_CODE_VERSION-linux-amd64/*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
 
 RUN chown notebook:notebook $CONDA_DIR "$CONDA_DIR/.condatmp"
