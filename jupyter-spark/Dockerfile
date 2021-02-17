@@ -167,10 +167,13 @@ COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
 COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/minimal /usr/local/share/jupyter/kernels/minimal
 RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
 
-RUN wget -q "https://github.com/cdr/code-server/releases/download/v$PKG_VS_CODE_VERSION/code-server-$PKG_VS_CODE_VERSION-linux-amd64.tar.gz"  && \
-    tar zxf "code-server-$PKG_VS_CODE_VERSION-linux-amd64.tar.gz" && \
-    mv "code-server-$PKG_VS_CODE_VERSION-linux-amd64/code-server" /usr/local/bin/ && \
-    rm -rf "code-server-$PKG_VS_CODE_VERSION-linux-amd64/*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
+
+RUN wget -q "https://github.com/cdr/code-server/releases/download/$PKG_VS_CODE_VERSION/code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz"  && \
+    tar zxf "code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
+    mv "code-server$PKG_VS_CODE_VERSION-linux-x86_64/code-server" /usr/local/bin/ && \
+    rm -rf "code-server$PKG_VS_CODE_VERSION-linux-x86_64/*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
+
+
 
 RUN chown notebook:notebook $CONDA_DIR "$CONDA_DIR/.condatmp"
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
