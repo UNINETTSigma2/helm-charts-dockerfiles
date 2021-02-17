@@ -19,6 +19,8 @@ RUN apt update && apt install -y eatmydata apt-utils
 RUN conda config --set channel_priority strict && \
     eatmydata conda install --quiet --update-all --yes -c conda-forge \
     'xarray' \
+    'ipympl' \
+    'nodejs' \
     'spacy=3.0.1' \
     'mkl-service=2.3.0' \
     'pygpu=0.7.6' \
@@ -149,7 +151,7 @@ ENV TZ="Europe/Oslo" \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.3.0-incubating \
 	PKG_R_VERSION=4.0.3 \
-	PKG_VS_CODE_VERSION=3.7.2  \
+	PKG_VS_CODE_VERSION=3.9.0  \
 	HOME=/home/notebook \
     	PATH=$PATH:$SPARK_HOME/bin \
     	XDG_CACHE_HOME=/home/notebook/.cache/
