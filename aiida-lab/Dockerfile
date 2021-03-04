@@ -1,8 +1,7 @@
 FROM aiidalab/aiidalab-docker-stack:latest
 # Prevent some services from starting, as they require root
-RUN rm /etc/my_init.d/10_start-rabbitmq.sh \
-       /etc/my_init.d/10_syslog-ng.init \
-       /etc/my_init.d/20_create-system-user.sh && \
+RUN rm /etc/my_init.d/20_start-rabbitmq.sh \
+       /etc/my_init.d/10_create-system-user.sh && \
        rm -r /etc/service/cron/
 
 ENV APP_UID=999 \
@@ -22,7 +21,7 @@ RUN groupadd -g "$APP_GID" notebook && \
 RUN chown 999:999 -R /etc/container_environment* /etc/service /etc/runit/runsvdir/default /var/run /var/log && chown 999:999 /opt /var/run /etc/syslog-ng /home
 COPY opt/* /opt/
 COPY etc/service/jupyter-notebook/run /etc/service/jupyter-notebook/run
-COPY my_init.d/start-rabbitmq.sh /etc/my_init.d/10_start-rabbitmq.sh
+COPY my_init.d/start-rabbitmq.sh /etc/my_init.d/20_start-rabbitmq.sh
 COPY my_init.d/start-postgres.sh /etc/my_init.d/30_start-postgres.sh
 
 RUN mkdir -p /home/notebook/.aiida && ln -s /home/notebook /home/aiida && chown -R 999:999 /home/notebook /home/aiida /usr/lib/rabbitmq/ /var/lib/rabbitmq
