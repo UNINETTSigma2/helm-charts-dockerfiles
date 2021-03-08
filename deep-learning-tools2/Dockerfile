@@ -6,13 +6,9 @@ USER root
 
 
 # Add mssql-tools
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-RUN curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
-RUN ACCEPT_EULA=Y apt-get update apt-get install -y --no-install-recommends mssql-tools unixodbc-dev
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        "eatmydata"   \
-        "libglfw3" && \
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add - && \
+    curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list && \
+    apt-get update && ACCEPT_EULA=Y apt-get install -y --no-install-recommends eatmydata libglfw3 mssql-tools unixodbc-dev && \
     apt-get -y autoremove && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
