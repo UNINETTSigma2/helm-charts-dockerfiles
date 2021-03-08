@@ -42,13 +42,14 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     sklearn_pandas==1.8.* \
     feather-format==0.4.* \
     plotnine==0.7.1 \
+    pyodbc \
     isoweek==1.3.3 \
     kaggle==1.5.* \
     hypothesis==6.0.4 \
     mlflow==1.13.1 \
     "lightgbm==$PKG_LIGHTGBM_VERSION" \
     opencv-python==4.5.* \
-    "tensorflow==$PKG_TENSORFLOW_VERSION" \
+    "tensorflow-gpu==$PKG_TENSORFLOW_VERSION" \
     "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
     "tensorboardx==2.0" \
     "xgboost==$PKG_XGBOOST_VERSION" \
