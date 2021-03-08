@@ -1,8 +1,14 @@
-FROM quay.io/uninett/jupyter-spark:20210211-fcb9f28
+FROM quay.io/uninett/jupyter-spark:20210217-9753737
 
 LABEL maintainer Uninett As <system@uninett.no>
 
 USER root
+
+
+# Add mssql-tools
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
+RUN ACCEPT_EULA=Y apt-get update apt-get install -y --no-install-recommends mssql-tools unixodbc-dev
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         "eatmydata"   \
