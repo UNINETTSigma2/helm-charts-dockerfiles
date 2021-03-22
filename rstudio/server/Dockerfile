@@ -1,5 +1,5 @@
 # Upstream Dockerfile https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/Dockerfile_tidyverse_4.0.3
-FROM rocker/tidyverse:4.0.3
+FROM rocker/tidyverse:4.0.4
 
 RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
     apt-utils \
@@ -27,7 +27,7 @@ ENV TZ="Europe/Oslo" \
     TINI_VERSION=v0.18.0 \
     APP_UID=999 \
     APP_GID=999 \
-    PKG_R_VERSION=4.0.1 \
+    PKG_R_VERSION=4.0.4 \
     PKG_RSTUDIO_VERSION=1.2.1335 \
     PKG_SHINY_VERSION=1.5.15.953
 
