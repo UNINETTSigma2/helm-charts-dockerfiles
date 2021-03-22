@@ -15,11 +15,15 @@ RUN conda config --set channel_priority strict && \
     'nbdime==2.*' \
     'jupyterhub==1.1.0' \
     'jupyterlab==2.1.*' \
+    'ipympl==0.5.8' \
+    'nodejs==15.3.0' \
     'jupyter_contrib_nbextensions==0.5*' \
     'jupyter-server-proxy==1.4*' && \
     jupyter labextension install \
+    '@jupyter-widgets/jupyterlab-manager' \
     '@jupyterlab/github' \
     'nbdime-jupyterlab' \
+    'jupyter-matplotlib@0.7.4' \
     '@jupyterlab/toc' \
     '@jupyterlab/hub-extension' && \
     pip install ipyparallel==6.2.* jupyterlab-github escapism && \
@@ -27,7 +31,8 @@ RUN conda config --set channel_priority strict && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
-    jupyter nbextension enable --py nbresuse --sys-prefix
+    jupyter nbextension enable --py nbresuse --sys-prefix && \
+    conda clean  --all -f -y
 
 
 FROM jupyter/datascience-notebook:ubuntu-18.04
