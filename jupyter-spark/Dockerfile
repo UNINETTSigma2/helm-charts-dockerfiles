@@ -105,7 +105,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pkg-config \
         software-properties-common \
         unzip \
-	python3 \
+	    python3 \
     	python3-dev \
     	python3-venv \
     	python3-pip \
@@ -118,7 +118,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     	net-tools=1.60+git20161116.90da8a0-1ubuntu1 \
     	man-db=2.8.3-2ubuntu0.1 \
     	iputils-ping=3:20161105-1ubuntu3 \
-    	screen=4.6.2-1ubuntu1 \
+    	screen=4.6.2-1ubuntu1.1 \
     	tmux=2.6-3ubuntu0.2 \
     	liblapack-dev=3.7.1-4ubuntu1 \
     	libopenblas-dev=0.2.20+ds-4 \
