@@ -28,8 +28,8 @@ ENV TZ="Europe/Oslo" \
     APP_UID=999 \
     APP_GID=999 \
     PKG_R_VERSION=4.0.4 \
-    PKG_RSTUDIO_VERSION=1.2.1335 \
-    PKG_SHINY_VERSION=1.5.15.953
+    PKG_RSTUDIO_VERSION=1.4.1106 \
+    PKG_SHINY_VERSION=1.5.16.958
 
 # Setup Tini, as S6 does not work when run as non-root users
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
