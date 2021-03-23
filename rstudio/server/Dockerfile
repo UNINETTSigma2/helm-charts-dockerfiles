@@ -56,7 +56,7 @@ RUN chmod go+w -R /home/rstudio && \
     usermod -u "$APP_UID" rstudio && \
     groupmod -g "$APP_GID" rstudio && \
     chmod -R go+w /tmp/downloaded_packages /etc/rstudio/rsession.conf && \
-    chown root:root /var/lib/rstudio-server/rstudio.sqlite
+    rm /var/lib/rstudio-server/rstudio.sqlite
 
 
 USER $APP_UID:$APP_GID
