@@ -4,7 +4,7 @@
 # Minimal: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/base-notebook/Dockerfile
 
-FROM jupyter/datascience-notebook:ubuntu-18.04 as miniconda
+FROM jupyter/scipy-notebook:ubuntu-18.04 as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda config --set channel_priority strict && \
     conda install --quiet --yes --update-all -c conda-forge \
@@ -35,7 +35,7 @@ RUN conda config --set channel_priority strict && \
     conda clean  --all -f -y
 
 
-FROM jupyter/datascience-notebook:ubuntu-18.04
+FROM jupyter/scipy-notebook:ubuntu-18.04
 
 LABEL maintainer Uninett As <system@uninett.no>
 USER root
