@@ -1,5 +1,5 @@
 # Upstream Dockerfile https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/Dockerfile_tidyverse_4.0.3
-FROM rocker/tidyverse:4.0.4
+FROM rocker/tidyverse:4.0.3
 
 RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
     apt-utils \
@@ -27,8 +27,8 @@ ENV TZ="Europe/Oslo" \
     TINI_VERSION=v0.18.0 \
     APP_UID=999 \
     APP_GID=999 \
-    PKG_R_VERSION=4.0.4 \
-    PKG_RSTUDIO_VERSION=1.4.1106 \
+    PKG_R_VERSION=4.0.1 \
+    PKG_RSTUDIO_VERSION=1.3.1093 \
     PKG_SHINY_VERSION=1.5.16.958
 
 # Setup Tini, as S6 does not work when run as non-root users
@@ -55,8 +55,7 @@ RUN chmod go+w -R /home/rstudio && \
     groupmod -g 988 rstudio-server && \
     usermod -u "$APP_UID" rstudio && \
     groupmod -g "$APP_GID" rstudio && \
-    chmod -R go+w /tmp/downloaded_packages /etc/rstudio/rsession.conf && \
-    rm /var/lib/rstudio-server/rstudio.sqlite
+    chmod -R go+w /tmp/downloaded_packages /etc/rstudio/rsession.conf
 
 
 USER $APP_UID:$APP_GID
@@ -65,4 +64,3 @@ EXPOSE 8787 3838
 LABEL maintainer Uninett AS <system@uninett.no>
 ENTRYPOINT ["/sbin/tini", "-g", "--"]
 CMD ["/usr/local/bin/start.sh"]
-
