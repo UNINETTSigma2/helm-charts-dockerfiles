@@ -1,6 +1,8 @@
 # Upstream Dockerfile https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/Dockerfile_tidyverse_4.0.3
 FROM rocker/tidyverse:4.0.3
 
+RUN apt list |grep rstudio
+
 RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
     apt-utils \
     nano \
@@ -20,6 +22,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
     man-db && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+RUN apt list |grep rstudio
+
 # Setup various variables
 ENV TZ="Europe/Oslo" \
     USERNAME="rstudio" \
@@ -27,7 +31,7 @@ ENV TZ="Europe/Oslo" \
     TINI_VERSION=v0.18.0 \
     APP_UID=999 \
     APP_GID=999 \
-    PKG_R_VERSION=4.0.1 \
+    PKG_R_VERSION=4.0.3 \
     PKG_RSTUDIO_VERSION=1.3.1093 \
     PKG_SHINY_VERSION=1.5.16.958
 
