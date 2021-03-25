@@ -1,7 +1,18 @@
-# Upstream Dockerfile https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/Dockerfile_tidyverse_4.0.3
-FROM rocker/tidyverse:4.0.2
+# Upstream Dockerfile https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/Dockerfile_tidyverse_4.0.4
 
-RUN apt list |grep rstudio
+FROM rocker/r-ver:4.0.4
+
+LABEL maintainer Uninett AS <system@uninett.no>
+
+ENV S6_VERSION=v2.1.0.2
+ENV RSTUDIO_VERSION=1.3.1093
+ENV PATH=/usr/lib/rstudio-server/bin:$PATH
+
+
+RUN /rocker_scripts/install_rstudio.sh
+RUN /rocker_scripts/install_pandoc.sh
+
+RUN /rocker_scripts/install_tidyverse.sh
 
 RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
     apt-utils \
@@ -22,8 +33,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
     man-db && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN apt list |grep rstudio
-
 # Setup various variables
 ENV TZ="Europe/Oslo" \
     USERNAME="rstudio" \
@@ -31,7 +40,7 @@ ENV TZ="Europe/Oslo" \
     TINI_VERSION=v0.18.0 \
     APP_UID=999 \
     APP_GID=999 \
-    PKG_R_VERSION=4.0.2 \
+    PKG_R_VERSION=4.0.1 \
     PKG_RSTUDIO_VERSION=1.3.1093 \
     PKG_SHINY_VERSION=1.5.16.958
 
@@ -65,6 +74,6 @@ RUN chmod go+w -R /home/rstudio && \
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
 EXPOSE 8787 3838
-LABEL maintainer Uninett AS <system@uninett.no>
+
 ENTRYPOINT ["/sbin/tini", "-g", "--"]
 CMD ["/usr/local/bin/start.sh"]
