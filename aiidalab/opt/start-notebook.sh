@@ -7,7 +7,7 @@ set -x
 export SHELL=/bin/bash
 
 APP_DIR="$(/opt/get-app-dir.sh)"
-RELEASE_NAME="${RELEASE_NAME:-aiida-lab}"
+RELEASE_NAME="${RELEASE_NAME:-aiidalab}"
 
 export JUPYTER_CONFIG_DIR=$APP_DIR/.config/jupyter
 export JUPYTER_DATA_DIR=$APP_DIR/.config/jupyter/data

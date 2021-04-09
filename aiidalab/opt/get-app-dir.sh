@@ -1,3 +1,3 @@
 #!/bin/bash
-RELEASE_NAME="${RELEASE_NAME:-aiida-lab}"
+RELEASE_NAME="${RELEASE_NAME:-aiidalab}"
 echo "/home/${SYSTEM_USER}/.tools/$RELEASE_NAME"
