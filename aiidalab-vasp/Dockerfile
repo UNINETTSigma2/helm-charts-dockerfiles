@@ -1,2 +1,2 @@
-FROM quay.io/uninett/aiida-lab:latest
+FROM quay.io/uninett/aiidalab:latest
 RUN pip install aiida-vasp
