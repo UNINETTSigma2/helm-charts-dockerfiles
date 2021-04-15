@@ -2,6 +2,8 @@ FROM aiidalab/aiidalab-docker-stack:latest
 # Prevent some services from starting, as they require root
 RUN rm /etc/my_init.d/20_start-rabbitmq.sh \
        /etc/my_init.d/30_start-postgres.sh \
+       /etc/my_init.d/10_syslog-ng.init \
+       /etc/my_init.post_shutdown.d/10_syslog-ng.shutdown \
        /etc/my_init.d/10_create-system-user.sh && \
        rm -r /etc/service/cron/
 
@@ -22,6 +24,8 @@ RUN groupadd -g "$APP_GID" notebook && \
 
 RUN chown 999:999 -R /etc/container_environment* /etc/service /etc/runit/runsvdir/default /var/run /var/log && chown 999:999 /opt /var/run /etc/syslog-ng /home
 COPY opt/* /opt/
+RUN chown 999:999 -R /opt/aiidalab-home
+
 COPY etc/service/jupyter-notebook/run /etc/service/jupyter-notebook/run
 
 # Replace the AiiDA startup scripts for RabbitMQ and Postgresql with local ones
