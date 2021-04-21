@@ -28,7 +28,7 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 # might also be useful for CUDA packages
 #
 ENV PKG_CUDA_VERSION=10.0.130 \
-    NCCL_VERSION=2.7.6 \
+    NCCL_VERSION=2.4.2 \
     PKG_CUDNN_VERSION=7.5.0.56
 
 ## Connection ports for controlling the UI:
