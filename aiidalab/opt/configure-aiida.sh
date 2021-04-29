@@ -5,8 +5,7 @@
 # Debugging.
 set -x
 
-APP_DIR="$(/opt/get-app-dir.sh)"
-export AIIDA_PATH="$APP_DIR/.aiida"
+export AIIDA_PATH="/home/${SYSTEM_USER}/.aiida"
 mkdir -p $AIIDA_PATH
 
 # Environment.
@@ -47,7 +46,7 @@ if [[ ${NEED_SETUP_PROFILE} == true ]]; then
         --hostname "${computer_name}"                              \
         --transport local                                          \
         --scheduler direct                                         \
-        --work-dir "$APP_DIR/aiida_run"                          \
+        --work-dir /home/aiida/aiida_run/                          \
         --mpirun-command "mpirun -np {tot_num_mpiprocs}"           \
         --mpiprocs-per-machine 1 &&                                \
     verdi computer configure local "${computer_name}"              \
