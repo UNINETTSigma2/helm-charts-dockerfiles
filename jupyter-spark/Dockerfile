@@ -21,16 +21,7 @@ RUN conda config --set channel_priority strict && \
     'xarray=0.16.2' \
     'ipympl=0.6.3' \
     'nodejs=15.3.0' \
-    'spacy=3.0.1' \
-    'mkl-service=2.3.0' \
-    'pygpu=0.7.6' \
-    'libjpeg-turbo=2.*' \
-    'bcolz=1.2.1' \
-    'jax=0.2.9'   \
-    'libtiff=4.2.0' \
-    'python-graphviz=0.16' \
     'jupyter_contrib_nbextensions=0.5.1' \
-    'pydot=1.4.1' \
     'cudatoolkit=10.0' \
     'tqdm=4.56.0' \
     'yapf=0.30.0' \
@@ -46,6 +37,16 @@ RUN conda config --set channel_priority strict && \
     'jupyterlab_iframe=0.3.0' \
     'cufflinks-py=0.17.3' \
     && conda clean  --all -f -y
+
+#spacy=3.0.1' \
+ #    'mkl-service=2.3.0' \
+ #    'pygpu=0.7.6' \
+ #    'libjpeg-turbo=2.*' \
+ #    'bcolz=1.2.1' \
+ #    'jax=0.2.9'   \
+ #    'libtiff=4.2.0' \
+ #    'python-graphviz=0.16' \
+ #'pydot=1.4.1' \
 
 RUN conda create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean  --all -f -y && conda deactivate'
 
