@@ -29,9 +29,22 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     PKG_LIGHTGBM_VERSION=3.1.1 \
     PKG_FASTAI_VERSION=1.0.60
     
-# moved  installation of 'spacy', 'mkl-service' 'pygpu'  'libjpeg-turbo=2.*'  'bcolz' 'jax'   'python-graphviz' 'libtiff' 'jupyter_contrib_nbextensions' (for fastai with notebooks) 'cudatoolkit=10.1' 'jpeg' 'pydot' to jupyter-spark Dockerfile   
+# moved  installation of 'cudatoolkit=10.1' 'jupyter_contrib_nbextensions' (for fastai with notebooks) to jupyter-spark Dockerfile
+
+ #    'mkl-service=2.3.0' \
+ #    'libjpeg-turbo=2.*' \
+ #    'libtiff=4.2.0' \
+
+#needs conda : mkl-service=2.3.0 libjpeg-turbo=2.*  'libtiff=4.2.0'
+#pygpu=0.7.6 is outdated, last release in 2018, only compatible with cuda 9.1 and documentation points to a dead link
+#bcolz=1.2.1 has declared the package officially unmaintained on github, last release was 2018
+#'python-graphviz=0.16' in conda becomes graphviz in pip
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
+    spacy==3.0.6 \
+    jax==0.2.13 \
+    graphviz==0.16  \
+    pydot==1.4.2 \
     hyperopt==0.2.* \
     pycuda==2019.1.2 \
     "keras==$PKG_KERAS_VERSION" \
