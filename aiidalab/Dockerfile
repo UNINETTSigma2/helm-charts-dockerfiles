@@ -1,4 +1,5 @@
 FROM aiidalab/aiidalab-docker-stack:latest
+
 # Prevent some services from starting, as they require root
 RUN rm /etc/my_init.d/20_start-rabbitmq.sh \
        /etc/my_init.d/30_start-postgres.sh \
