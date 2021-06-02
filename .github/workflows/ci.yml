@@ -1,0 +1,27 @@
+# Build container images according to https://github.com/marketplace/actions/build-and-push-docker-images
+name: ci
+
+#on: [push, pull_request]
+#on:
+#  push:
+#    branches:
+#      - 'master'
+
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2 
+      - uses: hadolint/hadolint-action@v1.5.0
+        with:
+          dockerfile: Dockerfile
+  build:
+    needs: [linter]
+    # Should consider to use https://github.com/marketplace/actions/build-and-push-docker-images instead, but requires rewrite
+    runs-on: ubuntu-latest
+    services:
+      - docker
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run build script
+        run: ./build.sh
