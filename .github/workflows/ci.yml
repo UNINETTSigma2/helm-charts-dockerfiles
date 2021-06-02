@@ -1,11 +1,10 @@
 # Build container images according to https://github.com/marketplace/actions/build-and-push-docker-images
 name: ci
-
 #on: [push, pull_request]
-#on:
-#  push:
-#    branches:
-#      - 'master'
+on:
+  push:
+    branches:
+      - 'master'
 
 jobs:
   linter:
