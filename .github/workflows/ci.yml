@@ -18,9 +18,9 @@ jobs:
     needs: [linter]
     # Should consider to use https://github.com/marketplace/actions/build-and-push-docker-images instead, but requires rewrite
     runs-on: ubuntu-latest
-    services:
-      - docker
     steps:
       - uses: actions/checkout@v2
+      - name: Login to DockerHub Registry
+        run: echo ${{ secrets.QUAY_PASSWORD }} | docker login -u ${{ secrets.QUAY_USERNAME }} --password-stdin quay.io
       - name: Run build script
         run: ./build.sh
