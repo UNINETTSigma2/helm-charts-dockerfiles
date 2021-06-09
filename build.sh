@@ -19,14 +19,17 @@ function build_image() {
 
 	docker build $MAYBE_ARGS --cache-from="quay.io/uninett/$1:$3" -t $img .
 
-	if [ "$GITHUB_HEAD_REF" != "false" ]; then
+	if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
 	    # Only sett for pull request actions
 	    echo "Skipping push, as this is a pull request"
 	    exit 0;
 	fi
 	# Commented out for testing
-	#docker push $img
-	#docker rmi $img
+	if [ "$TRAVIS_BRANCH" != "master" ]; then
+	    exit 0;
+	fi
+	docker push $img
+	docker rmi $img
     else
         echo "Skipping, image already exist: $img"
     fi
