@@ -29,6 +29,7 @@ jobs:
 
       - name: Check matrix definition
         run: |
+          echo ${{ needs.matrix.outputs.matrix }}
           matrix=${{ needs.matrix.outputs.matrix }}
           echo $matrix
           echo $matrix | jq .
