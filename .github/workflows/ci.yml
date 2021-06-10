@@ -44,7 +44,9 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v2 
+      - uses: actions/checkout@v2
+      - name: check directory content
+        run: ls
       - uses: hadolint/hadolint-action@v1.5.0
         with:
           dockerfile: ${{ matrix.dockerfiles }}
