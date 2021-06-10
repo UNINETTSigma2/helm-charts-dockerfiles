@@ -17,6 +17,7 @@ jobs:
     - id: set-dockerfiles
       run: |
         PATHS_TO_DOCKERFILE=`./paths_to_dockerfile.sh | jq .`
+        echo $PATHS_TO_DOCKERFILE
         echo "::set-output name=matrix::$PATHS_TO_DOCKERFILE"
 
   check-matrix:
