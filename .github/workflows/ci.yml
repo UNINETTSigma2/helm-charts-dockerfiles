@@ -13,6 +13,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-dockerfiles.outputs.matrix }}
     steps:
+    - uses: actions/checkout@v2 
     - id: set-dockerfiles
       run: |
         PATHS_TO_DOCKERFILE=`./paths_to_dockerfile.sh | jq .`
