@@ -17,7 +17,7 @@ jobs:
     - id: set-dockerfiles
       run: |
         #echo "::set-output name=matrix::$(./paths_to_dockerfile.sh | jq .)"
-        echo "::set-output name=matrix::{\"dockerfiles\":[\".aiidalab\/Dockerfile\"]}"
+        echo "::set-output name=matrix::{\"dockerfiles\":[\".aiidalab/Dockerfile\"]}"
 
   check-matrix:
     runs-on: ubuntu-latest
@@ -40,7 +40,7 @@ jobs:
     # Run linter on all located Dockerfiles
     needs: matrix
     # Only run of there are Dockerfiles present
-    if: "join(fromJSON(needs.matrix.outputs.matrix), '') != ''"
+    #if: "join(fromJSON(needs.matrix.outputs.matrix), '') != ''"
     strategy:
       matrix: ${{ fromJson(needs.matrix.outputs.matrix) }}
     steps:
