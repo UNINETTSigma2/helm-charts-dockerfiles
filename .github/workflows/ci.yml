@@ -17,7 +17,7 @@ jobs:
     - id: set-dockerfiles
       run: |
         #echo "::set-output name=matrix::$(./paths_to_dockerfile.sh | jq .)"
-        echo "::set-output name=matrix::{\"dockerfiles\":[\".aiidalab/Dockerfile\"]}"
+        echo "::set-output name=matrix::{\"dockerfiles\":[\"aiidalab/Dockerfile\"]}"
 
   check-matrix:
     runs-on: ubuntu-latest
