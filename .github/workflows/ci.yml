@@ -18,7 +18,7 @@ jobs:
       run: |
         pwd
         ls
-        ./paths_to_dockerfile.sh
+        ./paths_to_dockerfile.sh | jq .
         PATHS_TO_DOCKERFILE=`./paths_to_dockerfile.sh | jq .`
         echo "::set-output name=matrix::$PATHS_TO_DOCKERFILE"
   linter:
