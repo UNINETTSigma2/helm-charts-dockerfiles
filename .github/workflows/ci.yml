@@ -20,7 +20,7 @@ jobs:
         echo "::set-output name=matrix::$PATHS_TO_DOCKERFILE"
   linter:
     # Run linter on all located Dockerfiles
-    needs: [matrix]
+    #needs: [matrix]
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{ fromJson(needs.matrix.outputs.matrix) }}
