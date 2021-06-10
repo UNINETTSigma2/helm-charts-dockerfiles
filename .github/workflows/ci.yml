@@ -23,8 +23,8 @@ jobs:
     needs: matrix
     steps:
       - name: dump matrix
-        run: echo "join(fromJSON(needs.matrix.outputs.matrix), '!!TESTING')"
-      
+        run: echo "fromJSON(needs.matrix.outputs.matrix)"
+
   check-matrix:
     runs-on: ubuntu-latest
     needs: matrix
