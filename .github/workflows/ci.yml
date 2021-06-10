@@ -35,9 +35,11 @@ jobs:
           echo $matrix | jq .
           echo $matrix | json2yaml
   linter:
-    # Run linter on all located Dockerfiles
-    needs: [matrix]
     runs-on: ubuntu-latest
+    # Run linter on all located Dockerfiles
+    needs: matrix
+    # Only run of there are Dockerfiles present
+    if: "join(fromJSON(needs.matrix.outputs.matrix), '') != ''"
     strategy:
       matrix: ${{ fromJson(needs.matrix.outputs.matrix) }}
     steps:
@@ -46,7 +48,7 @@ jobs:
         with:
           dockerfile: ${{ matrix.dockerfiles }}
   build:
-    needs: [linter]
+    needs: linter
     # Should consider to use https://github.com/marketplace/actions/build-and-push-docker-images instead, but requires rewrite
     runs-on: ubuntu-latest
     steps:
