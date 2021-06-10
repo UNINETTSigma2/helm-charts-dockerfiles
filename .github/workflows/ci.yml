@@ -16,6 +16,8 @@ jobs:
     - uses: actions/checkout@v2 
     - id: set-dockerfiles
       run: |
+        pwd
+        ls
         PATHS_TO_DOCKERFILE=`./paths_to_dockerfile.sh | jq .`
         echo "::set-output name=matrix::$PATHS_TO_DOCKERFILE"
   linter:
