@@ -1,26 +1,63 @@
 # Build container images according to https://github.com/marketplace/actions/build-and-push-docker-images
 name: ci
-#on: [push, pull_request]
-on:
-  push:
-    branches:
-      - 'master'
+on: [push, pull_request]
+#on:
+#  push:
+#    branches:
+#      - 'master'
 
 jobs:
+  matrix:
+    # Generate matrix for linting (essentially locating all Dockerfile directories)
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-dockerfiles.outputs.matrix }}
+    steps:
+    - uses: actions/checkout@v2 
+    - id: set-dockerfiles
+      run: |
+        #echo "::set-output name=matrix::$(./paths_to_dockerfile.sh | jq .)"
+        #echo "::set-output name=matrix::{\"dockerfiles\":[\"./aiidalab/Dockerfile\"]}"
+        export PATHS_TO_DOCKERFILE=`find -name Dockerfile | jq -R -s 'split("\n")[:-1]'`
+        echo "::set-output name=matrix::{\"dockerfiles\": $PATHS_TO_DOCKERFILE}"
+  check-matrix:
+    runs-on: ubuntu-latest
+    needs: matrix
+    # Only run of there are Dockerfiles present
+    #if: "join(fromJSON(needs.matrix.outputs.matrix), '') != ''"
+    steps:
+      - name: Install json2yaml
+        run: |
+          sudo npm install -g json2yaml
+
+      - name: Check matrix definition
+        run: |
+          matrix='${{ needs.matrix.outputs.matrix }}'
+          echo $matrix
+          echo $matrix | jq .
+          echo $matrix | json2yaml
   linter:
     runs-on: ubuntu-latest
+    # Run linter on all located Dockerfiles
+    needs: matrix
+    # Only run of there are Dockerfiles present
+    #if: "join(fromJSON(needs.matrix.outputs.matrix), '') != ''"
+    strategy:
+      matrix: ${{ fromJson(needs.matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v2 
+      - uses: actions/checkout@v2
+      - name: check directory content
+        run: ls
       - uses: hadolint/hadolint-action@v1.5.0
         with:
-          dockerfile: Dockerfile
+          dockerfile: ${{ matrix.dockerfiles }}
   build:
-    needs: [linter]
+    needs: linter
     # Should consider to use https://github.com/marketplace/actions/build-and-push-docker-images instead, but requires rewrite
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.QUAY_PASSWORD }} | docker login -u ${{ secrets.QUAY_USERNAME }} --password-stdin quay.io
-      - name: Run build script
-        run: ./build.sh
+#      - name: Run build script
+#        run: ./build.sh
