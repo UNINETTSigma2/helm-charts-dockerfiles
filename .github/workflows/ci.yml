@@ -7,13 +7,27 @@ on:
       - 'master'
 
 jobs:
-  linter:
+  matrix:
+    # Generate matrix for linting (essentially locating all Dockerfile directories)
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-dockerfiles.outputs.matrix }}
+    steps:
+    - id: set-dockerfiles
+      run: |
+        PATHS_TO_DOCKERFILE=`./paths_to_dockerfile.sh | jq .`
+        echo "::set-output name=matrix::$PATHS_TO_DOCKERFILE"
+  linter:
+    # Run linter on all located Dockerfiles
+    needs: [matrix]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v2 
       - uses: hadolint/hadolint-action@v1.5.0
         with:
-          dockerfile: Dockerfile
+          dockerfile: ${{ matrix.dockerfiles }}
   build:
     needs: [linter]
     # Should consider to use https://github.com/marketplace/actions/build-and-push-docker-images instead, but requires rewrite
