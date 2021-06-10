@@ -23,7 +23,8 @@ jobs:
     #needs: [matrix]
     runs-on: ubuntu-latest
     steps:
-      run: echo "TESTING"
+      - name: test
+        run: echo "TESTING"
     # strategy:
     #   matrix: ${{ fromJson(needs.matrix.outputs.matrix) }}
     # steps:
