@@ -26,19 +26,21 @@ jobs:
     needs: matrix
     # Only run of there are Dockerfiles present
     #if: "join(fromJSON(needs.matrix.outputs.matrix), '') != ''"
+    strategy:
+      matrix: ${{ fromJson(needs.matrix.outputs.matrix) }}
     steps:
       - name: Install json2yaml
         run: |
           sudo npm install -g json2yaml
       - name: Check matrix definition
         run: |
-          matrix='${{ needs.matrix.outputs.matrix }}'
           echo $matrix
           echo $matrix | jq .
           echo $matrix | json2yaml
 
   linter:
     runs-on: ubuntu-latest
+    needs: [matrix, check-matrix]
     steps:
       - uses: actions/checkout@v2 
       - uses: hadolint/hadolint-action@v1.5.0
