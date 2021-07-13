@@ -7,6 +7,36 @@ on:
       - 'master'
 
 jobs:
+  matrix:
+    # Generate matrix for linting (essentially locating all Dockerfile directories)
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-dockerfiles.outputs.matrix }}
+    steps:
+    - uses: actions/checkout@v2 
+    - id: set-dockerfiles
+      run: |
+        #echo "::set-output name=matrix::$(./paths_to_dockerfile.sh | jq .)"
+        #echo "::set-output name=matrix::{\"dockerfiles\":[\"./aiidalab/Dockerfile\"]}"
+        export PATHS_TO_DOCKERFILE=`find -name Dockerfile | jq -R -s 'split("\n")[:-1]'`
+        echo "::set-output name=matrix::{\"dockerfiles\": $PATHS_TO_DOCKERFILE}"
+
+  check-matrix:
+    runs-on: ubuntu-latest
+    needs: matrix
+    # Only run of there are Dockerfiles present
+    #if: "join(fromJSON(needs.matrix.outputs.matrix), '') != ''"
+    steps:
+      - name: Install json2yaml
+        run: |
+          sudo npm install -g json2yaml
+      - name: Check matrix definition
+        run: |
+          matrix='${{ needs.matrix.outputs.matrix }}'
+          echo $matrix
+          echo $matrix | jq .
+          echo $matrix | json2yaml
+
   linter:
     runs-on: ubuntu-latest
     steps:
@@ -14,6 +44,7 @@ jobs:
       - uses: hadolint/hadolint-action@v1.5.0
         with:
           dockerfile: Dockerfile
+
   build:
     needs: [linter]
     # Should consider to use https://github.com/marketplace/actions/build-and-push-docker-images instead, but requires rewrite
