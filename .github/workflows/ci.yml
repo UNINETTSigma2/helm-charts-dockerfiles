@@ -27,7 +27,7 @@ jobs:
     # Only run of there are Dockerfiles present
     #if: "join(fromJSON(needs.matrix.outputs.matrix), '') != ''"
     strategy:
-      matrix: ${{ needs.matrix.outputs.matrix }}
+      matrix: ${{fromJSON(needs.matrix.outputs.matrix)}}
     steps:
       - name: Install json2yaml
         run: |
