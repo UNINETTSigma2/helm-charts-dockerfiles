@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin quay.io
+#echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin quay.io
 
 function build_image() {
     img="quay.io/uninett/$1:$2"
