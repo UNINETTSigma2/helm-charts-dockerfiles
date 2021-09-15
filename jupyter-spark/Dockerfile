@@ -8,7 +8,7 @@
 # Base: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/base-notebook/Dockerfile
 
 
-FROM jupyter/all-spark-notebook:ubuntu-18.04 as miniconda
+FROM jupyter/all-spark-notebook:ubuntu-20.04 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -18,24 +18,25 @@ ENV DEBIAN_FRONTEND noninteractive \
 RUN apt update && apt install -y eatmydata apt-utils 
 RUN conda config --set channel_priority strict && \
     eatmydata conda install --quiet --update-all --yes -c conda-forge \
-    'xarray=0.16.2' \
-    'ipympl=0.6.3' \
-    'nodejs=15.3.0' \
-    'jupyter_contrib_nbextensions=0.5.1' \
-    'cudatoolkit=10.0' \
-    'tqdm=4.56.0' \
-    'yapf=0.30.0' \
-    'nbdime=2.1.0' \
-    'nbconvert=6.0.7' \
-    'plotly=4.14.3' \
-    'rise=5.7.1' \
-    'ipywidgets=7.6.3' \
-    'jupyter-server-proxy=1.5.3' \
-    'ipykernel=5.4.3' \
-    'ipyparallel=6.3.0' \
-    'jupyterlab=2.2.9' \
-    'jupyterlab_iframe=0.3.0' \
-    'cufflinks-py=0.17.3' \
+    'xarray==0.19.0' \
+    'ipympl==0.7.0' \
+    'nodejs' \
+    'jupyter_contrib_nbextensions==0.5.1' \
+    'cudatoolkit=11.2' \
+    'tqdm==4.62.2' \
+    'yapf==0.31.0' \
+    'nbdime==3.1.0' \
+    'nbconvert==6.1.0' \
+    'decorator==5.0.9' \
+    'plotly==5.3.1' \
+    'rise==5.7.1' \
+    'ipywidgets==7.6.4' \
+    'jupyter-server-proxy==3.1.0' \
+    'ipykernel==6.3.1' \
+    'ipyparallel==6.3.0' \
+    'jupyterlab==3.1.11' \
+    'jupyterlab_iframe==0.4.0' \
+    'cufflinks-py==0.17.3' \
     && conda clean  --all -f -y
 
 #spacy=3.0.1' \
@@ -51,17 +52,16 @@ RUN conda config --set channel_priority strict && \
 RUN conda create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean  --all -f -y && conda deactivate'
 
 
-RUN jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe && \
+RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'plotlywidget@4.14.3' \
-    'jupyterlab-plotly@4.14.3' \
-    '@jupyterlab/github' \
+    'jupyterlab-plotly' \
     'jupyter-matplotlib' \
     'nbdime-jupyterlab' \
     '@jupyterlab/toc' \
     '@jupyterlab/server-proxy' \
-    'jupyterlab_iframe@0.2.3' && \
+    'jupyterlab_iframe@0.4.0' && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
@@ -70,69 +70,69 @@ RUN jupyter serverextension enable --py jupyter_server_proxy jupyterlab_iframe &
 
 
 
-FROM jupyter/all-spark-notebook:ubuntu-18.04
+FROM jupyter/all-spark-notebook:ubuntu-20.04
 LABEL maintainer Uninett As <system@uninett.no>
 
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 && \
-    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub | apt-key add - && \
-    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
-    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
+RUN apt update && apt install -y --no-install-recommends gnupg2 && \
+    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub | apt-key add - && \
+    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
+    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
-ENV PKG_CUDA_VERSION=10.0 \
+ENV PKG_CUDA_VERSION=11.2 \
     NCCL_VERSION=2.7.6 \
-    PKG_CUDNN_VERSION=7.6.2.24-1
+    PKG_CUDNN_VERSION=8.2.4.15-1+cuda11.4
 
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-essential \
-        cuda-command-line-tools-${PKG_CUDA_VERSION/./-} \
-        cuda-cublas-${PKG_CUDA_VERSION/./-} \
-        cuda-cublas-dev-${PKG_CUDA_VERSION/./-} \
-        cuda-cufft-${PKG_CUDA_VERSION/./-} \
-        cuda-curand-${PKG_CUDA_VERSION/./-} \
-        cuda-curand-dev-${PKG_CUDA_VERSION/./-} \
-        cuda-cusolver-${PKG_CUDA_VERSION/./-} \
-        cuda-cusolver-dev-${PKG_CUDA_VERSION/./-} \
-        cuda-cusparse-${PKG_CUDA_VERSION/./-} \
-        cuda-cusparse-dev-${PKG_CUDA_VERSION/./-} \
-        curl \
-        libcudnn7=${PKG_CUDNN_VERSION}+cuda${PKG_CUDA_VERSION} \
-        libfreetype6-dev \
-        libhdf5-serial-dev \
-        libzmq3-dev \
-        pkg-config \
-        software-properties-common \
-        unzip \
+RUN apt update && apt install -y --no-install-recommends \
+       build-essential \
+       cuda-command-line-tools-${PKG_CUDA_VERSION/./-} \
+       libcublas-${PKG_CUDA_VERSION/./-} \
+       libcublas-dev-${PKG_CUDA_VERSION/./-} \
+       libcufft-${PKG_CUDA_VERSION/./-} \
+       libcurand-${PKG_CUDA_VERSION/./-} \
+       libcurand-dev-${PKG_CUDA_VERSION/./-} \
+       libcusolver-${PKG_CUDA_VERSION/./-} \
+       libcusolver-dev-${PKG_CUDA_VERSION/./-} \
+       libcusparse-${PKG_CUDA_VERSION/./-} \
+       libcusparse-dev-${PKG_CUDA_VERSION/./-} \
+       curl \
+       libcudnn8 \
+       libfreetype6-dev \
+       libhdf5-serial-dev \
+       libzmq3-dev \
+       pkg-config \
+       software-properties-common \
+       unzip \
 	    python3 \
-    	python3-dev \
-    	python3-venv \
-    	python3-pip \
-    	python3-wheel \
-    	python3-ipykernel \
-    	openssh-client=1:7.6p1-4ubuntu0.3 \
-    	nano=2.9.3-2 \
-    	htop=2.1.0-3 \
-    	less=487-0.1 \
-    	net-tools=1.60+git20161116.90da8a0-1ubuntu1 \
-    	man-db=2.8.3-2ubuntu0.1 \
-    	iputils-ping=3:20161105-1ubuntu3 \
-    	screen=4.6.2-1ubuntu1.1 \
-    	tmux=2.6-3ubuntu0.2 \
-    	liblapack-dev=3.7.1-4ubuntu1 \
-    	libopenblas-dev=0.2.20+ds-4 \
-    	graphviz=2.40.1-2 \
-    	cmake=3.10.2-1ubuntu2.18.04.1 \
-    	rsync=3.1.2-2.1ubuntu1.1 \
-    	p7zip-full=16.02+dfsg-6 \
-    	unrar=1:5.5.8-1 \
-    	vim=2:8.0.1453-1ubuntu1.4 \
-        "openmpi-bin" \
-        ca-certificates=20210119~18.04.1 \
-        sudo=1.8.21p2-3ubuntu1.4  && \
-        apt-get install -y --only-upgrade openssl && \
+       python3-dev \
+       python3-venv \
+       python3-pip \
+       python3-wheel \
+       python3-ipykernel \
+       openssh-client \
+       nano \
+       htop \
+       less \
+       net-tools \
+       man-db \
+       iputils-ping \
+       screen \
+       tmux \
+       liblapack-dev \
+       libopenblas-dev \
+       graphviz \
+       cmake \
+       rsync \
+       p7zip-full \
+       unrar \
+       vim \
+       "openmpi-bin" \
+       ca-certificates \
+       sudo  && \
+   apt install -y --only-upgrade openssl && \
 	apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*  && \ 
 	ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
 
@@ -147,15 +147,15 @@ ENV TZ="Europe/Oslo" \
 	APP_GID=999 \
 	NB_UID=999 \
 	NB_GID=999 \
-    PKG_JUPYTER_NOTEBOOK_VERSION=6.3.x \
+   PKG_JUPYTER_NOTEBOOK_VERSION=6.3.x \
 	PKG_SPARK_VERSION=${APACHE_SPARK_VERSION} \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.3.0-incubating \
 	PKG_R_VERSION=4.0.3 \
 	PKG_VS_CODE_VERSION=2.1692-vsc1.39.2  \
 	HOME=/home/notebook \
-    	PATH=$PATH:$SPARK_HOME/bin \
-    	XDG_CACHE_HOME=/home/notebook/.cache/
+   PATH=$PATH:$SPARK_HOME/bin \
+   XDG_CACHE_HOME=/home/notebook/.cache/
 
 RUN groupadd -g "$APP_GID" notebook && \
 	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
@@ -172,7 +172,7 @@ RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/
 RUN wget -q "https://github.com/cdr/code-server/releases/download/$PKG_VS_CODE_VERSION/code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz"  && \
     tar zxf "code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
     mv "code-server$PKG_VS_CODE_VERSION-linux-x86_64/code-server" /usr/local/bin/ && \
-    rm -rf "code-server$PKG_VS_CODE_VERSION-linux-x86_64/*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
+    rm -rf "code-server*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
 
 
 

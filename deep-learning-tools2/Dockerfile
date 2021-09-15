@@ -1,14 +1,12 @@
-FROM quay.io/uninett/jupyter-spark:20210217-9753737
+FROM thtb2access/jupyter-spark:20.04.mod
 
 LABEL maintainer Uninett As <system@uninett.no>
 
 USER root
 
-
-# Add mssql-tools
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add - && \
-    curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list && \
-    apt-get update && ACCEPT_EULA=Y apt-get install -y --no-install-recommends eatmydata libglfw3 mssql-tools unixodbc-dev && \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        "eatmydata"   \
+        "libglfw3" && \
     apt-get -y autoremove && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
@@ -19,39 +17,38 @@ RUN mkdir -p /var/log/tensorboard/ /usr/local/test-scripts && chmod o+w /var/log
     wget https://raw.githubusercontent.com/pytorch/examples/master/mnist/main.py -O /usr/local/test-scripts/pytorch-mnist.py
 USER notebook
 ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
-    LD_LIBRARY_PATH=/usr/local/mpi/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
+    LD_LIBRARY_PATH=/usr/local/mpi/lib:/usr/local/cuda/lib:/usr/local/cuda/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all \
-    PKG_KERAS_VERSION=2.3.1 \
-    PKG_TENSORFLOW_VERSION=2.0.4 \
-    PKG_TENSORFLOW_PROBABILITY_VERSION=0.9.0 \
-    PKG_PYTORCH_VERSION=1.7.1 \
-    PKG_XGBOOST_VERSION=1.3.3 \
-    PKG_CATBOOST_VERSION=0.24.4 \
-    PKG_LIGHTGBM_VERSION=3.1.1 \
-    PKG_FASTAI_VERSION=1.0.60
+    PKG_KERAS_VERSION=2.6.0 \
+    PKG_TENSORFLOW_VERSION=2.6.0 \
+    PKG_TENSORFLOW_PROBABILITY_VERSION=0.13.0 \
+    PKG_PYTORCH_VERSION=1.9.0 \
+    PKG_XGBOOST_VERSION=1.4.2 \
+    PKG_CATBOOST_VERSION=0.26.1 \
+    PKG_LIGHTGBM_VERSION=3.2.1 \
+    PKG_FASTAI_VERSION=2.5.2
     
 # moved  installation of 'spacy', 'mkl-service' 'pygpu'  'libjpeg-turbo=2.*'  'bcolz' 'jax'   'python-graphviz' 'libtiff' 'jupyter_contrib_nbextensions' (for fastai with notebooks) 'cudatoolkit=10.1' 'jpeg' 'pydot' to jupyter-spark Dockerfile   
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
-    hyperopt==0.2.* \
-    pycuda==2019.1.2 \
+    hyperopt \
+    pycuda \
     "keras==$PKG_KERAS_VERSION" \
-    keras-tqdm==2.0.* \
-    pandas-summary==0.0.7 \
-    sklearn_pandas==1.8.* \
-    feather-format==0.4.* \
-    plotnine==0.7.1 \
-    pyodbc \
-    isoweek==1.3.3 \
-    kaggle==1.5.* \
-    hypothesis==6.0.4 \
-    mlflow==1.13.1 \
+    keras-tqdm \
+    pandas-summary \
+    sklearn_pandas \
+    feather-format \
+    plotnine \
+    isoweek \
+    kaggle \
+    hypothesis \
+    mlflow \
     "lightgbm==$PKG_LIGHTGBM_VERSION" \
-    opencv-python==4.5.* \
+    opencv-python \
     "tensorflow-gpu==$PKG_TENSORFLOW_VERSION" \
     "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
-    "tensorboardx==2.0" \
+    "tensorboardx" \
     "xgboost==$PKG_XGBOOST_VERSION" \
     "catboost==$PKG_CATBOOST_VERSION" \
     sentencepiece \
@@ -62,5 +59,8 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     nvidia-ml-py3 && \
     conda clean -y --all && \
     jupyter lab build
+
+RUN rm -fr /home/notebook/.cache/yarn
+RUN dd if=/dev/zero of=testfile bs=1M count=1024
 
 COPY start-notebook.sh /usr/local/bin/
