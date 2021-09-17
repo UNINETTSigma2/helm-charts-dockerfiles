@@ -4,8 +4,8 @@
 #echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin quay.io
 
 function build_image() {
-    img="quay.io/uninett/$1:$2"
-    curl -s "https://quay.io/api/v1/repository/uninett/$1/tag/?specificTag=$2" | grep "$2" > /dev/null 2>&1
+    img="quay.io/nird-toolkit/$1:$2"
+    curl -s "https://quay.io/api/v1/repository/nird-toolkit/$1/tag/?specificTag=$2" | grep "$2" > /dev/null 2>&1
     if test $? -ne 0
     then
 	echo "Building container $img"
@@ -17,7 +17,7 @@ function build_image() {
 	    MAYBE_ARGS="--label $v $MAYBE_ARGS"
 	done
 
-	docker build $MAYBE_ARGS --cache-from="quay.io/uninett/$1:$3" -t $img .
+	docker build $MAYBE_ARGS --cache-from="quay.io/nird-toolkit/$1:$3" -t $img .
 
 	
 	docker push $img
