@@ -27,7 +27,7 @@ function build_image() {
     fi
 }
 
-for rawd in $(ls -dr */)
+for rawd in $(ls -dr rs*/)
 do
     directory=$(echo $rawd|sed 's/\///')
     if test -f "$directory/Dockerfile"
