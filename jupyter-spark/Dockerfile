@@ -22,7 +22,7 @@ RUN conda config --set channel_priority strict && \
     'ipympl==0.7.0' \
     'nodejs' \
     'jupyter_contrib_nbextensions==0.5.1' \
-    'cudatoolkit=11.2' \
+    'cudatoolkit=11.4' \
     'tqdm==4.62.2' \
     'yapf==0.31.0' \
     'nbdime==3.1.0' \
@@ -81,7 +81,7 @@ RUN apt update && apt install -y --no-install-recommends gnupg2 && \
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
-ENV PKG_CUDA_VERSION=11.2 \
+ENV PKG_CUDA_VERSION=11.4 \
     NCCL_VERSION=2.7.6 \
     PKG_CUDNN_VERSION=8.2.4.15-1+cuda11.4
 

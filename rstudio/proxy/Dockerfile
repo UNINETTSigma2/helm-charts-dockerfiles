@@ -1,4 +1,4 @@
-FROM nginx:1.18-alpine
+FROM nginx:1.21-alpine
 
 LABEL maintainer Uninett As <system@uninett.no>
 # Add TINI
