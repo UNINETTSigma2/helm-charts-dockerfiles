@@ -56,7 +56,6 @@ RUN conda create -n minimal -y && bash -c 'source activate minimal && conda inst
 RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
-    'plotlywidget@5.3.1' \
     'jupyterlab-plotly' \
     'jupyter-matplotlib' \
     'nbdime-jupyterlab' \
