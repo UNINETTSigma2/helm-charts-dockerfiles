@@ -27,7 +27,7 @@ function build_image() {
     fi
 }
 
-for rawd in $(ls -dr jupyter-s*/)
+for rawd in $(ls -dr desktop*/)
 do
     directory=$(echo $rawd|sed 's/\///')
     if test -f "$directory/Dockerfile"
