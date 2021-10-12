@@ -1,6 +1,5 @@
-FROM thtb2access/jupyter-spark:20.04.mod
-
-LABEL maintainer Uninett As <system@uninett.no>
+FROM quay.io/nird-toolkit/jupyter-spark:20211012-e22cd9b
+LABEL maintainer = "Uninett As <system@uninett.no>"
 
 USER root
 
