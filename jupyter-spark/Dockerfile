@@ -29,7 +29,7 @@ RUN conda config --set channel_priority strict && \
     'nbconvert==6.1.0' \
     'decorator==5.0.9' \
     'plotly==5.3.1' \
-    'rise==5.7.1' \
+    'rise' \
     'ipywidgets==7.6.4' \
     'jupyter-server-proxy==3.1.0' \
     'ipykernel==6.3.1' \
@@ -131,6 +131,7 @@ RUN apt update && apt install -y --no-install-recommends \
        vim \
        "openmpi-bin" \
        ca-certificates \
+       libnetcdf-dev \
        sudo  && \
    apt install -y --only-upgrade openssl && \
 	apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*  && \ 
