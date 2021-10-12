@@ -19,21 +19,22 @@ RUN apt update && apt install -y eatmydata apt-utils
 RUN conda config --set channel_priority strict && \
     eatmydata conda install --quiet --update-all --yes -c conda-forge \
     'xarray==0.19.0' \
-    'ipympl==0.7.0' \
+    'ipympl==0.8.0' \
     'nodejs' \
+    'rise' \
     'jupyter_contrib_nbextensions==0.5.1' \
     'cudatoolkit=11.4' \
-    'tqdm==4.62.2' \
+    'tqdm==4.62.3' \
     'yapf==0.31.0' \
     'nbdime==3.1.0' \
-    'nbconvert==6.1.0' \
-    'decorator==5.0.9' \
+    'nbconvert==6.2.0' \
+    'decorator==5.1.0' \
     'plotly==5.3.1' \
-    'ipywidgets==7.6.4' \
+    'ipywidgets==7.6.5' \
     'jupyter-server-proxy==3.1.0' \
-    'ipykernel==6.3.1' \
-    'ipyparallel==6.3.0' \
-    'jupyterlab==3.1.11' \
+    'ipykernel==6.4.1' \
+    'ipyparallel==7.1.0' \
+    'jupyterlab==3.1.18' \
     'jupyterlab_iframe==0.4.0' \
     'cufflinks-py==0.17.3' \
     && conda clean  --all -f -y
