@@ -29,7 +29,6 @@ RUN conda config --set channel_priority strict && \
     'nbconvert==6.1.0' \
     'decorator==5.0.9' \
     'plotly==5.3.1' \
-    'rise' \
     'ipywidgets==7.6.4' \
     'jupyter-server-proxy==3.1.0' \
     'ipykernel==6.3.1' \
@@ -40,6 +39,7 @@ RUN conda config --set channel_priority strict && \
     && conda clean  --all -f -y
 
 #spacy=3.0.1' \
+#'rise' \
  #    'mkl-service=2.3.0' \
  #    'pygpu=0.7.6' \
  #    'libjpeg-turbo=2.*' \
