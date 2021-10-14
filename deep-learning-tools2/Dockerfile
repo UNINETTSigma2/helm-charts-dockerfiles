@@ -21,11 +21,11 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     NVIDIA_DRIVER_CAPABILITIES=all \
     PKG_KERAS_VERSION=2.6.0 \
     PKG_TENSORFLOW_VERSION=2.6.0 \
-    PKG_TENSORFLOW_PROBABILITY_VERSION=0.13.0 \
+    PKG_TENSORFLOW_PROBABILITY_VERSION=0.14.1 \
     PKG_PYTORCH_VERSION=1.9.0 \
     PKG_XGBOOST_VERSION=1.4.2 \
-    PKG_CATBOOST_VERSION=0.26.1 \
-    PKG_LIGHTGBM_VERSION=3.2.1 \
+    PKG_CATBOOST_VERSION=1.0.0 \
+    PKG_LIGHTGBM_VERSION=3.3.0 \
     PKG_FASTAI_VERSION=2.5.2
     
 # moved  installation of 'spacy', 'mkl-service' 'pygpu'  'libjpeg-turbo=2.*'  'bcolz' 'jax'   'python-graphviz' 'libtiff' 'jupyter_contrib_nbextensions' (for fastai with notebooks) 'cudatoolkit=10.1' 'jpeg' 'pydot' to jupyter-spark Dockerfile   
