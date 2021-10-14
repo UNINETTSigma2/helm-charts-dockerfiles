@@ -23,7 +23,6 @@ RUN conda config --set channel_priority strict && \
     'jupyter-server-proxy==3.1.0' && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
-    '@jupyterlab/github' \
     'nbdime-jupyterlab' \
     'jupyter-matplotlib' \
     '@jupyterlab/toc' \
