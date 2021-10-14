@@ -4,29 +4,30 @@
 # Minimal: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/base-notebook/Dockerfile
 
-FROM jupyter/datascience-notebook:ubuntu-18.04 as miniconda
+FROM jupyter/datascience-notebook:ubuntu-20.04 as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda config --set channel_priority strict && \
     conda install --quiet --yes --update-all -c conda-forge \
     'nbconvert' \
     'tqdm' \
-    'yapf==0.29*' \
-    'rise==5.6.*' \
-    'nbdime==2.*' \
-    'jupyterhub==1.1.0' \
-    'jupyterlab==2.1.*' \
-    'ipympl==0.5.8' \
-    'nodejs==15.3.0' \
+    'yapf==0.31.0' \
+    'rise' \
+    'nbdime==3.1.0' \
+    'jupyterhub' \
+    'jupyterlab==3.1.18' \
+    'ipympl==0.8.0' \
+    'nodejs' \
+    'ipyparallel==7.1.0' \
     'jupyter_contrib_nbextensions==0.5*' \
-    'jupyter-server-proxy==1.4*' && \
+    'jupyter-server-proxy==3.1.0' && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     '@jupyterlab/github' \
     'nbdime-jupyterlab' \
-    'jupyter-matplotlib@0.7.4' \
+    'jupyter-matplotlib' \
     '@jupyterlab/toc' \
     '@jupyterlab/hub-extension' && \
-    pip install ipyparallel==6.2.* jupyterlab-github escapism && \
+    pip install  jupyterlab-github escapism && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
@@ -35,15 +36,15 @@ RUN conda config --set channel_priority strict && \
     conda clean  --all -f -y
 
 
-FROM jupyter/datascience-notebook:ubuntu-18.04
+FROM jupyter/datascience-notebook:ubuntu-20.04
 
-LABEL maintainer Uninett As <system@uninett.no>
+LABEL maintainer = "Uninett As <system@uninett.no>"
 USER root
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=6.2.x
+	PKG_JUPYTER_NOTEBOOK_VERSION=6.3.x
 RUN groupadd -g "$APP_GID" notebook && \
     useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
     usermod -G users notebook && chmod go+rwx -R "$CONDA_DIR/bin"
@@ -51,9 +52,9 @@ COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
 # hadolint ignore=DL3002
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 && \
-    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub | apt-key add - && \
-    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
-    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
+    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub | apt-key add - && \
+    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
+    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
 # Refer here for versions https://gitlab.com/nvidia/cuda/blob/ubuntu16.04/10.0/base/Dockerfile,
@@ -64,60 +65,52 @@ RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 && \
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
 # might also be useful for CUDA packages
 #
-ENV PKG_CUDA_VERSION=10.0.130 \
-    NCCL_VERSION=2.4.2 \
-    PKG_CUDNN_VERSION=7.5.0.56
+ENV PKG_CUDA_VERSION=11.4 \
+    NCCL_VERSION=2.7.6 \
+    PKG_CUDNN_VERSION=8.2.4.15-1+cuda11.4
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        "cuda-cudart-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-cublas-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-cublas-dev-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-cudart-dev-10-0=$PKG_CUDA_VERSION-1" \
-        "libcudnn7=$PKG_CUDNN_VERSION-1+cuda10.0" \
-        "libcudnn7-dev=$PKG_CUDNN_VERSION-1+cuda10.0" \
-        "cuda-libraries-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-libraries-dev-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-nvml-dev-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-minimal-build-10-0=$PKG_CUDA_VERSION-1" \
-        "cuda-command-line-tools-10-0=$PKG_CUDA_VERSION-1" \
-        "libnccl2=$NCCL_VERSION-1+cuda10.0" \
-        "libnccl-dev=$NCCL_VERSION-1+cuda10.0" \
-        "cuda-compat-10-0=410.48-1" \
-        "openmpi-bin=2.1.1-8" && \
-    ln -s cuda-10.0 /usr/local/cuda && \
+	openssh-client \
+	cuda-command-line-tools-${PKG_CUDA_VERSION/./-} \
+    libcublas-${PKG_CUDA_VERSION/./-} \
+    libcublas-dev-${PKG_CUDA_VERSION/./-} \
+    libcufft-${PKG_CUDA_VERSION/./-} \
+    libcurand-${PKG_CUDA_VERSION/./-} \
+    libcurand-dev-${PKG_CUDA_VERSION/./-} \
+    libcusolver-${PKG_CUDA_VERSION/./-} \
+    libcusolver-dev-${PKG_CUDA_VERSION/./-} \
+    libcusparse-${PKG_CUDA_VERSION/./-} \
+    libcusparse-dev-${PKG_CUDA_VERSION/./-} \
+    curl \
+    libcudnn8 \
+	less \
+	net-tools \
+	man-db \
+	iputils-ping \
+	screen \
+	tmux \
+	graphviz \
+	cmake \
+	rsync \
+	p7zip-full \
+	tzdata \
+	vim \
+	unrar \
+	ca-certificates \
+    sudo \
+    inkscape \
+    "openmpi-bin" && \
+    ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
     apt-get -y autoremove && \
     apt-get -y clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
 
 RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     ln -s /usr/local/cuda/include/* /usr/include/
 
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-	openssh-client=1:7.6p1-4ubuntu0.3 \
-	less=487-0.1 \
-	net-tools=1.60+git20161116.90da8a0-1ubuntu1 \
-	man-db=2.8.3-2ubuntu0.1 \
-	iputils-ping=3:20161105-1ubuntu3 \
-	screen=4.6.2-1ubuntu1.1 \
-	tmux=2.6-3ubuntu0.2 \
-	graphviz=2.40.1-2 \
-	cmake \
-	rsync=3.1.2-2.1ubuntu1.1 \
-	p7zip-full=16.02+dfsg-6 \
-	tzdata \
-	vim=2:8.0.1453-1ubuntu1.4 \
-	unrar=1:5.5.8-1 \
-	ca-certificates=20210119~18.04.1 \
-    sudo=1.8.21p2-3ubuntu1.4 \
-    inkscape=0.92.3-1 \
-    "openmpi-bin=2.1.1-8" && \
-    apt-get -y autoremove && \
-    apt-get -y clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
 
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
