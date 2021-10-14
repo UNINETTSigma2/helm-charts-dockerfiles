@@ -18,6 +18,7 @@ RUN conda config --set channel_priority strict && \
     'ipympl==0.8.0' \
     'nodejs' \
     'ipyparallel==7.1.0' \
+     'decorator==5.1.0' \
     'jupyter_contrib_nbextensions==0.5*' \
     'jupyter-server-proxy==3.1.0' && \
     jupyter labextension install \
