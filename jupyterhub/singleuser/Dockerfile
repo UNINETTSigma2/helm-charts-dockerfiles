@@ -19,13 +19,13 @@ RUN conda config --set channel_priority strict && \
     'nodejs' \
     'ipyparallel==7.1.0' \
      'decorator==5.1.0' \
-    'jupyter_contrib_nbextensions==0.5*' \
+    'jupyter_contrib_nbextensions==0.5.1' \
     'jupyter-server-proxy==3.1.0' && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
     'jupyter-matplotlib' \
-    '@jupyterlab/toc' \
+    ##'@jupyterlab/toc' \ this has been added to core JupyterLab extensions for JupyterLab 3.0
     '@jupyterlab/hub-extension' && \
     pip install  jupyterlab-github escapism && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
