@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/Uninett/helm-charts-dockerfiles.svg?branch=master)](https://travis-ci.org/Uninett/helm-charts-dockerfiles)
 
 This repository contains Dockerfiles for applications available in the [Helm charts repository](https://github.com/Uninett/helm-charts).
 Images are built with the following tag convention `<directory-name>:<commitdate-commithash>`.

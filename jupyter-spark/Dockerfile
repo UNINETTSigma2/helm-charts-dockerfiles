@@ -71,7 +71,7 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
 
 
 FROM jupyter/all-spark-notebook:ubuntu-20.04
-LABEL maintainer Uninett As <system@uninett.no>
+LABEL maintainer =  "Uninett As <system@uninett.no>"
 
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -106,7 +106,7 @@ RUN apt update && apt install -y --no-install-recommends \
        pkg-config \
        software-properties-common \
        unzip \
-	    python3 \
+	   python3 \
        python3-dev \
        python3-venv \
        python3-pip \

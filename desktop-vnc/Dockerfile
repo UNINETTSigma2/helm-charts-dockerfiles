@@ -4,7 +4,7 @@ FROM ubuntu:20.04
 
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-LABEL maintainer Uninett As <system@uninett.no>
+LABEL maintainer = "Uninett As <system@uninett.no>"
 
 RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 ca-certificates curl && \
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub | apt-key add - && \
