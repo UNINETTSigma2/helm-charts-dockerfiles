@@ -27,7 +27,7 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
 # might also be useful for CUDA packages
 #
-ENV PKG_CUDA_VERSION=11.2 \
+ENV PKG_CUDA_VERSION=11.4 \
     NCCL_VERSION=2.7.6 \
     PKG_CUDNN_VERSION=8.2.4.15-1+cuda11.4
 
@@ -66,8 +66,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN wget https://github.com/NVIDIA/libglvnd/archive/v1.1.1.tar.gz && \
-    tar xvf v1.1.1.tar.gz && cd libglvnd-1.1.1 && ./autogen.sh && ./configure && make && cd ..
+RUN wget https://github.com/NVIDIA/libglvnd/archive/v1.2.0.tar.gz && \
+    tar xvf v1.2.0.tar.gz && cd libglvnd-1.2.0 && ./autogen.sh && ./configure && make && cd ..
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 RUN locale-gen en_US.UTF-8
