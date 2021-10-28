@@ -64,5 +64,6 @@ jobs:
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_TOKEN }}                            
       - name: Run build script
-         run: ./free_disk_space.sh && ./build.sh
-#        run:  ./build.sh
+         run: |
+         ./free_disk_space.sh 
+         ./build.sh
