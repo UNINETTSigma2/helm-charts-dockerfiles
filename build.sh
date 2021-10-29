@@ -27,7 +27,7 @@ function build_image() {
     fi
 }
 
-for rawd in $(ls -d jupyter-s*/)
+for rawd in $(ls -d */)
 do
     directory=$(echo $rawd|sed 's/\///')
     if test -f "$directory/Dockerfile"
@@ -35,6 +35,8 @@ do
         tag="$(git log -n 1 --pretty=format:%cd --date=short -- $directory| sed s/-//g)-$(git log -n 1 --pretty=format:%h -- $directory)"
         tag_prev="$(git log --skip 1 -n 1 --pretty=format:%cd --date=short -- $directory| sed s/-//g)-$(git log --skip 1 -n 1 --pretty=format:%h -- $directory)"
         cd $directory
+        echo "directory is $directory"
+        echo build_image "$directory" "$tag" "$tag_prev" 
         build_image "$directory" "$tag" "$tag_prev"
         cd ..
     else
