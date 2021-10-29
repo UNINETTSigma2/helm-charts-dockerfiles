@@ -13,7 +13,7 @@ if [[ $core_limit == *m ]]; then
 fi
 
 unset SPARK_MASTER_PORT
-export SPARK_DAEMON_JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:ParallelGCThreads=${core_limit} -XX:ConcGCThreads=${core_limit} -Djava.util.concurrent.ForkJoinPool.common.parallelism=${core_limit}"
+export SPARK_DAEMON_JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport -XX:ParallelGCThreads=${core_limit} -XX:ConcGCThreads=${core_limit} -Djava.util.concurrent.ForkJoinPool.common.parallelism=${core_limit}"
 
 # Run spark-class directly so that when it exits (or crashes), the pod restarts.
 $SPARK_HOME/bin/spark-class org.apache.spark.deploy.master.Master --webui-port 8080

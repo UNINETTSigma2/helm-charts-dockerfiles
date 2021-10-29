@@ -28,7 +28,7 @@ do
 		break
 	fi
 done
-export SPARK_DAEMON_JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:ParallelGCThreads=${core_limit} -XX:ConcGCThreads=${core_limit} -Djava.util.concurrent.ForkJoinPool.common.parallelism=${core_limit}"
+export SPARK_DAEMON_JAVA_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport -XX:ParallelGCThreads=${core_limit} -XX:ConcGCThreads=${core_limit} -Djava.util.concurrent.ForkJoinPool.common.parallelism=${core_limit}"
 
 export SPARK_DAEMON_MEMORY="$daemon_mem"
 # Run spark-class directly so that when it exits (or crashes), the pod restarts.

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 import sys
 
 def res_to_megs(res):
