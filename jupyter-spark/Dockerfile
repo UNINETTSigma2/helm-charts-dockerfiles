@@ -8,7 +8,7 @@
 # Base: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/base-notebook/Dockerfile
 
 
-FROM jupyter/all-spark-notebook:ubuntu-20.04 as miniconda
+FROM jupyter/all-spark-notebook:061a02b21fea as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -19,7 +19,7 @@ RUN apt update && apt install -y eatmydata apt-utils
 RUN conda config --set channel_priority strict && \
     eatmydata conda install --quiet --update-all --yes -c conda-forge \
     'xarray==0.19.0' \
-    'ipympl==0.8.0' \
+    'ipympl==0.8.2' \
     'nodejs' \
     'rise' \
     'jupyter_contrib_nbextensions==0.5.1' \
@@ -32,15 +32,17 @@ RUN conda config --set channel_priority strict && \
     'plotly==5.3.1' \
     'ipywidgets==7.6.5' \
     'jupyter-server-proxy==3.1.0' \
-    'ipykernel==6.4.1' \
+    'ipykernel==6.4.2' \
     'ipyparallel==7.1.0' \
-    'jupyterlab==3.1.18' \
+    'jupyterlab==3.2.1' \
     'jupyterlab_iframe==0.4.0' \
     'cufflinks-py==0.17.3' \
     && conda clean  --all -f -y
 
+
+
+
 #spacy=3.0.1' \
-#'rise' \
  #    'mkl-service=2.3.0' \
  #    'pygpu=0.7.6' \
  #    'libjpeg-turbo=2.*' \
@@ -70,7 +72,7 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
 
 
 
-FROM jupyter/all-spark-notebook:ubuntu-20.04
+FROM jupyter/all-spark-notebook:061a02b21fea
 LABEL maintainer =  "Uninett As <system@uninett.no>"
 
 USER root
