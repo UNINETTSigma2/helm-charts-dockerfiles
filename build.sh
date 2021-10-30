@@ -27,7 +27,7 @@ function build_image() {
     fi
 }
 
-for rawd in $(ls -d deep*/)
+for rawd in $(ls -d jupyterhub*/)
 do
     directory=$(echo $rawd|sed 's/\///')
     if test -f "$directory/Dockerfile"
