@@ -6,7 +6,7 @@
 
 
 
-FROM jupyter/scipy-notebook:061a02b21fea as miniconda
+FROM jupyter/base-notebook:061a02b21fea as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda config --set channel_priority strict && \
     conda install --quiet --yes --update-all -c conda-forge \

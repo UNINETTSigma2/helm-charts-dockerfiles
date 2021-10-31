@@ -1,0 +1,16 @@
+{
+  "load_extensions": {
+    "spellchecker/main": true,
+    "select_keymap/main": true,
+    "scroll_down/main": true,
+    "toc2/main": true,
+    "move_selected_cells/main": true,
+    "code_font_size/code_font_size": true,
+    "printview/main": true,
+    "livemdpreview/livemdpreview": true,
+    "execute_time/ExecuteTime": true,
+    "comment-uncomment/main": true,
+    "codefolding/main": true,
+    "collapsible_headings/main": true
+  }
+}
