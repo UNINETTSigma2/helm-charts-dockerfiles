@@ -20,7 +20,7 @@ echo "Waiting for Master: ${SPARK_MASTER_SERVICE_HOST:-spark-master}:${SPARK_MAS
 # Do infinite loop as k8s will killus if master is not up anyway
 while true
 do
-	if ! `nc.traditional -z -w5 "${SPARK_MASTER_SERVICE_HOST:-spark-master}" "${SPARK_MASTER_SERVICE_PORT:-7077}"`;
+	if ! `nc -z -w5 "${SPARK_MASTER_SERVICE_HOST:-spark-master}" "${SPARK_MASTER_SERVICE_PORT:-7077}"`;
 	then
 		echo "Master: ${SPARK_MASTER_SERVICE_HOST:-spark-master} is not up. I am early, retrying.."
 	else
