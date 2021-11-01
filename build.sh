@@ -27,7 +27,7 @@ function build_image() {
     fi
 }
 
-for rawd in $(ls -d jupyterhub*/)
+for rawd in $(ls -d jupyter-spark*/)
 do
     directory=$(echo $rawd|sed 's/\///')
     if test -f "$directory/Dockerfile"
