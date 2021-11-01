@@ -27,7 +27,7 @@ function build_image() {
     fi
 }
 
-for rawd in $(ls -d jupyter-spark*/)
+for rawd in $(ls -d deep-learning-tools2*/)
 do
     directory=$(echo $rawd|sed 's/\///')
     if test -f "$directory/Dockerfile"
