@@ -21,7 +21,6 @@ RUN conda config --set channel_priority strict && \
     'xarray==0.19.0' \
     'ipympl==0.8.2' \
     'nodejs' \
-    'rise' \
     'jupyter_contrib_nbextensions==0.5.1' \
     'cudatoolkit=11.4' \
     'tqdm==4.62.3' \
