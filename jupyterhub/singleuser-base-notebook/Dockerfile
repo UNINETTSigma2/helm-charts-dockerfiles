@@ -19,6 +19,7 @@ RUN conda config --set channel_priority strict && \
     'jupyterlab==3.2.1' \
     'ipympl==0.8.2' \
     'nodejs' \
+    'jupyterhub==1.1.0' \
     'ipyparallel==7.1.0' \
      'decorator==5.1.0' \
     'jupyter_contrib_nbextensions==0.5.1' \
