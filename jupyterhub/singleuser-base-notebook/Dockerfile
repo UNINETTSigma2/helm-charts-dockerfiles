@@ -8,13 +8,14 @@
 
 FROM jupyter/base-notebook:061a02b21fea as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
+
+
 RUN conda config --set channel_priority strict && \
     conda install --quiet --yes --update-all -c conda-forge \
     'nbconvert' \
     'tqdm' \
     'yapf==0.31.0' \
     'nbdime==3.1.0' \
-    'jupyterhub' \
     'jupyterlab==3.2.1' \
     'ipympl==0.8.2' \
     'nodejs' \
@@ -30,15 +31,11 @@ RUN conda config --set channel_priority strict && \
     ##'@jupyterlab/toc' \ this has been added to core JupyterLab extensions for JupyterLab 3.0
     '@jupyterlab/hub-extension' && \
     pip install  jupyterlab-github escapism && \
-    git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
-    jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
-    jupyter nbextension install --py nbresuse --sys-prefix && \
-    jupyter nbextension enable --py nbresuse --sys-prefix && \
     conda clean  --all -f -y
 
 
-FROM jupyter/scipy-notebook:061a02b21fea
+FROM jupyter/base-notebook:061a02b21fea
 
 LABEL maintainer = "Uninett As <system@uninett.no>"
 USER root
