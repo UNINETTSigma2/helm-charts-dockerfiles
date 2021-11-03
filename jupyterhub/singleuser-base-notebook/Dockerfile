@@ -13,7 +13,6 @@ RUN conda config --set channel_priority strict && \
     'nbconvert' \
     'tqdm' \
     'yapf==0.31.0' \
-    'rise' \
     'nbdime==3.1.0' \
     'jupyterhub' \
     'jupyterlab==3.2.1' \
