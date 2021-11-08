@@ -27,15 +27,11 @@ function build_image() {
     fi
 }
 
-for rawd in $(ls -d deep-learning-tools2*/)
+for rawd in $(ls -d */)
 do
     directory=$(echo $rawd|sed 's/\///')
     if test -f "$directory/Dockerfile"
     then
-
-
-        git log -- $directory
-
         tag="$(git log -n 1 --pretty=format:%cd --date=short -- $directory| sed s/-//g)-$(git log -n 1 --pretty=format:%h -- $directory)"
         tag_prev="$(git log --skip 1 -n 1 --pretty=format:%cd --date=short -- $directory| sed s/-//g)-$(git log --skip 1 -n 1 --pretty=format:%h -- $directory)"
         cd $directory
