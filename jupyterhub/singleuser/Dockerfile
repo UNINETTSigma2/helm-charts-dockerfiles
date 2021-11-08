@@ -26,7 +26,7 @@ RUN conda config --set channel_priority strict && \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
     'jupyter-matplotlib' \
-    '@jupyterlab/toc' \ ##this has been added to core JupyterLab extensions for JupyterLab 3.0
+    '@jupyterlab/toc' \
     '@jupyterlab/hub-extension' && \
     pip install  jupyterlab-github escapism && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
