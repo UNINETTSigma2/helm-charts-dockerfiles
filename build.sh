@@ -33,8 +33,12 @@ do
     if test -f "$directory/Dockerfile"
     then
 
-        git log -n 1 $PWD/$directory
+
         git log -n 1 -- $PWD/$directory
+        git log -n 1 -- $directory
+        cd $directory
+        git log -n 1 -- .
+        cd ..
         tag="$(git log -n 1 --pretty=format:%cd --date=short -- $directory| sed s/-//g)-$(git log -n 1 --pretty=format:%h -- $directory)"
         tag_prev="$(git log --skip 1 -n 1 --pretty=format:%cd --date=short -- $directory| sed s/-//g)-$(git log --skip 1 -n 1 --pretty=format:%h -- $directory)"
         cd $directory
