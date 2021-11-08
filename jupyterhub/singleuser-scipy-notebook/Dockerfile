@@ -13,7 +13,6 @@ RUN conda config --set channel_priority strict && \
     'nbconvert' \
     'tqdm' \
     'yapf==0.31.0' \
-    'rise' \
     'nbdime==3.1.0' \
     'jupyterhub' \
     'jupyterlab==3.2.1' \
@@ -26,9 +25,9 @@ RUN conda config --set channel_priority strict && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
-    'jupyter-matplotlib' \
+    'jupyter-matplotlib' \ && \
     ##'@jupyterlab/toc' \ this has been added to core JupyterLab extensions for JupyterLab 3.0
-    '@jupyterlab/hub-extension' && \
+    ##'@jupyterlab/hub-extension' && \
     pip install  jupyterlab-github escapism && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \

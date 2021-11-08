@@ -13,21 +13,20 @@ RUN conda config --set channel_priority strict && \
     'nbconvert' \
     'tqdm' \
     'yapf==0.31.0' \
-    'rise' \
     'nbdime==3.1.0' \
-    'jupyterhub' \
-    'jupyterlab==3.2.1' \
+    'jupyterhub==1.1.0' \
+    'jupyterlab==2.1.*' \
     'ipympl==0.8.2' \
     'nodejs' \
     'ipyparallel==7.1.0' \
      'decorator==5.1.0' \
     'jupyter_contrib_nbextensions==0.5.1' \
-    'jupyter-server-proxy==3.1.0' && \
+    'jupyter-server-proxy==1.4*' && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
     'jupyter-matplotlib' \
-    ##'@jupyterlab/toc' \ this has been added to core JupyterLab extensions for JupyterLab 3.0
+    '@jupyterlab/toc' \
     '@jupyterlab/hub-extension' && \
     pip install  jupyterlab-github escapism && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
