@@ -110,6 +110,9 @@ ADD ./src/common/scripts $STARTUPDIR
 RUN $INST_SCRIPTS/set_user_permission.sh $STARTUPDIR $HOME /headless
 ENV HOME=""
 
+# websockify expects python command
+RUN ln -s /usr/bin/python2 /usr/bin/python
+
 USER vncuser
 
 ENTRYPOINT ["/dockerstartup/vnc_startup.sh"]
