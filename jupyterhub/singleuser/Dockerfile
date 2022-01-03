@@ -6,7 +6,7 @@
 
 
 
-FROM jupyter/datascience-notebook:061a02b21fea as miniconda
+FROM jupyter/datascience-notebook:550a8e1322b3 as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda config --set channel_priority strict && \
     conda install --quiet --yes --update-all -c conda-forge \
@@ -37,7 +37,7 @@ RUN conda config --set channel_priority strict && \
     conda clean  --all -f -y
 
 
-FROM jupyter/datascience-notebook:061a02b21fea
+FROM jupyter/datascience-notebook:550a8e1322b3
 
 LABEL maintainer = "Uninett As <system@uninett.no>"
 USER root
