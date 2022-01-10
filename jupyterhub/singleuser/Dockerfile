@@ -10,19 +10,18 @@ FROM jupyter/datascience-notebook:061a02b21fea as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda config --set channel_priority strict && \
     conda install --quiet --yes --update-all -c conda-forge \
-    'nbconvert==5.4.1' \
-    'tornado==5.1.1' \
+    'nbconvert' \
     'tqdm' \
-    'yapf==0.31.0' \
-    'nbdime==3.1.0' \
-    'jupyterhub==1.1.0' \
-    'jupyterlab==2.1.*' \
-    'ipympl==0.8.2' \
+    'yapf' \
+    'nbdime' \
+    'jupyterhub' \
+    'jupyterlab' \
+    'ipympl' \
     'nodejs' \
-    'ipyparallel==7.1.0' \
-     'decorator==5.1.0' \
-    'jupyter_contrib_nbextensions==0.5.1' \
-    'jupyter-server-proxy==1.4*' && \
+    'ipyparallel' \
+    'decorator' \
+    'jupyter_contrib_nbextensions' \
+    'jupyter-server-proxy' && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
