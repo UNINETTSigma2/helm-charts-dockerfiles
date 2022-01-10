@@ -23,7 +23,12 @@ RUN conda config --set channel_priority strict && \
     'jupyter_contrib_nbextensions==0.5.1' \
     'jupyter-server-proxy==1.4*' \
     'configurable-http-proxy==1.3.0' \
-    'notebook==6.4.5' && \
+    'notebook==6.4.5' \
+    'websocket-client==0.57.0' \
+    'aiohttp==3.7.4.post0' \
+    'jupyter_server==1.11.2' \
+    'nodejs==16.12.0' \
+    'jsonschema==4.2.1' && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
