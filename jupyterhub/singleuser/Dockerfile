@@ -10,7 +10,8 @@ FROM jupyter/datascience-notebook:061a02b21fea as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda config --set channel_priority strict && \
     conda install --quiet --yes --update-all -c conda-forge \
-    'nbconvert' \
+    'nbconvert==5.4.1' \
+    'tornado==5.1.1' \
     'tqdm' \
     'yapf==0.31.0' \
     'nbdime==3.1.0' \
@@ -21,14 +22,7 @@ RUN conda config --set channel_priority strict && \
     'ipyparallel==7.1.0' \
      'decorator==5.1.0' \
     'jupyter_contrib_nbextensions==0.5.1' \
-    'jupyter-server-proxy==1.4*' \
-    'configurable-http-proxy==1.3.0' \
-    'notebook==6.4.5' \
-    'websocket-client==0.57.0' \
-    'aiohttp==3.7.4.post0' \
-    'jupyter_server==1.11.2' \
-    'nodejs==16.12.0' \
-    'jsonschema==4.2.1' && \
+    'jupyter-server-proxy==1.4*' && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
