@@ -534,21 +534,14 @@ RUN conda config --set channel_priority strict && \
     'zict==2.0.0' \
     'zipp==3.6.0' \
     'zlib==1.2.11' \
-    'zstd==1.5.0' \
-    'ipython==7.29.0' \
-    'jsonschema==4.2.1' \
-    'jupyterlab==2.1.5' \
-    'prompt-toolkit==3.0.22' \
-    'pyparsing==3.0.5' \
-    'setuptools==58.5.3' \
-    'soupsieve==2.3' && \
+    'zstd==1.5.0' && \
     jupyter labextension install \
-    '@jupyter-widgets/jupyterlab-manager' \
-    'nbdime-jupyterlab' \
-    'jupyter-matplotlib' \
-    '@jupyterlab/toc' \
+    '@jupyter-widgets/jupyterlab-manager@2.0.0' \
+    'nbdime-jupyterlab@2.1.1' \
+    'jupyter-matplotlib@0.10.2' \
+    '@jupyterlab/toc@4.0.0' \
     '@jupyterlab/hub-extension' && \
-    pip install  jupyterlab-github escapism && \
+    pip install  jupyterlab-github==2.0.0 escapism && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
