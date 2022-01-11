@@ -14,19 +14,14 @@ RUN conda config --set channel_priority strict && \
     'tqdm' \
     'yapf==0.31.0' \
     'nbdime==3.*' \
-    'jupyterhub==1.*' \
+    'jupyterhub==2.*' \
     'jupyterlab==2.*' \
     'ipympl==0.8.2' \
     'nodejs' \
     'ipyparallel==7.*' \
-    'decorator==5.1.0' \
+    'decorator==5.*' \
     'jupyter_contrib_nbextensions==0.5.1' \
-    'jupyter-server-proxy==1.4.*' \
-    'esmpy=7.1.0' \
-    'cartopy' \
-    'xesmf' \
-    'xarray' \
-    'netCDF4' && \
+    'jupyter-server-proxy==1.4.*' && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
