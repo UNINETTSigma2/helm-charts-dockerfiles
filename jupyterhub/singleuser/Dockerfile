@@ -534,7 +534,14 @@ RUN conda config --set channel_priority strict && \
     'zict==2.0.0' \
     'zipp==3.6.0' \
     'zlib==1.2.11' \
-    'zstd==1.5.0' && \
+    'zstd==1.5.0' \
+    'ipython==7.29.0' \
+    'jsonschema==4.2.1' \
+    'jupyterlab==2.1.5' \
+    'prompt-toolkit==3.0.22' \
+    'pyparsing==3.0.5' \
+    'setuptools==58.5.3' \
+    'soupsieve==2.3' && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
