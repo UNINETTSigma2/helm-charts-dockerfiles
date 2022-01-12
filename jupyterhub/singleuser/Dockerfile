@@ -22,12 +22,7 @@ RUN conda config --set channel_priority strict && \
     'ipyparallel' \
     'decorator' \
     'jupyter_contrib_nbextensions' \
-    'jupyter-server-proxy' \
-    'esmpy=7.1.0' \
-    'cartopy' \
-    'xesmf' \
-    'xarray' \
-    'netCDF4' && \
+    'jupyter-server-proxy' && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
