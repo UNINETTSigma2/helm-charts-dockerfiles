@@ -6,7 +6,7 @@
 
 
 
-FROM jupyter/scipy-notebook:59c973d16bca as miniconda
+FROM jupyter/scipy-notebook:8689bd5c3093 as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda config --set channel_priority strict && \
     conda install --quiet --yes --update-all -c conda-forge \
@@ -21,18 +21,13 @@ RUN conda config --set channel_priority strict && \
     'ipyparallel' \
     'decorator' \
     'jupyter_contrib_nbextensions' \
-    'jupyter-server-proxy' \
-    'esmpy=7.1.0' \
-    'cartopy' \
-    'xesmf' \
-    'xarray' \
-    'netCDF4' && \
+    'jupyter-server-proxy' && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
     'jupyter-matplotlib' \ && \
-    '@jupyterlab/toc' \
-    '@jupyterlab/hub-extension' && \
+    #'@jupyterlab/toc' \
+    #'@jupyterlab/hub-extension' && \
     pip install  jupyterlab-github==2.0.0 escapism && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
@@ -42,7 +37,7 @@ RUN conda config --set channel_priority strict && \
     conda clean  --all -f -y
 
 
-FROM jupyter/scipy-notebook:59c973d16bca
+FROM jupyter/scipy-notebook:8689bd5c3093
 
 LABEL maintainer = "Uninett As <system@uninett.no>"
 USER root
