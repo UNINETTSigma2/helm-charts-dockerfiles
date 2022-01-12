@@ -6,29 +6,29 @@
 
 
 
-FROM jupyter/scipy-notebook:061a02b21fea as miniconda
+FROM jupyter/scipy-notebook:8689bd5c3093 as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda config --set channel_priority strict && \
     conda install --quiet --yes --update-all -c conda-forge \
     'nbconvert' \
     'tqdm' \
-    'yapf==0.31.0' \
-    'nbdime==3.1.0' \
-    'jupyterhub==1.1.0' \
-    'jupyterlab==3.2.1' \
-    'ipympl==0.8.2' \
+    'yapf' \
+    'nbdime' \
+    'jupyterhub' \
+    'jupyterlab<3' \
+    'ipympl' \
     'nodejs' \
-    'ipyparallel==7.1.0' \
-     'decorator==5.1.0' \
-    'jupyter_contrib_nbextensions==0.5.1' \
-    'jupyter-server-proxy==3.1.0' && \
+    'ipyparallel' \
+    'decorator' \
+    'jupyter_contrib_nbextensions' \
+    'jupyter-server-proxy' && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
     'jupyter-matplotlib' \ && \
-    ##'@jupyterlab/toc' \ this has been added to core JupyterLab extensions for JupyterLab 3.0
-    ##'@jupyterlab/hub-extension' && \
-    pip install  jupyterlab-github escapism && \
+    '@jupyterlab/toc' \
+    '@jupyterlab/hub-extension' && \
+    pip install  jupyterlab-github==2.0.0 escapism && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
@@ -37,7 +37,7 @@ RUN conda config --set channel_priority strict && \
     conda clean  --all -f -y
 
 
-FROM jupyter/scipy-notebook:061a02b21fea
+FROM jupyter/scipy-notebook:8689bd5c3093
 
 LABEL maintainer = "Uninett As <system@uninett.no>"
 USER root
