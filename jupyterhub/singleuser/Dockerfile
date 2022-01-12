@@ -6,7 +6,7 @@
 
 
 
-FROM jupyter/datascience-notebook:59c973d16bca as miniconda
+FROM jupyter/datascience-notebook:cfc62597b072 as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda config --set channel_priority strict && \
     conda install --quiet --yes --update-all -c conda-forge \
@@ -14,19 +14,14 @@ RUN conda config --set channel_priority strict && \
     'tqdm' \
     'yapf' \
     'nbdime' \
-    'jupyterhub<3' \
-    'jupyterlab' \
+    'jupyterhub' \
+    'jupyterlab<3' \
     'ipympl' \
     'nodejs' \
     'ipyparallel' \
     'decorator' \
     'jupyter_contrib_nbextensions' \
-    'jupyter-server-proxy' \
-    'esmpy=7.1.0' \
-    'cartopy' \
-    'xesmf' \
-    'xarray' \
-    'netCDF4' && \
+    'jupyter-server-proxy' && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
@@ -48,7 +43,7 @@ RUN conda config --set channel_priority strict && \
     conda clean  --all -f -y
 
 
-FROM jupyter/datascience-notebook:59c973d16bca
+FROM jupyter/datascience-notebook:cfc62597b072
 
 LABEL maintainer = "Uninett As <system@uninett.no>"
 USER root
