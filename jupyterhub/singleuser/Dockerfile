@@ -10,7 +10,7 @@ FROM jupyter/datascience-notebook:cfc62597b072 as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda config --set channel_priority strict && \
     conda install --quiet --yes --update-all -c conda-forge \
-    'python<3.8.0a0' \
+    'python<3.9.0a0' \
     'nbconvert' \
     'tqdm' \
     'yapf' \
