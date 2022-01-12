@@ -14,9 +14,7 @@ RUN conda config --set channel_priority strict && \
     'tqdm' \
     'yapf' \
     'nbdime' \
-    'jupyterhub' \
     'jupyterlab<3' \
-    'ipympl' \
     'nodejs' \
     'ipyparallel' \
     'decorator' \
