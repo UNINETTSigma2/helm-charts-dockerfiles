@@ -23,7 +23,7 @@ RUN conda config --set channel_priority strict && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
-    'jupyter-matplotlib' \ && \
+    'jupyter-matplotlib' && \
     #'@jupyterlab/toc' \
     #'@jupyterlab/hub-extension' && \
     pip install  jupyterlab-github==2.0.0 escapism && \
