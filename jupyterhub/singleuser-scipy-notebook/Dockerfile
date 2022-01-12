@@ -8,8 +8,8 @@
 
 FROM jupyter/scipy-notebook:59c973d16bca as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
-RUN conda config --set channel_priority strict && \
-    conda install --quiet --yes --update-all -c conda-forge \
+RUN mamba config --set channel_priority strict && \
+    mamba install --quiet --yes --update-all -c conda-forge \
     'nbconvert' \
     'tqdm' \
     'yapf' \
@@ -37,7 +37,7 @@ RUN conda config --set channel_priority strict && \
     jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
-    conda clean  --all -f -y
+    mamba clean  --all -f -y
 
 
 FROM jupyter/scipy-notebook:59c973d16bca
