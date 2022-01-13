@@ -6,10 +6,11 @@
 
 
 
-FROM jupyter/scipy-notebook:54462805efcb as miniconda
+FROM jupyter/scipy-notebook:f51aa480b7b5 as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
+    'python<3.8' \
     'nbconvert' \
     'tqdm' \
     'yapf' \
@@ -40,7 +41,7 @@ RUN mamba config --set channel_priority strict && \
     mamba clean  --all -f -y
 
 
-FROM jupyter/scipy-notebook:54462805efcb
+FROM jupyter/scipy-notebook:f51aa480b7b5
 
 LABEL maintainer = "Uninett As <system@uninett.no>"
 USER root
