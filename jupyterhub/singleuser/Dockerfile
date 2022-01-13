@@ -6,11 +6,10 @@
 
 
 
-FROM jupyter/datascience-notebook:cfc62597b072 as miniconda
+FROM jupyter/datascience-notebook:54462805efcb as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
-RUN mamba config --set channel_priority strict && \
-    mamba install --quiet --yes --update-all -c conda-forge \
-    'python>=3.7,<3.8.0a0' \
+RUN conda config --set channel_priority strict && \
+    conda install --quiet --yes --update-all -c conda-forge \
     'nbconvert' \
     'tqdm' \
     'yapf' \
@@ -38,10 +37,10 @@ RUN mamba config --set channel_priority strict && \
     jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
-    mamba clean  --all -f -y
+    conda clean  --all -f -y
 
 
-FROM jupyter/datascience-notebook:cfc62597b072
+FROM jupyter/datascience-notebook:54462805efcb
 
 LABEL maintainer = "Uninett As <system@uninett.no>"
 USER root
