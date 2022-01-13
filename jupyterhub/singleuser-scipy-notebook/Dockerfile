@@ -6,10 +6,10 @@
 
 
 
-FROM jupyter/scipy-notebook:f51aa480b7b5 as miniconda
+FROM jupyter/scipy-notebook:54462805efcb as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
-RUN mamba config --set channel_priority strict && \
-    mamba install --quiet --yes --update-all -c conda-forge \
+RUN conda config --set channel_priority strict && \
+    conda install --quiet --yes --update-all -c conda-forge \
     'python<3.8' \
     'nbconvert' \
     'tqdm' \
@@ -38,10 +38,10 @@ RUN mamba config --set channel_priority strict && \
     jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
-    mamba clean  --all -f -y
+    conda clean  --all -f -y
 
 
-FROM jupyter/scipy-notebook:f51aa480b7b5
+FROM jupyter/scipy-notebook:54462805efcb
 
 LABEL maintainer = "Uninett As <system@uninett.no>"
 USER root
