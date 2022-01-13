@@ -10,7 +10,6 @@ FROM jupyter/scipy-notebook:54462805efcb as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN conda config --set channel_priority strict && \
     conda install --quiet --yes --update-all -c conda-forge \
-    'python<3.8' \
     'nbconvert' \
     'tqdm' \
     'yapf' \
