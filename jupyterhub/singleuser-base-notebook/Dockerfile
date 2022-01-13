@@ -6,24 +6,21 @@
 
 
 
-FROM jupyter/base-notebook:061a02b21fea as miniconda
+FROM jupyter/base-notebook:f51aa480b7b5 as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 
 
-RUN conda config --set channel_priority strict && \
-    conda install --quiet --yes --update-all -c conda-forge \
+RUN mamba config --set channel_priority strict && \
+    mamba install --quiet --yes --update-all -c conda-forge \
     'nbconvert' \
     'tqdm' \
-    'yapf==0.31.0' \
-    'nbdime==3.1.0' \
-    'jupyterlab==3.2.1' \
-    'ipympl==0.8.2' \
+    'yapf' \
+    'nbdime' \
     'nodejs' \
-    'jupyterhub==1.1.0' \
-    'ipyparallel==7.1.0' \
-     'decorator==5.1.0' \
-    'jupyter_contrib_nbextensions==0.5.1' \
-    'jupyter-server-proxy==3.1.0' && \
+    'ipyparallel' \
+    'decorator' \
+    'jupyter_contrib_nbextensions' \
+    'jupyter-server-proxy' && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
@@ -32,10 +29,10 @@ RUN conda config --set channel_priority strict && \
     '@jupyterlab/hub-extension' && \
     pip install  jupyterlab-github escapism && \
     jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
-    conda clean  --all -f -y
+    mamba clean  --all -f -y
 
 
-FROM jupyter/base-notebook:061a02b21fea
+FROM jupyter/base-notebook:f51aa480b7b5
 
 LABEL maintainer = "Uninett As <system@uninett.no>"
 USER root
