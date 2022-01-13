@@ -14,6 +14,7 @@ RUN conda config --set channel_priority strict && \
     'tqdm' \
     'yapf' \
     'nbdime' \
+    'jupyterhub<2' \
     'jupyterlab<3' \
     'nodejs' \
     'ipyparallel' \
@@ -30,7 +31,7 @@ RUN conda config --set channel_priority strict && \
     'nbdime-jupyterlab' \
     'jupyter-matplotlib' && \
     #'@jupyterlab/toc' \
-    #'@jupyterlab/hub-extension' && \
+    '@jupyterlab/hub-extension' && \
     pip install  jupyterlab-github==2.0.0 escapism && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
