@@ -20,7 +20,7 @@ RUN mamba config --set channel_priority strict && \
     'decorator' \
     'jupyter_contrib_nbextensions' \
     'jupyter-server-proxy' \
-    'esmpy=7.1.0' \
+    'esmpy==7.1.0r' \
     'cartopy' \
     'xesmf' \
     'xarray' \
