@@ -15,7 +15,7 @@ RUN mamba config --set channel_priority strict && \
     'yapf' \
     'nbdime' \
     'jupyterhub<2' \
-    'jupyterlab<3' \
+    'jupyterlab' \
     'nodejs' \
     'ipyparallel' \
     'decorator' \
@@ -27,7 +27,7 @@ RUN mamba config --set channel_priority strict && \
     'jupyter-matplotlib' \
     '@jupyterlab/toc' \
     '@jupyterlab/hub-extension' && \
-    pip install  jupyterlab-github==2.0.0 escapism && \
+    pip install  jupyterlab-github escapism && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
