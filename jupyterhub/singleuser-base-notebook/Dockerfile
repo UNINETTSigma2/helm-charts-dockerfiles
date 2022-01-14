@@ -29,7 +29,7 @@ RUN mamba config --set channel_priority strict && \
     '@jupyterlab/hub-extension' && \
     pip install  jupyterlab-github escapism && \
     jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
-    mamba clean  --all -f -y
+    mamba clean --all -f -y
 
 
 FROM jupyter/base-notebook:f51aa480b7b5
