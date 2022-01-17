@@ -8,13 +8,13 @@ c = get_config()
 # ------------------------------------------------------------------------------
 
 c.IPKernelApp.pylab = 'inline'
-c.NotebookApp.ip = '*'
-c.NotebookApp.quit_button = False
-c.NotebookApp.port = 8888
-c.NotebookApp.notebook_dir = os.environ['HOME']
-c.NotebookApp.allow_origin = '*'
-c.NotebookApp.allow_remote_access = True
-c.NotebookApp.token = ''
-c.NotebookApp.password = ''
+c.ServerApp.ip = '*'
+c.ServerApp.quit_button = False
+c.ServerApp.port = 8888
+c.ServerApp.root_dir = os.environ['HOME']
+c.ServerApp.allow_origin = '*'
+c.ServerApp.allow_remote_access = True
+c.ServerApp.token = ''
+c.ServerApp.password = ''
 # Run all nodes interactively
 c.InteractiveShell.ast_node_interactivity = "all"
