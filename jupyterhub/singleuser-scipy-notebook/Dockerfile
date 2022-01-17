@@ -29,8 +29,8 @@ RUN mamba config --set channel_priority strict && \
     #'@jupyterlab/hub-extension' && \
     pip install  jupyterlab-github==2.0.0 escapism && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
-    jupyter serverextension enable --py nbresuse --sys-prefix && \
-    jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
+    jupyter server extension enable --py nbresuse --sys-prefix && \
+    jupyter server extension enable jupyter_server_proxy --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
     mamba clean --all -f -y
