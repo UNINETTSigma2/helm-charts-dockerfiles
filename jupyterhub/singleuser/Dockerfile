@@ -10,7 +10,7 @@ FROM jupyter/datascience-notebook:f51aa480b7b5 as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
-    'nbconvert=5.6.1"' \
+    'nbconvert=5.6.1' \
     'tqdm' \
     'yapf' \
     'nbdime' \
