@@ -10,7 +10,7 @@ FROM jupyter/datascience-notebook:f51aa480b7b5 as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
-    'nbconvert' \
+    'nbconvert=5.6.1"' \
     'tqdm' \
     'yapf' \
     'nbdime' \
@@ -24,9 +24,9 @@ RUN mamba config --set channel_priority strict && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
-    'jupyter-matplotlib' \
-    '@jupyterlab/toc' \
-    '@jupyterlab/hub-extension' && \
+    'jupyter-matplotlib' && \
+    #'@jupyterlab/toc' \
+    #'@jupyterlab/hub-extension' && \
     pip install  jupyterlab-github escapism && \
     git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
     jupyter server extension enable --py nbresuse --sys-prefix && \
