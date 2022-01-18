@@ -15,7 +15,7 @@ RUN mamba config --set channel_priority strict && \
     'yapf' \
     'nbdime' \
     'jupyterhub==1.1.0' \
-    'jupyterlab' \
+    'jupyterlab=3.2.5' \
     'nodejs' \
     'ipyparallel' \
     'decorator' && \
