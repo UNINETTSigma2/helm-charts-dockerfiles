@@ -6,19 +6,20 @@
 
 
 
-FROM jupyter/datascience-notebook:f51aa480b7b5 as miniconda
+FROM jupyter/datascience-notebook:ee77b7831e16 as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
+    'decorator' \
+    'ipyparallel' \
+    'jupyter-server-proxy' \
+    'jupyter_contrib_nbextensions' \
+    'jupyterhub==1.1.0' \
     'nbconvert' \
-    'tqdm' \
-    'yapf' \
     'nbdime' \
     'nodejs' \
-    'ipyparallel' \
-    'decorator' && \
-    'jupyter_contrib_nbextensions' \
-    'jupyter-server-proxy' && \
+    'tqdm' \
+    'yapf' && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager' \
     'nbdime-jupyterlab' \
@@ -32,7 +33,7 @@ RUN mamba config --set channel_priority strict && \
     mamba clean --all -f -y
 
 
-FROM jupyter/datascience-notebook:f51aa480b7b5
+FROM jupyter/datascience-notebook:ee77b7831e16
 
 LABEL maintainer = "Uninett As <system@uninett.no>"
 USER root
