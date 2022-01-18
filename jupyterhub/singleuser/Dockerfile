@@ -14,7 +14,6 @@ RUN mamba config --set channel_priority strict && \
     'tqdm' \
     'yapf' \
     'nbdime' \
-    'jupyterhub<2' \
     'nodejs' \
     'ipyparallel' \
     'decorator' && \

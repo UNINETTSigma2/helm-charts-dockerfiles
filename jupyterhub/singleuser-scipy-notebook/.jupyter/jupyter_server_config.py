@@ -4,7 +4,7 @@ import os
 c = get_config()
 
 # ------------------------------------------------------------------------------
-# NotebookApp configuration
+# ServerApp configuration
 # ------------------------------------------------------------------------------
 
 c.IPKernelApp.pylab = 'inline'
