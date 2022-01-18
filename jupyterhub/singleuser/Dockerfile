@@ -15,25 +15,21 @@ RUN mamba config --set channel_priority strict && \
     'yapf' \
     'nbdime' \
     'jupyterhub==1.1.0' \
-    'jupyterlab=3.2.5' \
     'nodejs' \
     'ipyparallel' \
     'decorator' && \
-    #'jupyter_contrib_nbextensions' \
-    #'jupyter-server-proxy' && \
-    #jupyter labextension install \
-    #'@jupyter-widgets/jupyterlab-manager' \
-    #'nbdime-jupyterlab' \
-    #'jupyter-matplotlib' && \
-    #'@jupyterlab/toc' \
-    #'@jupyterlab/hub-extension' && \
-    #pip install  jupyterlab-github escapism && \
-    pip install escapism && \
-    #git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
-    #jupyter server extension enable --py nbresuse --sys-prefix && \
-    #jupyter server extension enable jupyter_server_proxy --sys-prefix && \
-    #jupyter nbextension install --py nbresuse --sys-prefix && \
-    #jupyter nbextension enable --py nbresuse --sys-prefix && \
+    'jupyter_contrib_nbextensions' \
+    'jupyter-server-proxy' && \
+    jupyter labextension install \
+    '@jupyter-widgets/jupyterlab-manager' \
+    'nbdime-jupyterlab' \
+    'jupyter-matplotlib' && \
+    pip install  jupyterlab-github escapism && \
+    git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
+    jupyter server extension enable --py nbresuse --sys-prefix && \
+    jupyter server extension enable jupyter_server_proxy --sys-prefix && \
+    jupyter nbextension install --py nbresuse --sys-prefix && \
+    jupyter nbextension enable --py nbresuse --sys-prefix && \
     mamba clean --all -f -y
 
 
