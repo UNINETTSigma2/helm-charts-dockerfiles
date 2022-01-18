@@ -10,7 +10,7 @@ FROM jupyter/datascience-notebook:f51aa480b7b5 as miniconda
 # RUN conda update conda python && pip install -U 'pip==18.*'
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
-    'nbconvert=5.6.1' \
+    'nbconvert' \
     'tqdm' \
     'yapf' \
     'nbdime' \
@@ -18,21 +18,21 @@ RUN mamba config --set channel_priority strict && \
     'jupyterlab' \
     'nodejs' \
     'ipyparallel' \
-    'decorator' \
-    'jupyter_contrib_nbextensions' \
-    'jupyter-server-proxy' && \
-    jupyter labextension install \
-    '@jupyter-widgets/jupyterlab-manager' \
-    'nbdime-jupyterlab' \
-    'jupyter-matplotlib' && \
+    'decorator' && \
+    #'jupyter_contrib_nbextensions' \
+    #'jupyter-server-proxy' && \
+    #jupyter labextension install \
+    #'@jupyter-widgets/jupyterlab-manager' \
+    #'nbdime-jupyterlab' \
+    #'jupyter-matplotlib' && \
     #'@jupyterlab/toc' \
     #'@jupyterlab/hub-extension' && \
-    pip install  jupyterlab-github escapism && \
-    git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
-    jupyter server extension enable --py nbresuse --sys-prefix && \
-    jupyter server extension enable jupyter_server_proxy --sys-prefix && \
-    jupyter nbextension install --py nbresuse --sys-prefix && \
-    jupyter nbextension enable --py nbresuse --sys-prefix && \
+    #pip install  jupyterlab-github escapism && \
+    #git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
+    #jupyter server extension enable --py nbresuse --sys-prefix && \
+    #jupyter server extension enable jupyter_server_proxy --sys-prefix && \
+    #jupyter nbextension install --py nbresuse --sys-prefix && \
+    #jupyter nbextension enable --py nbresuse --sys-prefix && \
     mamba clean --all -f -y
 
 
