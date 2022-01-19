@@ -56,7 +56,7 @@ fi
 
 cd "$HOME"
 if [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
-  jupyterhub-singleuser --config "$HOME/.jupyter/jupyter_server_config.py" --LabApp.default_url="/lab"
+  jupyterhub-singleuser --config "$HOME/.jupyter/jupyter_server_config.py" --SingleUserLabApp.default_url="/lab"
 else
-  jupyterhub-singleuser --config "$HOME/.jupyter/jupyter_server_config.py" --LabApp.default_url="/tree"
+  jupyterhub-singleuser --config "$HOME/.jupyter/jupyter_server_config.py" --SingleUserLabApp.default_url="/tree"
 fi
