@@ -6,33 +6,33 @@
 
 
 
-FROM jupyter/base-notebook:f51aa480b7b5 as miniconda
-# RUN conda update conda python && pip install -U 'pip==18.*'
+FROM jupyter/base-notebook:ee77b7831e16 as miniconda
 
-
+# Note: jupyterhub currently has to be pinned to version 1.1.0 (same as server)
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
-    'nbconvert' \
-    'tqdm' \
-    'yapf' \
-    'nbdime' \
-    'nodejs' \
-    'ipyparallel' \
-    'decorator' \
-    'jupyter_contrib_nbextensions' \
-    'jupyter-server-proxy' && \
+    'decorator==5.1.1' \
+    'ipyparallel==8.1.0' \
+    'jupyter-server-proxy==3.2.0' \
+    'jupyter_contrib_nbextensions==0.5.1' \
+    'jupyterhub==1.1.0' \
+    'nbconvert==6.4.0' \
+    'nbdime==3.1.1' \
+    'nodejs==17.1.0' \
+    'tqdm==4.62.3' \
+    'yapf==0.32.0' && \
     jupyter labextension install \
-    '@jupyter-widgets/jupyterlab-manager' \
-    'nbdime-jupyterlab' \
-    'jupyter-matplotlib' \
-    ##'@jupyterlab/toc' \ this has been added to core JupyterLab extensions for JupyterLab 3.0
-    '@jupyterlab/hub-extension' && \
-    pip install  jupyterlab-github escapism && \
-    jupyter serverextension enable jupyter_server_proxy --sys-prefix && \
+    '@jupyter-widgets/jupyterlab-manager@3.0.1' \
+    'jupyter-matplotlib@0.10.4' \
+    'nbdime-jupyterlab@2.1.1' && \
+    pip install escapism==1.0.1 jupyterlab-github==3.0.1 git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
+    jupyter server extension enable jupyter_server_proxy --sys-prefix && \
+    jupyter server extension enable --py nbresuse --sys-prefix && \
+    jupyter nbextension install --py nbresuse --sys-prefix && \
+    jupyter nbextension enable --py nbresuse --sys-prefix && \
     mamba clean --all -f -y
 
-
-FROM jupyter/base-notebook:f51aa480b7b5
+FROM jupyter/base-notebook:ee77b7831e16
 
 LABEL maintainer = "Uninett As <system@uninett.no>"
 USER root
@@ -106,7 +106,6 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     ln -s /usr/local/cuda/include/* /usr/include/
-
 
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
