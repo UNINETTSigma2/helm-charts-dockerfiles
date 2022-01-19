@@ -25,11 +25,8 @@ RUN mamba config --set channel_priority strict && \
     '@jupyter-widgets/jupyterlab-manager@3.0.1' \
     'jupyter-matplotlib@0.10.4' \
     'nbdime-jupyterlab@2.1.1' && \
-    pip install escapism==1.0.1 jupyterlab-github==3.0.1 git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
+    pip install escapism==1.0.1 jupyterlab-github==3.0.1 && \
     jupyter server extension enable jupyter_server_proxy --sys-prefix && \
-    jupyter server extension enable --py nbresuse --sys-prefix && \
-    jupyter nbextension install --py nbresuse --sys-prefix && \
-    jupyter nbextension enable --py nbresuse --sys-prefix && \
     mamba clean --all -f -y
 
 FROM jupyter/base-notebook:ee77b7831e16
