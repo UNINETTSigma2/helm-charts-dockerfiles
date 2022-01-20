@@ -12,7 +12,7 @@ FROM jupyter/base-notebook:ee77b7831e16 as miniconda
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
     'decorator==5.1.1' \
-    'ipyparallel==6.2.5' \
+    'ipyparallel==6.3.0' \
     'jupyter-server-proxy==3.2.0' \
     'jupyter_contrib_nbextensions==0.5.1' \
     'jupyterhub==1.1.0' \
