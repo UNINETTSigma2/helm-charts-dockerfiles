@@ -1,8 +1,18 @@
 # Upstream Dockerfile https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/tidyverse_4.1.2.Dockerfile
 
-FROM rocker/tidyverse:4.1.2
+FROM rocker/r-ver:4.1.2
 
 LABEL maintainer Uninett AS <system@uninett.no>
+
+ENV S6_VERSION=v2.1.0.2
+ENV RSTUDIO_VERSION=1.3.1093
+ENV PATH=/usr/lib/rstudio-server/bin:$PATH
+
+
+RUN /rocker_scripts/install_rstudio.sh
+RUN /rocker_scripts/install_pandoc.sh
+
+RUN /rocker_scripts/install_tidyverse.sh
 
 RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
     apt-utils \
@@ -63,7 +73,7 @@ RUN chmod go+w -R /home/rstudio && \
 
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
-EXPOSE 3838
+EXPOSE 8787 3838
 
 ENTRYPOINT ["/sbin/tini", "-g", "--"]
 CMD ["/usr/local/bin/start.sh"]
