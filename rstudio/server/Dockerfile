@@ -5,7 +5,7 @@ FROM rocker/r-ver:4.1.2
 LABEL maintainer Uninett AS <system@uninett.no>
 
 ENV S6_VERSION=v2.1.0.2
-ENV RSTUDIO_VERSION=2021.09.2+351
+ENV RSTUDIO_VERSION=2021.09.0+351
 ENV PATH=/usr/lib/rstudio-server/bin:$PATH
 
 
