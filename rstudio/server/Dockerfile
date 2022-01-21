@@ -61,7 +61,7 @@ RUN gdebi -n /tmp/shiny.deb && \
 
 COPY rserver.conf rsession.conf /etc/rstudio/
 COPY start.sh /usr/local/bin/start.sh
-COPY shiny-server.conf /etc/init/shiny-server.conf
+COPY shiny-server.conf /etc/init.d/shiny-server.conf
 COPY .Renviron $HOME/.Renviron
 
 RUN chmod go+w -R /home/rstudio && \
