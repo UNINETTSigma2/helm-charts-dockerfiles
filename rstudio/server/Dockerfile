@@ -7,7 +7,6 @@ LABEL maintainer Uninett AS <system@uninett.no>
 ENV S6_VERSION=v2.1.0.2
 ENV RSTUDIO_VERSION=1.4.1103
 ENV PATH=/usr/lib/rstudio-server/bin:$PATH
-ENV XDG_DATA_HOME=/home/rstudio/.rstudio
 
 
 RUN /rocker_scripts/install_rstudio.sh
@@ -51,6 +50,7 @@ RUN chmod +x /sbin/tini
 
 # Setup Shiny
 ADD https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-${PKG_SHINY_VERSION}-amd64.deb /tmp/shiny.deb
+COPY shiny-server.conf /etc/init/shiny-server.conf
 RUN gdebi -n /tmp/shiny.deb && \
     rm /tmp/shiny.deb && \
     install2.r -e shiny rmarkdown shinythemes shinydashboard && \
@@ -61,7 +61,6 @@ RUN gdebi -n /tmp/shiny.deb && \
 
 COPY rserver.conf rsession.conf /etc/rstudio/
 COPY start.sh /usr/local/bin/start.sh
-COPY shiny-server.conf /etc/init.d/shiny-server.conf
 COPY .Renviron $HOME/.Renviron
 
 RUN chmod go+w -R /home/rstudio && \
