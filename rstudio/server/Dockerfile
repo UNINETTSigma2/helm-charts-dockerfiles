@@ -41,7 +41,7 @@ ENV TZ="Europe/Oslo" \
     APP_UID=999 \
     APP_GID=999 \
     PKG_R_VERSION=4.1.2 \
-    PKG_RSTUDIO_VERSION=1.3.1093 \
+    PKG_RSTUDIO_VERSION=1.4.1103 \
     PKG_SHINY_VERSION=1.5.17.973
 
 # Setup Tini, as S6 does not work when run as non-root users
