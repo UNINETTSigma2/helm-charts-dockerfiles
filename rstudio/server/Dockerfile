@@ -6,6 +6,7 @@ LABEL maintainer Uninett AS <system@uninett.no>
 
 ENV S6_VERSION=v2.1.0.2
 ENV RSTUDIO_VERSION=1.4.1103
+ENV RSTUDIO_DATA_HOME=$HOME/.rstudio
 ENV PATH=/usr/lib/rstudio-server/bin:$PATH
 
 
