@@ -8,35 +8,31 @@
 # Base: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/base-notebook/Dockerfile
 
 
-FROM jupyter/all-spark-notebook:061a02b21fea as miniconda
+FROM jupyter/all-spark-notebook:ee77b7831e16 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
     NB_UID=999 \
     NB_GID=999
 
-RUN apt update && apt install -y eatmydata apt-utils 
-RUN conda config --set channel_priority strict && \
-    eatmydata conda install --quiet --update-all --yes -c conda-forge \
-    'xarray==0.19.0' \
-    'ipympl==0.8.2' \
-    'nodejs' \
+RUN apt update && apt install -y eatmydata apt-utils
+RUN mamba config --set channel_priority strict && \
+    eatmydata mamba install --quiet --update-all --yes -c conda-forge \
+    'cudatoolkit' \
+    'cufflinks-py' \
+    'decorator==5.1.1' \
+    'ipyparallel==6.3.0' \
+    'jupyter-server-proxy==3.2.0' \
     'jupyter_contrib_nbextensions==0.5.1' \
-    'cudatoolkit=11.4' \
+    'jupyterlab_iframe' \
+    'nbconvert==6.4.0' \
+    'nbdime==3.1.1' \
+    'nodejs==17.1.0' \
+    'plotly' \
     'tqdm==4.62.3' \
-    'yapf==0.31.0' \
-    'nbdime==3.1.0' \
-    'nbconvert==6.2.0' \
-    'decorator==5.1.0' \
-    'plotly==5.3.1' \
-    'ipywidgets==7.6.5' \
-    'jupyter-server-proxy==3.1.0' \
-    'ipykernel==6.4.2' \
-    'ipyparallel==7.1.0' \
-    'jupyterlab==3.2.1' \
-    'jupyterlab_iframe==0.4.0' \
-    'cufflinks-py==0.17.3' \
-    && conda clean  --all -f -y
+    'xarray' \
+    'yapf==0.32.0' \
+    && mamba clean --all -f -y
 
 
 
@@ -46,24 +42,23 @@ RUN conda config --set channel_priority strict && \
  #    'pygpu=0.7.6' \
  #    'libjpeg-turbo=2.*' \
  #    'bcolz=1.2.1' \
- #    'jax=0.2.9'   \
+ #    'jax=0.2.9' \
  #    'libtiff=4.2.0' \
  #    'python-graphviz=0.16' \
  #'pydot=1.4.1' \
 
-RUN conda create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean  --all -f -y && conda deactivate'
+RUN mamba create -n minimal -y && bash -c 'source activate minimal && mamba install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && mamba clean  --all -f -y && mamba deactivate'
 
 
 RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter labextension install \
-    '@jupyter-widgets/jupyterlab-manager' \
-    'jupyterlab-plotly' \
-    'jupyter-matplotlib' \
-    'nbdime-jupyterlab' \
-    '@jupyterlab/toc' \
+    '@jupyter-widgets/jupyterlab-manager@3.0.1' \
     '@jupyterlab/server-proxy' \
-    'jupyterlab_iframe@0.4.0' && \
-    git clone https://github.com/paalka/nbresuse /tmp/nbresuse && pip install /tmp/nbresuse/ && \
+    'jupyter-matplotlib@0.10.4' \
+    'jupyterlab-plotly' \
+    'jupyterlab_iframe' \
+    'nbdime-jupyterlab@2.1.1' && \
+    pip install git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
@@ -71,8 +66,8 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
 
 
 
-FROM jupyter/all-spark-notebook:061a02b21fea
-LABEL maintainer =  "Uninett As <system@uninett.no>"
+FROM jupyter/all-spark-notebook:ee77b7831e16
+LABEL maintainer = "Uninett As <system@uninett.no>"
 
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -134,9 +129,9 @@ RUN apt update && apt install -y --no-install-recommends \
        ca-certificates \
        libnetcdf-dev \
        python3-netcdf4 \
-       sudo  && \
-   apt install -y --only-upgrade openssl && \
-	apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*  && \ 
+       sudo && \
+    apt install -y --only-upgrade openssl && \
+	apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* && \
 	ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
 
 RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
@@ -155,7 +150,7 @@ ENV TZ="Europe/Oslo" \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.3.0-incubating \
 	PKG_R_VERSION=4.0.3 \
-	PKG_VS_CODE_VERSION=2.1692-vsc1.39.2  \
+	PKG_VS_CODE_VERSION=2.1692-vsc1.39.2 \
 	HOME=/home/notebook \
    PATH=$PATH:$SPARK_HOME/bin \
    XDG_CACHE_HOME=/home/notebook/.cache/
@@ -172,7 +167,7 @@ COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels
 RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
 
 
-RUN wget -q "https://github.com/cdr/code-server/releases/download/$PKG_VS_CODE_VERSION/code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz"  && \
+RUN wget -q "https://github.com/cdr/code-server/releases/download/$PKG_VS_CODE_VERSION/code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
     tar zxf "code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
     mv "code-server$PKG_VS_CODE_VERSION-linux-x86_64/code-server" /usr/local/bin/ && \
     rm -rf "code-server*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
@@ -193,9 +188,9 @@ RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/lib
 RUN fix-permissions $CONDA_DIR
 
 USER notebook
-RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*  && \
-    conda init bash
-    
+RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-* && \
+    mamba init bash
+
 WORKDIR $HOME
 ENV LANG=en_US.UTF-8 \
     PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
