@@ -75,5 +75,7 @@ USER $APP_UID:$APP_GID
 WORKDIR $HOME
 EXPOSE 8787 3838
 
+RUN echo "Testing"
+
 ENTRYPOINT ["/sbin/tini", "-g", "--"]
 CMD ["/usr/local/bin/start.sh"]

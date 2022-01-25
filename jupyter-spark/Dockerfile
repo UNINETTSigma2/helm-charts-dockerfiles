@@ -18,19 +18,19 @@ ENV DEBIAN_FRONTEND noninteractive \
 RUN apt update && apt install -y eatmydata apt-utils
 RUN mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge \
-    'cudatoolkit' \
-    'cufflinks-py' \
+    'cudatoolkit==11.6.0' \
+    'cufflinks-py==0.17.3' \
     'decorator==5.1.1' \
     'ipyparallel==6.3.0' \
     'jupyter-server-proxy==3.2.0' \
     'jupyter_contrib_nbextensions==0.5.1' \
-    'jupyterlab_iframe' \
+    'jupyterlab_iframe==0.4.1' \
     'nbconvert==6.4.0' \
     'nbdime==3.1.1' \
     'nodejs==17.1.0' \
-    'plotly' \
+    'plotly==5.5.0' \
     'tqdm==4.62.3' \
-    'xarray' \
+    'xarray==0.20.2' \
     'yapf==0.32.0' \
     && mamba clean --all -f -y
 
@@ -47,16 +47,16 @@ RUN mamba config --set channel_priority strict && \
  #    'python-graphviz=0.16' \
  #'pydot=1.4.1' \
 
-RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean  --all -f -y && conda deactivate'
+RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 
 
 RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager@3.0.1' \
-    '@jupyterlab/server-proxy' \
+    '@jupyterlab/server-proxy@3.2.0' \
     'jupyter-matplotlib@0.10.4' \
-    'jupyterlab-plotly' \
-    'jupyterlab_iframe' \
+    'jupyterlab-plotly@5.5.0' \
+    'jupyterlab_iframe@0.4.1' \
     'nbdime-jupyterlab@2.1.1' && \
     pip install git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
@@ -199,7 +199,5 @@ ENV LANG=en_US.UTF-8 \
     NVIDIA_DRIVER_CAPABILITIES=all
 
 RUN pip install jupyterlab_github && jupyter serverextension enable --sys-prefix jupyterlab_github
-
-RUN echo "Testing"
 
 CMD ["/usr/local/bin/start-notebook.sh"]
