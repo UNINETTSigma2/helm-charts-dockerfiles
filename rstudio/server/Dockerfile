@@ -9,6 +9,16 @@ ENV RSTUDIO_VERSION=1.4.1103
 ENV RSTUDIO_DATA_HOME=$HOME/.rstudio
 ENV PATH=/usr/lib/rstudio-server/bin:$PATH
 
+# Setup various variables
+ENV TZ="Europe/Oslo" \
+    USERNAME="rstudio" \
+    HOME="/home/rstudio" \
+    TINI_VERSION=v0.19.0 \
+    APP_UID=999 \
+    APP_GID=999 \
+    PKG_R_VERSION=4.1.2 \
+    PKG_RSTUDIO_VERSION=1.4.1103 \
+    PKG_SHINY_VERSION=1.5.17.973
 
 RUN /rocker_scripts/install_rstudio.sh
 RUN /rocker_scripts/install_pandoc.sh
@@ -33,17 +43,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
     libxt-dev \
     man-db && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Setup various variables
-ENV TZ="Europe/Oslo" \
-    USERNAME="rstudio" \
-    HOME="/home/rstudio" \
-    TINI_VERSION=v0.18.0 \
-    APP_UID=999 \
-    APP_GID=999 \
-    PKG_R_VERSION=4.1.2 \
-    PKG_RSTUDIO_VERSION=1.4.1103 \
-    PKG_SHINY_VERSION=1.5.17.973
 
 # Setup Tini, as S6 does not work when run as non-root users
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
