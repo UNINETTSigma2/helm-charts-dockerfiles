@@ -200,4 +200,6 @@ ENV LANG=en_US.UTF-8 \
 
 RUN pip install jupyterlab_github && jupyter serverextension enable --sys-prefix jupyterlab_github
 
+RUN echo "Testing"
+
 CMD ["/usr/local/bin/start-notebook.sh"]
