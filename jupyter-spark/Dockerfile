@@ -47,7 +47,7 @@ RUN mamba config --set channel_priority strict && \
  #    'python-graphviz=0.16' \
  #'pydot=1.4.1' \
 
-RUN mamba create -n minimal -y && bash -c 'source activate minimal && mamba install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && mamba clean  --all -f -y && mamba deactivate'
+RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean  --all -f -y && conda deactivate'
 
 
 RUN jupyter serverextension enable --py jupyterlab_iframe && \
