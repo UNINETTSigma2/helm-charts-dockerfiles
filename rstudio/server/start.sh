@@ -9,7 +9,7 @@ if [ ! -e "$HOME/.Renviron" ]; then
 	echo -e "HOME=/home/$USERNAME\nUSER=$USERNAME\nTZ=Europe/Oslo" > "$HOME/.Renviron"
 fi
 
-/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 --auth-none 1 &
+/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 --auth-none 0 &
 
 if [ -n "$SHINY_APPS_PATH" ]; then
 	if [ ! -d "$SHINY_APPS_PATH" ]; then
