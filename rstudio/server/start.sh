@@ -10,7 +10,7 @@ if [ ! -e "$HOME/.Renviron" ]; then
 fi
 
 #/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 --auth-none 0 &
-/usr/lib/rstudio-server/bin/rserver --server-user $USERNAME --www-port 8787 --auth-none=0 --auth-timeout-minutes=0 --auth-stay-signed-in-days=30
+/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 --server-user $USERNAME --www-port 8787 --auth-none=0 --auth-timeout-minutes=0 --auth-stay-signed-in-days=30 &
 
 if [ -n "$SHINY_APPS_PATH" ]; then
 	if [ ! -d "$SHINY_APPS_PATH" ]; then
