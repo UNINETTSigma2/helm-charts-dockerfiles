@@ -4,21 +4,8 @@ FROM rocker/r-ver:4.1.2
 
 LABEL maintainer Uninett AS <system@uninett.no>
 
-# Setup various variables
-ENV TZ="Europe/Oslo" \
-    USERNAME="rstudio" \
-    HOME="/home/rstudio" \
-    TINI_VERSION=v0.19.0 \
-    APP_UID=999 \
-    APP_GID=999 \
-    PKG_R_VERSION=4.1.2 \
-    PKG_RSTUDIO_VERSION=1.4.1103 \
-    PKG_SHINY_VERSION=1.5.17.973
-
 ENV S6_VERSION=v2.1.0.2
 ENV RSTUDIO_VERSION=1.4.1103
-ENV RSTUDIO_DATA_HOME=$HOME/.rstudio
-ENV RSTUDIO_CONFIG_DIR=/etc/rstudio
 ENV PATH=/usr/lib/rstudio-server/bin:$PATH
 
 
@@ -46,6 +33,18 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
     man-db && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Setup various variables
+ENV TZ="Europe/Oslo" \
+    USERNAME="rstudio" \
+    HOME="/home/rstudio" \
+    TINI_VERSION=v0.19.0 \
+    APP_UID=999 \
+    APP_GID=999 \
+    PKG_R_VERSION=4.1.2 \
+    PKG_RSTUDIO_VERSION=1.4.1103 \
+    PKG_SHINY_VERSION=1.5.17.973 \
+    RSTUDIO_DATA_HOME=$HOME/.rstudio
+
 # Setup Tini, as S6 does not work when run as non-root users
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
 RUN chmod +x /sbin/tini
@@ -58,7 +57,7 @@ RUN gdebi -n /tmp/shiny.deb && \
     install2.r -e shiny rmarkdown shinythemes shinydashboard && \
     cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/ && \
     mkdir -p /var/log/shiny-server && \
-    chown rstudio.rstudio /var/log/shiny-server && \
+    chown rstudio:rstudio /var/log/shiny-server && \
     chmod go+w -R /var/log/shiny-server /usr/local/lib/R /srv /var/lib/shiny-server
 
 COPY rserver.conf rsession.conf /etc/rstudio/
@@ -70,16 +69,13 @@ RUN chmod go+w -R /home/rstudio && \
     groupmod -g 988 rstudio-server && \
     usermod -u "$APP_UID" rstudio && \
     groupmod -g "$APP_GID" rstudio && \
-    chmod -R go+w /tmp/downloaded_packages /etc/rstudio/rsession.conf && \
     chown -R rstudio:rstudio /var/lib/rstudio-server && \
-    chmod -R g=u /var/lib/rstudio-server
+    chmod -R go+w /tmp/downloaded_packages /etc/rstudio/rsession.conf /var/lib/rstudio-server
 
 
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
 EXPOSE 8787 3838
-
-RUN echo "Testing"
 
 ENTRYPOINT ["/sbin/tini", "-g", "--"]
 CMD ["/usr/local/bin/start.sh"]
