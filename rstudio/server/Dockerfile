@@ -4,11 +4,6 @@ FROM rocker/r-ver:4.1.2
 
 LABEL maintainer Uninett AS <system@uninett.no>
 
-ENV S6_VERSION=v2.1.0.2
-ENV RSTUDIO_VERSION=1.4.1103
-ENV RSTUDIO_DATA_HOME=$HOME/.rstudio
-ENV PATH=/usr/lib/rstudio-server/bin:$PATH
-
 # Setup various variables
 ENV TZ="Europe/Oslo" \
     USERNAME="rstudio" \
@@ -19,6 +14,13 @@ ENV TZ="Europe/Oslo" \
     PKG_R_VERSION=4.1.2 \
     PKG_RSTUDIO_VERSION=1.4.1103 \
     PKG_SHINY_VERSION=1.5.17.973
+
+ENV S6_VERSION=v2.1.0.2
+ENV RSTUDIO_VERSION=1.4.1103
+ENV RSTUDIO_DATA_HOME=$HOME/.rstudio
+ENV RSTUDIO_CONFIG_DIR=/etc/rstudio
+ENV PATH=/usr/lib/rstudio-server/bin:$PATH
+
 
 RUN /rocker_scripts/install_rstudio.sh
 RUN /rocker_scripts/install_pandoc.sh
