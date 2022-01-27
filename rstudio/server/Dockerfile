@@ -69,8 +69,8 @@ RUN chmod go+w -R /home/rstudio && \
     groupmod -g 988 rstudio-server && \
     usermod -u "$APP_UID" rstudio && \
     groupmod -g "$APP_GID" rstudio && \
-    chown -R rstudio:rstudio /etc/rstudio/ /var/lib/rstudio-server /var/log/rstudio/ /var/run/ && \
-    chmod -R go+w /tmp/downloaded_packages /etc/rstudio/ /var/lib/rstudio-server /var/log/rstudio/ /var/run/
+    chown -R rstudio:rstudio /etc/rstudio/ /var/lib/rstudio-server /var/log/rstudio-server/ /var/run/ && \
+    chmod -R go+w /tmp/downloaded_packages /etc/rstudio/ /var/lib/rstudio-server /var/log/rstudio-server/ /var/run/
 
 
 USER $APP_UID:$APP_GID
