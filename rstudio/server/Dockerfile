@@ -71,8 +71,7 @@ RUN usermod -u 988 rstudio-server && \
     mkdir -p /tmp/downloaded_packages /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ && \
     touch /var/run/rstudio-server.pid && \
     chown -R rstudio:rstudio /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ /var/run/rstudio-server.pid && \
-    chmod -R 777 /home/rstudio/ /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ && \
-    chmod -R 775 /var/run/rstudio-server.pid
+    chmod -R 777 /home/rstudio/ /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ /var/run/rstudio-server.pid
 
 
 USER $APP_UID:$APP_GID
