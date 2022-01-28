@@ -18,7 +18,7 @@ ENV DEBIAN_FRONTEND noninteractive \
 RUN apt update && apt install -y eatmydata apt-utils
 RUN mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge \
-    'cudatoolkit==11.6.0' \
+    'cudatoolkit==11.5.0' \
     'cufflinks-py==0.17.3' \
     'decorator==5.1.1' \
     'ipyparallel==6.3.0' \
@@ -77,9 +77,10 @@ RUN apt update && apt install -y --no-install-recommends gnupg2 && \
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
-ENV PKG_CUDA_VERSION=11.4 \
-    NCCL_VERSION=2.7.6 \
-    PKG_CUDNN_VERSION=8.2.4.15-1+cuda11.4
+ENV PKG_CUDA_VERSION=11.5 \
+    NCCL_VERSION=2.11.4 \
+    PKG_CUDNN_VERSION=8.3.2.44-1+cuda11.5
+
 
 
 RUN apt update && apt install -y --no-install-recommends \
@@ -145,11 +146,11 @@ ENV TZ="Europe/Oslo" \
 	APP_GID=999 \
 	NB_UID=999 \
 	NB_GID=999 \
-   PKG_JUPYTER_NOTEBOOK_VERSION=6.3.x \
+   PKG_JUPYTER_NOTEBOOK_VERSION=6.4.x \
 	PKG_SPARK_VERSION=${APACHE_SPARK_VERSION} \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.3.0-incubating \
-	PKG_R_VERSION=4.0.3 \
+	PKG_R_VERSION=4.1.2  \
 	PKG_VS_CODE_VERSION=2.1692-vsc1.39.2 \
 	HOME=/home/notebook \
    PATH=$PATH:$SPARK_HOME/bin \
