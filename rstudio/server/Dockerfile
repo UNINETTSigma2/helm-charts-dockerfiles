@@ -47,7 +47,7 @@ ENV TZ="Europe/Oslo" \
 
 # Setup Tini, as S6 does not work when run as non-root users
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
-RUN chmod go+w /sbin/tini
+RUN chmod +x /sbin/tini
 
 # Setup Shiny
 ADD https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-${PKG_SHINY_VERSION}-amd64.deb /tmp/shiny.deb
