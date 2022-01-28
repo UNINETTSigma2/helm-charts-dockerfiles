@@ -65,7 +65,7 @@ COPY start.sh /usr/local/bin/start.sh
 COPY .Renviron $HOME/.Renviron
 
 RUN mkdir -p /tmp/downloaded_packages /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ && \
-    touch /var/run/rstudio-server.pid
+    touch /var/run/rstudio-server.pid && \
     chown -R rstudio:rstudio /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ /var/run/rstudio-server.pid && \
     chmod -R go+wx /home/rstudio /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ /var/run/rstudio-server.pid && \
     usermod -u 988 rstudio-server && \
