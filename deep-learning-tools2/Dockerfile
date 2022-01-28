@@ -1,4 +1,4 @@
-FROM quay.io/nird-toolkit/jupyter-spark:20211101-5dd4d10
+FROM quay.io/nird-toolkit/jupyter-spark:20220125-0874ecb
 LABEL maintainer = "Uninett As <system@uninett.no>"
 
 USER root
@@ -19,16 +19,16 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/mpi/lib:/usr/local/cuda/lib:/usr/local/cuda/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all \
-    PKG_KERAS_VERSION=2.6.0 \
-    PKG_TENSORFLOW_VERSION=2.6.0 \
-    PKG_TENSORFLOW_PROBABILITY_VERSION=0.14.1 \
+    PKG_KERAS_VERSION=2.7.0 \
+    PKG_TENSORFLOW_VERSION=2.7.0 \
+    PKG_TENSORFLOW_PROBABILITY_VERSION=0.15.0 \
     PKG_PYTORCH_VERSION=1.9.0 \
-    PKG_XGBOOST_VERSION=1.4.2 \
-    PKG_CATBOOST_VERSION=1.0.0 \
-    PKG_LIGHTGBM_VERSION=3.3.0 \
-    PKG_FASTAI_VERSION=2.5.2
-    
-# moved  installation of 'spacy', 'mkl-service' 'pygpu'  'libjpeg-turbo=2.*'  'bcolz' 'jax'   'python-graphviz' 'libtiff' 'jupyter_contrib_nbextensions' (for fastai with notebooks) 'cudatoolkit=10.1' 'jpeg' 'pydot' to jupyter-spark Dockerfile   
+    PKG_XGBOOST_VERSION=1.5.2 \
+    PKG_CATBOOST_VERSION=1.0.4 \
+    PKG_LIGHTGBM_VERSION=3.3.2 \
+    PKG_FASTAI_VERSION=2.5.3
+
+# moved  installation of 'spacy', 'mkl-service' 'pygpu'  'libjpeg-turbo=2.*'  'bcolz' 'jax'   'python-graphviz' 'libtiff' 'jupyter_contrib_nbextensions' (for fastai with notebooks) 'cudatoolkit=10.1' 'jpeg' 'pydot' to jupyter-spark Dockerfile
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
     hyperopt \
@@ -56,7 +56,7 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     torchtext \
     torchvision \
     nvidia-ml-py3 && \
-    conda clean -y --all && \
+    mamba clean -y --all && \
     jupyter lab build
 
 RUN rm -fr /home/notebook/.cache/yarn
