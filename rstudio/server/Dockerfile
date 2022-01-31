@@ -1,6 +1,6 @@
 # Upstream Dockerfile https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/tidyverse_4.1.2.Dockerfile
 
-FROM rocker/r-ver:latest
+FROM rocker/r-ver:latest-daily
 
 LABEL maintainer Uninett AS <system@uninett.no>
 
