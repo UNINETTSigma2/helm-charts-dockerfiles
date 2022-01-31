@@ -9,10 +9,8 @@ ENV TZ="Europe/Oslo" \
     USERNAME="rstudio" \
     HOME="/home/rstudio" \
     TINI_VERSION=v0.19.0 \
-    USERID=999 \
-    GROUPID=999 \
-    APP_UID=999 \
-    APP_GID=999 \
+    APP_UID=1000 \
+    APP_GID=1000 \
     PKG_R_VERSION=4.1.2 \
     PKG_RSTUDIO_VERSION=1.4.1103 \
     PKG_SHINY_VERSION=1.5.17.973 \
@@ -66,19 +64,17 @@ COPY .Renviron $HOME/.Renviron
 
 RUN id rstudio && \
     id rstudio-server && \
-    usermod -u 988 rstudio-server && \
-    groupmod -g 988 rstudio-server && \
-    usermod -aG 0 rstudio-server && \
+    #usermod -aG 0 rstudio-server && \
     #usermod -u "$APP_UID" rstudio && \
     #groupmod -g "$APP_GID" rstudio && \
-    id rstudio && \
-    id rstudio-server && \
-    mkdir -p /tmp/downloaded_packages && \
-    #/etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ && \
-    chown -R rstudio:rstudio /tmp/downloaded_packages/
-    #/etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ /var/run/rstudio-server.pid && \
-    #chmod -R 777 /home/rstudio/ /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server.pid && \
-    #chmod -R 1777 /var/run/rstudio-server/
+    #id rstudio && \
+    #id rstudio-server && \
+    mkdir -p /tmp/downloaded_packages /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ && \
+    chown -R rstudio:rstudio /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ && \
+    #/var/run/rstudio-server.pid && \
+    chmod -R 777 /home/rstudio/ /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ && \
+    #/var/run/rstudio-server.pid && \
+    chmod -R 1777 /var/run/rstudio-server/
 
 
 USER $APP_UID:$APP_GID
