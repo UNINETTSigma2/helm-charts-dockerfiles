@@ -38,12 +38,14 @@ ENV TZ="Europe/Oslo" \
     USERNAME="rstudio" \
     HOME="/home/rstudio" \
     TINI_VERSION=v0.19.0 \
-    APP_UID=1000 \
-    APP_GID=1000 \
+    USERID=999 \
+    GROUPID=999 \
+    APP_UID=999 \
+    APP_GID=999 \
     PKG_R_VERSION=4.1.2 \
     PKG_RSTUDIO_VERSION=1.4.1103 \
-    PKG_SHINY_VERSION=1.5.17.973 \
-    RSTUDIO_DATA_HOME=$HOME/.rstudio
+    PKG_SHINY_VERSION=1.5.17.973
+    #RSTUDIO_DATA_HOME=$HOME/.rstudio
 
 # Setup Tini, as S6 does not work when run as non-root users
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
@@ -60,7 +62,6 @@ RUN gdebi -n /tmp/shiny.deb && \
     chown rstudio:rstudio /var/log/shiny-server && \
     chmod go+w -R /var/log/shiny-server /usr/local/lib/R /srv /var/lib/shiny-server
 
-COPY rserver.conf rsession.conf /etc/rstudio/
 COPY start.sh /usr/local/bin/start.sh
 COPY .Renviron $HOME/.Renviron
 
@@ -71,10 +72,12 @@ RUN id rstudio && \
     usermod -aG 0 rstudio-server && \
     #usermod -u "$APP_UID" rstudio && \
     #groupmod -g "$APP_GID" rstudio && \
-    mkdir -p /tmp/downloaded_packages /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ && \
-    chown -R rstudio:rstudio /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ /var/run/rstudio-server.pid && \
-    chmod -R 777 /home/rstudio/ /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server.pid && \
-    chmod -R 1777 /var/run/rstudio-server/
+    mkdir -p /tmp/downloaded_packages && \
+    #/etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ && \
+    chown -R rstudio:rstudio /tmp/downloaded_packages/
+    #/etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ /var/run/rstudio-server.pid && \
+    #chmod -R 777 /home/rstudio/ /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server.pid && \
+    #chmod -R 1777 /var/run/rstudio-server/
 
 
 USER $APP_UID:$APP_GID
