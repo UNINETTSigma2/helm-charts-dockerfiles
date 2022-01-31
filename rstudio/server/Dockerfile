@@ -4,10 +4,23 @@ FROM rocker/r-ver:latest
 
 LABEL maintainer Uninett AS <system@uninett.no>
 
-ENV S6_VERSION=v2.1.0.2
-ENV RSTUDIO_VERSION=1.4.1717
-ENV PATH=/usr/lib/rstudio-server/bin:$PATH
-
+# Setup various variables
+ENV TZ="Europe/Oslo" \
+    USERNAME="rstudio" \
+    HOME="/home/rstudio" \
+    TINI_VERSION=v0.19.0 \
+    USERID=999 \
+    GROUPID=999 \
+    APP_UID=999 \
+    APP_GID=999 \
+    PKG_R_VERSION=4.1.2 \
+    PKG_RSTUDIO_VERSION=1.4.1103 \
+    PKG_SHINY_VERSION=1.5.17.973 \
+    S6_VERSION=v2.1.0.2 \
+    RSTUDIO_VERSION=1.4.1717 \
+    DEFAULT_USER=rstudio \
+    PATH=/usr/lib/rstudio-server/bin:$PATH
+    #RSTUDIO_DATA_HOME=$HOME/.rstudio
 
 RUN /rocker_scripts/install_rstudio.sh
 RUN /rocker_scripts/install_pandoc.sh
@@ -32,20 +45,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
     libxt-dev \
     man-db && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Setup various variables
-ENV TZ="Europe/Oslo" \
-    USERNAME="rstudio" \
-    HOME="/home/rstudio" \
-    TINI_VERSION=v0.19.0 \
-    USERID=999 \
-    GROUPID=999 \
-    APP_UID=999 \
-    APP_GID=999 \
-    PKG_R_VERSION=4.1.2 \
-    PKG_RSTUDIO_VERSION=1.4.1103 \
-    PKG_SHINY_VERSION=1.5.17.973
-    #RSTUDIO_DATA_HOME=$HOME/.rstudio
 
 # Setup Tini, as S6 does not work when run as non-root users
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
