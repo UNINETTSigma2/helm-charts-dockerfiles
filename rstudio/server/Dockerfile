@@ -64,13 +64,14 @@ COPY rserver.conf rsession.conf /etc/rstudio/
 COPY start.sh /usr/local/bin/start.sh
 COPY .Renviron $HOME/.Renviron
 
-RUN usermod -u 988 rstudio-server && \
-    groupmod -g 0 rstudio-server && \
+RUN id rstudio && \
+    id rstudio-server && \
+    usermod -u 988 rstudio-server && \
+    groupmod -g 988 rstudio-server && \
+    usermod -aG 0 rstudio-server && \
     #usermod -u "$APP_UID" rstudio && \
     #groupmod -g "$APP_GID" rstudio && \
-    id rstudio && \
     mkdir -p /tmp/downloaded_packages /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ && \
-    touch /var/run/rstudio-server.pid && \
     chown -R rstudio:rstudio /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ /var/run/rstudio-server.pid && \
     chmod -R 777 /home/rstudio/ /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server.pid && \
     chmod -R 1777 /var/run/rstudio-server/
