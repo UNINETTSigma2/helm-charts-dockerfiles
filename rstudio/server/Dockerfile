@@ -72,6 +72,8 @@ RUN id rstudio && \
     usermod -aG 0 rstudio-server && \
     #usermod -u "$APP_UID" rstudio && \
     #groupmod -g "$APP_GID" rstudio && \
+    id rstudio && \
+    id rstudio-server && \
     mkdir -p /tmp/downloaded_packages && \
     #/etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ && \
     chown -R rstudio:rstudio /tmp/downloaded_packages/
