@@ -70,6 +70,7 @@ RUN id rstudio && \
     #id rstudio && \
     #id rstudio-server && \
     mkdir -p /tmp/downloaded_packages /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ && \
+    touch /var/run/rstudio-server.pid && \
     chown -R rstudio:rstudio /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ /var/run/rstudio-server.pid && \
     chmod -R 777 /home/rstudio/ /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server.pid && \
     chmod -R 1777 /var/run/rstudio-server/
