@@ -17,8 +17,8 @@ ENV TZ="Europe/Oslo" \
     S6_VERSION=v2.1.0.2 \
     RSTUDIO_VERSION=1.4.1717 \
     DEFAULT_USER=rstudio \
-    PATH=/usr/lib/rstudio-server/bin:$PATH
-    #RSTUDIO_DATA_HOME=$HOME/.rstudio
+    PATH=/usr/lib/rstudio-server/bin:$PATH \
+    RSTUDIO_DATA_HOME=$HOME/.rstudio
 
 RUN /rocker_scripts/install_rstudio.sh
 RUN /rocker_scripts/install_pandoc.sh
