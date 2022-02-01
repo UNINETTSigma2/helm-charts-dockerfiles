@@ -12,7 +12,7 @@ fi
 rstudio-server verify-installation
 
 #/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 --session-timeout-minutes=0 --auth-none=0 --auth-timeout-minutes=0 --auth-stay-signed-in-days=30 &
-rstudio-server start --session-timeout-minutes=0 --auth-timeout-minutes=0 --auth-stay-signed-in-days=30 &
+rstudio-server start --session-timeout-minutes=0 --auth-timeout-minutes=0 --auth-stay-signed-in-days=30 --auth-pam-require-password-prompt=0 &
 
 rstudio-server active-sessions
 
