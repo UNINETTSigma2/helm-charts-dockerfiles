@@ -64,7 +64,7 @@ COPY .Renviron $HOME/.Renviron
 
 RUN mkdir -p /tmp/downloaded_packages && \
     chown -R rstudio:rstudio /tmp/downloaded_packages/ && \
-    chmod -R 777 /home/rstudio/ /tmp/downloaded_packages/ &&
+    chmod -R 777 /home/rstudio/ /tmp/downloaded_packages/
 
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
