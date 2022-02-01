@@ -62,19 +62,9 @@ RUN gdebi -n /tmp/shiny.deb && \
 COPY start.sh /usr/local/bin/start.sh
 COPY .Renviron $HOME/.Renviron
 
-RUN id rstudio && \
-    id rstudio-server && \
-    #usermod -aG 0 rstudio-server && \
-    #usermod -u "$APP_UID" rstudio && \
-    #groupmod -g "$APP_GID" rstudio && \
-    #id rstudio && \
-    #id rstudio-server && \
-    mkdir -p /tmp/downloaded_packages /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ && \
-    touch /var/run/rstudio-server.pid && \
-    chown -R rstudio:rstudio /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server/ /var/run/rstudio-server.pid && \
-    chmod -R 777 /home/rstudio/ /tmp/downloaded_packages/ /etc/rstudio/ /var/lib/rstudio-server/ /var/run/rstudio-server.pid && \
-    chmod -R 1777 /var/run/rstudio-server/
-
+RUN mkdir -p /tmp/downloaded_packages && \
+    chown -R rstudio:rstudio /tmp/downloaded_packages/ && \
+    chmod -R 777 /home/rstudio/ /tmp/downloaded_packages/ &&
 
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
