@@ -12,6 +12,10 @@ fi
 #/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 --session-timeout-minutes=0 --auth-none=0 --auth-timeout-minutes=0 --auth-stay-signed-in-days=30 &
 rstudio-server start &
 
+whoami
+id -u $whoami
+id -g $whoami
+
 if [ -n "$SHINY_APPS_PATH" ]; then
 	if [ ! -d "$SHINY_APPS_PATH" ]; then
 		echo "Initialising Shiny App directory"
