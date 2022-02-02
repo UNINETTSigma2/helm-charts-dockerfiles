@@ -74,11 +74,7 @@ RUN mkdir -p /tmp/downloaded_packages && \
     chown -R rstudio:rstudio /etc/rstudio/ /var/lib/rstudio-server/ /var/run/ /tmp /usr/lib/rstudio-server && \
     chmod -R 777 /etc/rstudio/ /var/lib/rstudio-server/ /tmp /usr/lib/rstudio-server && \
     chmod -R 775 /var/run/ && \
-    chmod -R 1777 /var/run/rstudio-server/ && \
-    mkdir -p /tmp/rstudio-server && \
-    uuidgen > /tmp/rstudio-server/secure-cookie-key && \
-    chown -R rstudio:rstudio /tmp/rstudio-server/secure-cookie-key && \
-    chmod 0600 /tmp/rstudio-server/secure-cookie-key
+    chmod -R 1777 /var/run/rstudio-server/
 
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
