@@ -66,8 +66,8 @@ RUN mkdir -p /tmp/downloaded_packages && \
     chown -R rstudio:rstudio /tmp/downloaded_packages/ && \
     chmod -R 777 /home/rstudio/ /tmp/downloaded_packages/ && \
     mkdir -p /etc/rstudio/ /var/lib/rstudio-server/ /var/run && \
-    chown -R rstudio:rstudio /etc/rstudio/ /var/lib/rstudio-server/ /var/run/ /tmp && \
-    chmod -R 777 /etc/rstudio/ /var/lib/rstudio-server/ /tmp && \
+    chown -R rstudio:rstudio /etc/rstudio/ /var/lib/rstudio-server/ /var/run/ /tmp /usr/lib/rstudio-server && \
+    chmod -R 777 /etc/rstudio/ /var/lib/rstudio-server/ /tmp /usr/lib/rstudio-server && \
     chmod -R 775 /var/run/ && \
     chmod -R 1777 /var/run/rstudio-server/
 
