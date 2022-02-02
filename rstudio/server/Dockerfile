@@ -25,6 +25,7 @@ RUN /rocker_scripts/install_pandoc.sh
 
 RUN /rocker_scripts/install_tidyverse.sh
 
+
 RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
     apt-utils \
     nano \
@@ -59,8 +60,12 @@ RUN gdebi -n /tmp/shiny.deb && \
     chown rstudio:rstudio /var/log/shiny-server && \
     chmod go+w -R /var/log/shiny-server /usr/local/lib/R /srv /var/lib/shiny-server
 
+COPY rsession.conf /etc/rstudio/
 COPY start.sh /usr/local/bin/start.sh
 COPY .Renviron $HOME/.Renviron
+COPY rserver.conf /etc/rstudio/rserver_append.conf
+RUN cat /etc/rstudio/rserver_append.conf >> /etc/rstudio/rserver.conf && \
+    rm /etc/rstudio/rserver_append.conf
 
 RUN mkdir -p /tmp/downloaded_packages && \
     chown -R rstudio:rstudio /tmp/downloaded_packages/ && \
