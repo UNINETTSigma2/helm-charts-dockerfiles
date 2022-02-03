@@ -7,7 +7,7 @@ echo "Starting RStudio Server"
 export USERNAME=$(whoami)
 echo 'USERNAME'
 echo $USERNAME
-export $HOME=/home/$USERNAME
+export HOME=/home/$USERNAME
 echo 'HOME'
 echo $HOME
 
