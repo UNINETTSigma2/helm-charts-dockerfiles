@@ -3,15 +3,13 @@
 set -e
 
 echo "Starting RStudio Server"
+# Change username from rstudio to metacenter user
+export USERNAME=$whoami
 echo "session-default-working-dir=/home/$USERNAME" >> /etc/rstudio/rsession.conf
 
 if [ ! -e "$HOME/.Renviron" ]; then
 	echo -e "HOME=/home/$USERNAME\nUSER=$USERNAME\nTZ=Europe/Oslo" > "$HOME/.Renviron"
 fi
-
-whoami
-id -u $whoami
-id -g $whoami
 
 mkdir /home/$USERNAME
 
