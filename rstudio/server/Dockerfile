@@ -73,7 +73,7 @@ RUN chmod go+w -R /home/rstudio && \
     chown -R rstudio:rstudio /var/run/ && \
     chmod -R go+w /var/run/
 
-RUN rstudio-server verify-installation
+USER root
 
 RUN rstudio-server verify-installation
 
