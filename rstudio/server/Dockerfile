@@ -71,6 +71,8 @@ RUN cat /etc/rstudio/rserver_append.conf >> /etc/rstudio/rserver.conf && \
 RUN chmod 1777 /home/ /home/rstudio /var/lib/rstudio-server /var/log/rstudio-server && \
     chmod -R 777 /etc/rstudio
 
+RUN rstudio-server verify-installation
+
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
 EXPOSE 8787 3838
