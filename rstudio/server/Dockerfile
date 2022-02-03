@@ -68,14 +68,9 @@ COPY rserver.conf /etc/rstudio/rserver_append.conf
 RUN cat /etc/rstudio/rserver_append.conf >> /etc/rstudio/rserver.conf && \
     rm /etc/rstudio/rserver_append.conf
 
-RUN mkdir -p /tmp/downloaded_packages && \
-    chown -R rstudio:rstudio /tmp/downloaded_packages/ && \
-    chmod -R 777 /home/rstudio/ /tmp/downloaded_packages/ && \
-    mkdir -p /etc/rstudio/ /var/lib/rstudio-server/ /var/run && \
-    chown -R rstudio:rstudio /etc/rstudio/ /var/lib/rstudio-server/ /var/run/ /tmp /usr/lib/rstudio-server && \
-    chmod -R 777 /etc/rstudio/ /var/lib/rstudio-server/ /tmp /usr/lib/rstudio-server && \
-    chmod -R 775 /var/run/ && \
-    chmod -R 1777 /var/run/rstudio-server/ && \
+RUN mkdir -p /home/rstudio/.var/run/rstudio-server && \
+    chown -R rstudio:rstudio /home/rstudio && \
+    chown -R rstudio:rstudio /var/lib/rstudio-server /var/log/rstudio-server && \
     chmod 1777 /home/
 
 USER $APP_UID:$APP_GID
