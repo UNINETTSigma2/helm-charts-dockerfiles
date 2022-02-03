@@ -75,7 +75,8 @@ RUN mkdir -p /tmp/downloaded_packages && \
     chown -R rstudio:rstudio /etc/rstudio/ /var/lib/rstudio-server/ /var/run/ /tmp /usr/lib/rstudio-server && \
     chmod -R 777 /etc/rstudio/ /var/lib/rstudio-server/ /tmp /usr/lib/rstudio-server && \
     chmod -R 775 /var/run/ && \
-    chmod -R 1777 /var/run/rstudio-server/
+    chmod -R 1777 /var/run/rstudio-server/ && \
+    chmod 1777 /home/
 
 USER $APP_UID:$APP_GID
 WORKDIR $HOME

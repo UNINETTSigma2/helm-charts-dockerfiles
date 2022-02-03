@@ -13,10 +13,10 @@ whoami
 id -u $whoami
 id -g $whoami
 
+mkdir /home/$USERNAME
+
 mkdir -p /tmp/rstudio-server
 uuidgen > /tmp/rstudio-server/secure-cookie-key
-chown -R rstudio:rstudio /tmp/rstudio-server/secure-cookie-key
-chmod 0600 /tmp/rstudio-server/secure-cookie-key
 
 #/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 --session-timeout-minutes=0 --auth-none=0 --auth-timeout-minutes=0 --auth-stay-signed-in-days=30 &
 rstudio-server start &
