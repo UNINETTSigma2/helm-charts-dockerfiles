@@ -2,28 +2,14 @@
 
 set -e
 
-echo "Starting RStudio Server"
-
-export USERNAME=$(whoami)
-export HOME=/home/$USERNAME
-mkdir $HOME
-mkdir -p $HOME/.var/run/rstudio-server
-
-echo "session-default-working-dir=$HOME" >> /etc/rstudio/rsession.conf
-echo "server-working-dir=$HOME" >> /etc/rstudio/rserver.conf
-echo "server-user=$USERNAME" >> /etc/rstudio/rserver.conf
-echo "server-pid-file=$HOME/.var/run/rstudio-server.pid" >> /etc/rstudio/rserver.conf
-echo "server-data-dir=$HOME/.var/run/rstudio-server" >> /etc/rstudio/rserver.conf
+echo "Starting RSudio Server"
+echo "session-default-working-dir=/home/$USERNAME" >> /etc/rstudio/rsession.conf
 
 if [ ! -e "$HOME/.Renviron" ]; then
 	echo -e "HOME=/home/$USERNAME\nUSER=$USERNAME\nTZ=Europe/Oslo" > "$HOME/.Renviron"
 fi
 
-mkdir /tmp/rstudio-server
-uuidgen > /tmp/rstudio-server/secure-cookie-key
-
-#/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 --session-timeout-minutes=0 --auth-none=0 --auth-timeout-minutes=0 --auth-stay-signed-in-days=30 &
-rstudio-server start &
+/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 --auth-none 0 &
 
 if [ -n "$SHINY_APPS_PATH" ]; then
 	if [ ! -d "$SHINY_APPS_PATH" ]; then
