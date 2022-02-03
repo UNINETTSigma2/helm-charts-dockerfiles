@@ -42,7 +42,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
     rsync \
     gdebi-core \
     libxt-dev \
-    man-db && \
+    man-db \
+    uuid-runtime && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Setup Tini, as S6 does not work when run as non-root users
