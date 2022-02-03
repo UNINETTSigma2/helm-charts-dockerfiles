@@ -75,6 +75,8 @@ RUN chmod go+w -R /home/rstudio && \
 
 RUN rstudio-server verify-installation
 
+RUN rstudio-server verify-installation
+
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
 EXPOSE 8787 3838
