@@ -7,8 +7,13 @@ echo "Starting RStudio Server"
 export USERNAME=$(whoami)
 export HOME=/home/$USERNAME
 mkdir $HOME
+mkdir -p $HOME/.var/run/rstudio-server
 
-echo "session-default-working-dir=/home/$USERNAME" >> /etc/rstudio/rsession.conf
+echo "session-default-working-dir=$HOME" >> /etc/rstudio/rsession.conf
+echo "server-working-dir=$HOME" >> /etc/rstudio/rserver.conf
+echo "server-user=$USERNAME" >> /etc/rstudio/rserver.conf
+echo "server-pid-file=$HOME/.var/run/rstudio-server.pid" >> /etc/rstudio/rserver.conf
+echo "server-data-dir=$HOME/.var/run/rstudio-server" >> /etc/rstudio/rserver.conf
 
 if [ ! -e "$HOME/.Renviron" ]; then
 	echo -e "HOME=/home/$USERNAME\nUSER=$USERNAME\nTZ=Europe/Oslo" > "$HOME/.Renviron"

@@ -68,9 +68,7 @@ COPY rserver.conf /etc/rstudio/rserver_append.conf
 RUN cat /etc/rstudio/rserver_append.conf >> /etc/rstudio/rserver.conf && \
     rm /etc/rstudio/rserver_append.conf
 
-RUN mkdir -p /home/rstudio/.var/run/rstudio-server && \
-    chown -R rstudio:rstudio /home/rstudio /var/lib/rstudio-server /var/log/rstudio-server && \
-    chmod 1777 /home/ && \
+RUN chmod 1777 /home/ /home/rstudio /var/lib/rstudio-server /var/log/rstudio-server && \
     chmod -R 777 /etc/rstudio
 
 USER $APP_UID:$APP_GID
