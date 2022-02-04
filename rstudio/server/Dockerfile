@@ -75,7 +75,6 @@ RUN chmod go+w -R /home/rstudio && \
 USER root
 
 RUN rstudio-server verify-installation
-RUN /usr/lib/rstudio-server/bin/pamtester --verbose rstudio andrske authenticate
 
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
