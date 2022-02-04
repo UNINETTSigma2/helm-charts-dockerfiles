@@ -18,7 +18,6 @@ ENV DEBIAN_FRONTEND noninteractive \
 RUN apt update && apt install -y eatmydata apt-utils
 RUN mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge \
-    'cudatoolkit==11.5.0' \
     'cufflinks-py==0.17.3' \
     'decorator==5.1.1' \
     'ipyparallel==6.3.0' \
@@ -38,6 +37,7 @@ RUN mamba config --set channel_priority strict && \
 
 
 #spacy=3.0.1' \
+#cudatoolkit==11.5.0' \
  #    'mkl-service=2.3.0' \
  #    'pygpu=0.7.6' \
  #    'libjpeg-turbo=2.*' \
