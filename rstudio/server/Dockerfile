@@ -69,8 +69,7 @@ RUN chmod go+w -R /home/rstudio && \
     groupmod -g 988 rstudio-server && \
     usermod -u "$APP_UID" rstudio && \
     groupmod -g "$APP_GID" rstudio && \
-    chmod -R go+w /tmp/downloaded_packages /etc/rstudio/rsession.conf && \
-    chmod -R go+rwx /var/lib/rstudio-server
+    chmod -R go+w /tmp/downloaded_packages /etc/rstudio/rsession.conf /var/lib/rstudio-server
 
 USER root
 
