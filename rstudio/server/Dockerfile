@@ -70,8 +70,8 @@ RUN chmod go+w -R /home/rstudio && \
     usermod -u "$APP_UID" rstudio && \
     groupmod -g "$APP_GID" rstudio && \
     chmod -R go+w /tmp/downloaded_packages /etc/rstudio/rsession.conf && \
-    chown -R rstudio:rstudio /var/run/ && \
-    chmod -R go+w /var/run/
+    chown -R rstudio:rstudio /var/run/ /etc/rstudio/ && \
+    chmod -R go+w /var/run/ /etc/rstudio/
 
 USER root
 
