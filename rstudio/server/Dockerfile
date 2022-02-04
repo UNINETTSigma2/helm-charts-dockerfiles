@@ -38,7 +38,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
 ENV TZ="Europe/Oslo" \
     USERNAME="rstudio" \
     HOME="/home/rstudio" \
-    TINI_VERSION=v0.19.0 \
+    TINI_VERSION=v0.18.0 \
     APP_UID=999 \
     APP_GID=999 \
     PKG_R_VERSION=4.1.2 \
@@ -70,8 +70,8 @@ RUN chmod go+w -R /home/rstudio && \
     usermod -u "$APP_UID" rstudio && \
     groupmod -g "$APP_GID" rstudio && \
     chmod -R go+w /tmp/downloaded_packages /etc/rstudio/rsession.conf && \
-    chown -R rstudio:rstudio /var/run/ /etc/rstudio/ /var/lib/rstudio-server /var/log/rstudio-server/ && \
-    chmod -R go+w /var/run/ /etc/rstudio/ /var/lib/rstudio-server /var/log/rstudio-server/
+    chown -R rstudio:rstudio /var/run/ && \
+    chmod -R go+w /var/run/
 
 USER root
 
@@ -82,3 +82,4 @@ WORKDIR $HOME
 EXPOSE 8787 3838
 
 ENTRYPOINT ["/sbin/tini", "-g", "--"]
+CMD ["/usr/local/bin/start.sh"]
