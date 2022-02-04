@@ -76,10 +76,6 @@ USER root
 
 RUN rstudio-server verify-installation
 
-RUN touch /home/rstudio/trace.txt && \
-    chmod -R go+rw /home/rstudio/trace.txt && \
-    strace -f -e 'trace=!clock_gettime,gettimeofday,futex,timerfd_settime,epoll_wait,epoll_ctl' -p 7 -o /home/rstudio/trace.txt &
-
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
 EXPOSE 8787 3838
