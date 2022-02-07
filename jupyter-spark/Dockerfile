@@ -9,13 +9,15 @@
 
 
 FROM jupyter/all-spark-notebook:ee77b7831e16 as miniconda
-USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
     NB_UID=999 \
     NB_GID=999
 
 RUN pip uninstall --quiet --yes ipyparallel
+
+USER root
+
 RUN apt update && apt install -y eatmydata apt-utils
 RUN mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge \
