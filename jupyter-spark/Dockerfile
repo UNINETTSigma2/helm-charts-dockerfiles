@@ -14,6 +14,8 @@ ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
     NB_GID=999
 
+USER ${NB_UID}
+
 RUN pip uninstall --quiet --yes ipyparallel
 
 USER root
