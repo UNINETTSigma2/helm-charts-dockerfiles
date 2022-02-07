@@ -40,9 +40,9 @@ python -m IPython kernel install --user --name=sysvenv --display-name='Python 3 
 PATH=$OLDPATH
 
 if [[ ! -z "${JUPYTER_ENABLE_LAB}" ]]; then
-	jupyter lab --config $HOME/.jupyter/notebook_config.py $* &
+	jupyter lab --config $HOME/.jupyter/jupyter_server_config.py $* &
 else
-	jupyter notebook --config $HOME/.jupyter/notebook_config.py $* &
+	jupyter notebook --config $HOME/.jupyter/jupyter_server_config.py $* &
 fi
 
 sleep inf

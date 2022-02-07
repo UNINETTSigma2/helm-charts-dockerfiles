@@ -62,6 +62,7 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
+    ipcluster nbextension enable && \
     jupyter lab build
 
 
