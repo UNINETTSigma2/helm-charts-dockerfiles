@@ -16,7 +16,7 @@ ENV DEBIAN_FRONTEND noninteractive \
 
 USER ${NB_UID}
 
-RUN mamba remove --force --quiet --yes ipyparallel
+RUN conda remove --force --quiet --yes ipyparallel
 
 USER root
 
