@@ -15,6 +15,8 @@ ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
     NB_GID=999
 
+RUN eatmydata mamba uninstall --quiet --yes -c conda-forge ipyparallel
+
 RUN apt update && apt install -y eatmydata apt-utils
 RUN mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge \
@@ -62,9 +64,6 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
-    jupyter serverextension enable --py ipyparallel && \
-    jupyter nbextension install --py ipyparallel && \
-    jupyter nbextension enable --py ipyparallel && \
     jupyter lab build
 
 
