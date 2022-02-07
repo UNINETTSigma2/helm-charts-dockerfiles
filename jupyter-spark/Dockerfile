@@ -16,7 +16,7 @@ ENV DEBIAN_FRONTEND noninteractive \
 
 USER ${NB_UID}
 
-RUN pip uninstall --quiet --yes ipyparallel
+RUN mamba remove --force --quiet --yes ipyparallel
 
 USER root
 
