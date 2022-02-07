@@ -15,9 +15,9 @@ ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
     NB_GID=999
 
+RUN pip uninstall --quiet --yes ipyparallel
 RUN apt update && apt install -y eatmydata apt-utils
 RUN mamba config --set channel_priority strict && \
-    eatmydata mamba uninstall --quiet --yes -c conda-forge ipyparallel && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge \
     'cufflinks-py==0.17.3' \
     'decorator==5.1.1' \
