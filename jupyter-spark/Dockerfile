@@ -55,12 +55,15 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
+    echo 'conda list before build' && conda list && \
     jupyter lab build
 
+RUN echo 'conda list before from' && conda list
 
 FROM jupyter/all-spark-notebook:ee77b7831e16
 LABEL maintainer = "Uninett As <system@uninett.no>"
 
+RUN echo 'conda list after from' && conda list
 #USER root
 #SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 #RUN apt update && apt install -y apt-utils && apt install -y --no-install-recommends gnupg2 && \
