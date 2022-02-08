@@ -18,7 +18,6 @@ RUN mamba config --set channel_priority strict && \
     mamba install --quiet --update-all --yes -c conda-forge \
     'cufflinks-py==0.17.3' \
     'decorator==5.1.1' \
-    'ipympl' \
     'ipyparallel==6.3.0' \
     'jupyter-server-proxy==3.2.0' \
     'jupyter_contrib_nbextensions==0.5.1' \
@@ -47,20 +46,46 @@ RUN mamba config --set channel_priority strict && \
 
 RUN conda list
 
+#RUN jupyter serverextension enable --py jupyterlab_iframe && \
+#    jupyter labextension install \
+#    '@jupyter-widgets/jupyterlab-manager@3.0.1' \
+#    '@jupyterlab/server-proxy@3.2.0' \
+#    'jupyterlab-plotly@5.5.0' \
+#    'jupyterlab_iframe@0.4.1' \
+#    'nbdime-jupyterlab@2.1.1' && \
+#    pip install git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
+#    jupyter serverextension enable --py nbresuse --sys-prefix && \
+#    jupyter nbextension install --py nbresuse --sys-prefix && \
+#    jupyter nbextension enable --py nbresuse --sys-prefix && \
+#    jupyter lab build
+
 RUN jupyter serverextension enable --py jupyterlab_iframe && \
-    jupyter labextension install \
-    '@jupyter-widgets/jupyterlab-manager@3.0.1' \
-    '@jupyterlab/server-proxy@3.2.0' \
-    'jupyterlab-plotly@5.5.0' \
-    'jupyterlab_iframe@0.4.1' \
-    'nbdime-jupyterlab@2.1.1' && \
+    echo 'conda list 1' && \
+    conda list && \
+    jupyter labextension install '@jupyter-widgets/jupyterlab-manager@3.0.1' && \
+    echo 'conda list 2' && \
+    conda list && \
+    jupyter labextension install '@jupyterlab/server-proxy@3.2.0' && \
+    echo 'conda list 3' && \
+    conda list && \
+    jupyter labextension install 'jupyterlab-plotly@5.5.0' && \
+    echo 'conda list 4' && \
+    conda list && \
+    jupyter labextension install 'jupyterlab_iframe@0.4.1' && \
+    echo 'conda list 5' && \
+    conda list && \
+    jupyter labextension install 'nbdime-jupyterlab@2.1.1' && \
+    echo 'conda list 6' && \
+    conda list && \
     pip install git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
+    echo 'conda list 7' && \
+    conda list && \
     jupyter lab build
 
-
+RUN conda list
 
 FROM jupyter/all-spark-notebook:ee77b7831e16
 LABEL maintainer = "Uninett As <system@uninett.no>"
@@ -143,15 +168,15 @@ ENV TZ="Europe/Oslo" \
 	APP_GID=999 \
 	NB_UID=999 \
 	NB_GID=999 \
-   PKG_JUPYTER_NOTEBOOK_VERSION=6.4.x \
+    PKG_JUPYTER_NOTEBOOK_VERSION=6.4.x \
 	PKG_SPARK_VERSION=${APACHE_SPARK_VERSION} \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.3.0-incubating \
 	PKG_R_VERSION=4.1.2  \
 	PKG_VS_CODE_VERSION=2.1692-vsc1.39.2 \
 	HOME=/home/notebook \
-   PATH=$PATH:$SPARK_HOME/bin \
-   XDG_CACHE_HOME=/home/notebook/.cache/
+    PATH=$PATH:$SPARK_HOME/bin \
+    XDG_CACHE_HOME=/home/notebook/.cache/
 
 RUN groupadd -g "$APP_GID" notebook && \
 	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
