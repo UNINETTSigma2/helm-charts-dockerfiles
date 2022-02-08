@@ -44,8 +44,6 @@ RUN mamba config --set channel_priority strict && \
 
 #RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 
-RUN conda list
-
 RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager@3.0.1' \
@@ -76,7 +74,7 @@ ENV PKG_CUDA_VERSION=11.5 \
     NCCL_VERSION=2.11.4 \
     PKG_CUDNN_VERSION=8.3.2.44-1+cuda11.5
 
-RUN conda list
+RUN echo 'conda list before' && conda list
 
 RUN apt update && apt install -y --no-install-recommends \
        build-essential \
@@ -98,12 +96,12 @@ RUN apt update && apt install -y --no-install-recommends \
        pkg-config \
        software-properties-common \
        unzip \
-	   python3 \
-       python3-dev \
-       python3-venv \
-       python3-pip \
-       python3-wheel \
-       python3-ipykernel \
+	   #python3 \
+       #python3-dev \
+       #python3-venv \
+       #python3-pip \
+       #python3-wheel \
+       #python3-ipykernel \
        openssh-client \
        nano \
        htop \
@@ -124,7 +122,7 @@ RUN apt update && apt install -y --no-install-recommends \
        "openmpi-bin" \
        ca-certificates \
        libnetcdf-dev \
-       python3-netcdf4 \
+       #python3-netcdf4 \
        sudo && \
     apt install -y --only-upgrade openssl && \
 	apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* && \
@@ -135,7 +133,7 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     ln -s /usr/local/cuda/include/* /usr/include/
 
-RUN conda list
+RUN echo 'conda list after' && conda list
 
 ENV TZ="Europe/Oslo" \
 	APP_UID=999 \
