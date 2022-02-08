@@ -14,11 +14,11 @@ ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
     NB_GID=999
 
-RUN pip uninstall --quiet --yes ipyparallel && \
-    mamba config --set channel_priority strict && \
+RUN mamba config --set channel_priority strict && \
     mamba install --quiet --update-all --yes -c conda-forge \
     'cufflinks-py==0.17.3' \
     'decorator==5.1.1' \
+    'ipympl' \
     'ipyparallel==6.3.0' \
     'jupyter-server-proxy==3.2.0' \
     'jupyter_contrib_nbextensions==0.5.1' \
@@ -45,12 +45,12 @@ RUN pip uninstall --quiet --yes ipyparallel && \
 
 #RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 
+RUN conda list
 
 RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager@3.0.1' \
     '@jupyterlab/server-proxy@3.2.0' \
-    'jupyter-matplotlib@0.10.4' \
     'jupyterlab-plotly@5.5.0' \
     'jupyterlab_iframe@0.4.1' \
     'nbdime-jupyterlab@2.1.1' && \
@@ -77,7 +77,7 @@ ENV PKG_CUDA_VERSION=11.5 \
     NCCL_VERSION=2.11.4 \
     PKG_CUDNN_VERSION=8.3.2.44-1+cuda11.5
 
-
+RUN conda list
 
 RUN apt update && apt install -y --no-install-recommends \
        build-essential \
@@ -136,6 +136,7 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     ln -s /usr/local/cuda/include/* /usr/include/
 
+RUN conda list
 
 ENV TZ="Europe/Oslo" \
 	APP_UID=999 \
