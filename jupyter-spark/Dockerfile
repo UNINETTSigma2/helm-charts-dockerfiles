@@ -46,43 +46,17 @@ RUN mamba config --set channel_priority strict && \
 
 RUN conda list
 
-#RUN jupyter serverextension enable --py jupyterlab_iframe && \
-#    jupyter labextension install \
-#    '@jupyter-widgets/jupyterlab-manager@3.0.1' \
-#    '@jupyterlab/server-proxy@3.2.0' \
-#    'jupyterlab-plotly@5.5.0' \
-#    'jupyterlab_iframe@0.4.1' \
-#    'nbdime-jupyterlab@2.1.1' && \
-#    pip install git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
-#    jupyter serverextension enable --py nbresuse --sys-prefix && \
-#    jupyter nbextension install --py nbresuse --sys-prefix && \
-#    jupyter nbextension enable --py nbresuse --sys-prefix && \
-#    jupyter lab build
-
 RUN jupyter serverextension enable --py jupyterlab_iframe && \
-    echo 'conda list 1' && \
-    conda list && \
-    jupyter labextension install '@jupyter-widgets/jupyterlab-manager@3.0.1' && \
-    echo 'conda list 2' && \
-    conda list && \
-    jupyter labextension install '@jupyterlab/server-proxy@3.2.0' && \
-    echo 'conda list 3' && \
-    conda list && \
-    jupyter labextension install 'jupyterlab-plotly@5.5.0' && \
-    echo 'conda list 4' && \
-    conda list && \
-    jupyter labextension install 'jupyterlab_iframe@0.4.1' && \
-    echo 'conda list 5' && \
-    conda list && \
-    jupyter labextension install 'nbdime-jupyterlab@2.1.1' && \
-    echo 'conda list 6' && \
-    conda list && \
+    jupyter labextension install \
+    '@jupyter-widgets/jupyterlab-manager@3.0.1' \
+    '@jupyterlab/server-proxy@3.2.0' \
+    'jupyterlab-plotly@5.5.0' \
+    'jupyterlab_iframe@0.4.1' \
+    'nbdime-jupyterlab@2.1.1' && \
     pip install git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
-    echo 'conda list 7' && \
-    conda list && \
     jupyter lab build
 
 RUN conda list
