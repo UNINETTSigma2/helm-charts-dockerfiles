@@ -66,7 +66,7 @@ LABEL maintainer = "Uninett As <system@uninett.no>"
 
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN apt update && apt install apt-utils && apt install -y --no-install-recommends gnupg2 && \
+RUN apt update && apt install -y apt-utils && apt install -y --no-install-recommends gnupg2 && \
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub | apt-key add - && \
     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
