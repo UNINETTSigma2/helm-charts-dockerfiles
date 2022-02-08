@@ -14,7 +14,8 @@ ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
     NB_GID=999
 
-RUN mamba config --set channel_priority strict && \
+RUN pip uninstall --quiet --yes ipyparallel && \
+    mamba config --set channel_priority strict && \
     mamba install --quiet --update-all --yes -c conda-forge \
     'cufflinks-py==0.17.3' \
     'decorator==5.1.1' \
