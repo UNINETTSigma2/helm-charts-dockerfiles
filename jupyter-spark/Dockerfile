@@ -14,12 +14,8 @@ ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
     NB_GID=999
 
-USER root
-RUN apt update && apt install -y eatmydata apt-utils
-
-USER ${NB_UID}
 RUN mamba config --set channel_priority strict && \
-    eatmydata mamba install --quiet --update-all --yes -c conda-forge \
+    mamba install --quiet --update-all --yes -c conda-forge \
     'cufflinks-py==0.17.3' \
     'decorator==5.1.1' \
     'ipyparallel==6.3.0' \
@@ -34,9 +30,6 @@ RUN mamba config --set channel_priority strict && \
     'xarray==0.20.2' \
     'yapf==0.32.0' \
     && mamba clean --all -f -y
-
-
-
 
 #spacy=3.0.1' \
 #cudatoolkit==11.5.0' \
@@ -73,7 +66,7 @@ LABEL maintainer = "Uninett As <system@uninett.no>"
 
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN apt update && apt install -y --no-install-recommends gnupg2 && \
+RUN apt update && apt install apt-utils && apt install -y --no-install-recommends gnupg2 && \
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub | apt-key add - && \
     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
