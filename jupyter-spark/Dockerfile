@@ -159,7 +159,7 @@ COPY start-*.sh /usr/local/bin/
 COPY mem_parser.py /usr/local/bin/
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
 COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
-COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/minimal /usr/local/share/jupyter/kernels/minimal
+#COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/minimal /usr/local/share/jupyter/kernels/minimal
 RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
 
 
