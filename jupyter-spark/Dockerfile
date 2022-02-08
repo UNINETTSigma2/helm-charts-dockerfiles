@@ -57,14 +57,27 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
     jupyter lab build
 
-RUN conda list
 
 FROM jupyter/all-spark-notebook:ee77b7831e16
 LABEL maintainer = "Uninett As <system@uninett.no>"
 
+#USER root
+#SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+#RUN apt update && apt install -y apt-utils && apt install -y --no-install-recommends gnupg2 && \
+#    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub | apt-key add - && \
+#    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
+#    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
+#    rm -rf /var/lib/apt/lists/*
+
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN apt update && apt install -y apt-utils && apt install -y --no-install-recommends gnupg2 && \
+RUN echo 'conda list before update' && conda list && \
+    apt update && \
+    echo 'conda list before install' && conda list && \
+    apt install -y apt-utils && \
+    echo 'conda list before install 2' && conda list && \
+    apt install -y --no-install-recommends gnupg2 && \
+    echo 'conda list before curl' && conda list && \
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub | apt-key add - && \
     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
@@ -73,8 +86,6 @@ RUN apt update && apt install -y apt-utils && apt install -y --no-install-recomm
 ENV PKG_CUDA_VERSION=11.5 \
     NCCL_VERSION=2.11.4 \
     PKG_CUDNN_VERSION=8.3.2.44-1+cuda11.5
-
-RUN echo 'conda list before' && conda list
 
 RUN apt update && apt install -y --no-install-recommends \
        build-essential \
