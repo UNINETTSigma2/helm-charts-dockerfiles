@@ -55,32 +55,17 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
-    echo 'conda list before build' && conda list && \
     jupyter lab build
 
-RUN echo 'conda list before from' && conda list
 
 FROM jupyter/all-spark-notebook:ee77b7831e16
 LABEL maintainer = "Uninett As <system@uninett.no>"
 
-RUN echo 'conda list after from' && conda list
-#USER root
-#SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-#RUN apt update && apt install -y apt-utils && apt install -y --no-install-recommends gnupg2 && \
-#    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub | apt-key add - && \
-#    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
-#    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
-#    rm -rf /var/lib/apt/lists/*
+RUN mamba remove --quiet --yes -c conda-forge ipyparallel
 
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN echo 'conda list before update' && conda list && \
-    apt update && \
-    echo 'conda list before install' && conda list && \
-    apt install -y apt-utils && \
-    echo 'conda list before install 2' && conda list && \
-    apt install -y --no-install-recommends gnupg2 && \
-    echo 'conda list before curl' && conda list && \
+RUN apt update && apt install -y apt-utils && apt install -y --no-install-recommends gnupg2 && \
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub | apt-key add - && \
     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
@@ -110,12 +95,12 @@ RUN apt update && apt install -y --no-install-recommends \
        pkg-config \
        software-properties-common \
        unzip \
-	   #python3 \
-       #python3-dev \
-       #python3-venv \
-       #python3-pip \
-       #python3-wheel \
-       #python3-ipykernel \
+	   python3 \
+       python3-dev \
+       python3-venv \
+       python3-pip \
+       python3-wheel \
+       python3-ipykernel \
        openssh-client \
        nano \
        htop \
@@ -136,7 +121,7 @@ RUN apt update && apt install -y --no-install-recommends \
        "openmpi-bin" \
        ca-certificates \
        libnetcdf-dev \
-       #python3-netcdf4 \
+       python3-netcdf4 \
        sudo && \
     apt install -y --only-upgrade openssl && \
 	apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* && \
@@ -146,8 +131,6 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     ln -s /usr/local/cuda/include/* /usr/include/
-
-RUN echo 'conda list after' && conda list
 
 ENV TZ="Europe/Oslo" \
 	APP_UID=999 \
