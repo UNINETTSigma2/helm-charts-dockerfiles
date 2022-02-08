@@ -14,13 +14,10 @@ ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
     NB_GID=999
 
-USER ${NB_UID}
-
-RUN conda remove --force --quiet --yes ipyparallel
-
 USER root
-
 RUN apt update && apt install -y eatmydata apt-utils
+
+USER ${NB_UID}
 RUN mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge \
     'cufflinks-py==0.17.3' \
