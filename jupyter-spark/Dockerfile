@@ -9,13 +9,15 @@
 
 
 FROM jupyter/all-spark-notebook:ee77b7831e16 as miniconda
+USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
     NB_UID=999 \
     NB_GID=999
 
+RUN apt update && apt install -y eatmydata apt-utils
 RUN mamba config --set channel_priority strict && \
-    mamba install --quiet --update-all --yes -c conda-forge \
+    eatmydata mamba install --quiet --update-all --yes -c conda-forge \
     'cufflinks-py==0.17.3' \
     'decorator==5.1.1' \
     'ipyparallel==6.3.0' \
@@ -31,6 +33,9 @@ RUN mamba config --set channel_priority strict && \
     'yapf==0.32.0' \
     && mamba clean --all -f -y
 
+
+
+
 #spacy=3.0.1' \
 #cudatoolkit==11.5.0' \
  #    'mkl-service=2.3.0' \
@@ -42,10 +47,14 @@ RUN mamba config --set channel_priority strict && \
  #    'python-graphviz=0.16' \
  #'pydot=1.4.1' \
 
+RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
+
+
 RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager@3.0.1' \
     '@jupyterlab/server-proxy@3.2.0' \
+    'jupyter-matplotlib@0.10.4' \
     'jupyterlab-plotly@5.5.0' \
     'jupyterlab_iframe@0.4.1' \
     'nbdime-jupyterlab@2.1.1' && \
@@ -55,18 +64,16 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
     jupyter lab build
 
-USER root
-RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 
 
 FROM jupyter/all-spark-notebook:ee77b7831e16
 LABEL maintainer = "Uninett As <system@uninett.no>"
 
-RUN mamba remove --quiet --yes -c conda-forge ipyparallel
+RUN mamba remove --quiet --yes --force -c conda-forge ipyparallel
 
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN apt update && apt install -y apt-utils && apt install -y --no-install-recommends gnupg2 && \
+RUN apt update && apt install -y --no-install-recommends gnupg2 && \
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub | apt-key add - && \
     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
@@ -75,6 +82,8 @@ RUN apt update && apt install -y apt-utils && apt install -y --no-install-recomm
 ENV PKG_CUDA_VERSION=11.5 \
     NCCL_VERSION=2.11.4 \
     PKG_CUDNN_VERSION=8.3.2.44-1+cuda11.5
+
+
 
 RUN apt update && apt install -y --no-install-recommends \
        build-essential \
@@ -133,20 +142,21 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     ln -s /usr/local/cuda/include/* /usr/include/
 
+
 ENV TZ="Europe/Oslo" \
 	APP_UID=999 \
 	APP_GID=999 \
 	NB_UID=999 \
 	NB_GID=999 \
-    PKG_JUPYTER_NOTEBOOK_VERSION=6.4.x \
+   PKG_JUPYTER_NOTEBOOK_VERSION=6.4.x \
 	PKG_SPARK_VERSION=${APACHE_SPARK_VERSION} \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.3.0-incubating \
 	PKG_R_VERSION=4.1.2  \
 	PKG_VS_CODE_VERSION=2.1692-vsc1.39.2 \
 	HOME=/home/notebook \
-    PATH=$PATH:$SPARK_HOME/bin \
-    XDG_CACHE_HOME=/home/notebook/.cache/
+   PATH=$PATH:$SPARK_HOME/bin \
+   XDG_CACHE_HOME=/home/notebook/.cache/
 
 RUN groupadd -g "$APP_GID" notebook && \
 	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
@@ -159,10 +169,13 @@ COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
 COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/minimal /usr/local/share/jupyter/kernels/minimal
 RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
 
+
 RUN wget -q "https://github.com/cdr/code-server/releases/download/$PKG_VS_CODE_VERSION/code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
     tar zxf "code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
     mv "code-server$PKG_VS_CODE_VERSION-linux-x86_64/code-server" /usr/local/bin/ && \
     rm -rf "code-server*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
+
+
 
 RUN chown notebook:notebook $CONDA_DIR "$CONDA_DIR/.condatmp"
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
@@ -173,6 +186,7 @@ RUN chmod go+w -R "$HOME"
 RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \
     && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
     && ldconfig
+
 
 RUN fix-permissions $CONDA_DIR
 
