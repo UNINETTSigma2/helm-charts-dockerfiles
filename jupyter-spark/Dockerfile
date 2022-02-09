@@ -42,8 +42,6 @@ RUN mamba config --set channel_priority strict && \
  #    'python-graphviz=0.16' \
  #'pydot=1.4.1' \
 
-#RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
-
 RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager@3.0.1' \
@@ -56,6 +54,9 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
     jupyter lab build
+
+USER root
+RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 
 
 FROM jupyter/all-spark-notebook:ee77b7831e16
@@ -155,16 +156,13 @@ COPY start-*.sh /usr/local/bin/
 COPY mem_parser.py /usr/local/bin/
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
 COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
-#COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/minimal /usr/local/share/jupyter/kernels/minimal
+COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/minimal /usr/local/share/jupyter/kernels/minimal
 RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
-
 
 RUN wget -q "https://github.com/cdr/code-server/releases/download/$PKG_VS_CODE_VERSION/code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
     tar zxf "code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
     mv "code-server$PKG_VS_CODE_VERSION-linux-x86_64/code-server" /usr/local/bin/ && \
     rm -rf "code-server*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
-
-
 
 RUN chown notebook:notebook $CONDA_DIR "$CONDA_DIR/.condatmp"
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
@@ -175,7 +173,6 @@ RUN chmod go+w -R "$HOME"
 RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \
     && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
     && ldconfig
-
 
 RUN fix-permissions $CONDA_DIR
 
