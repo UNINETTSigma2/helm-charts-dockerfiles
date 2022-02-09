@@ -69,10 +69,10 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
 FROM jupyter/all-spark-notebook:ee77b7831e16
 LABEL maintainer = "Uninett As <system@uninett.no>"
 
-RUN mamba remove --quiet --yes -c conda-forge ipyparallel
-
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN mamba config --set channel_priority strict && \
+    mamba install --quiet --yes -c conda-forge 'ipyparallel==6.3.0' && mamba clean --all -f -y
 RUN apt update && apt install -y --no-install-recommends gnupg2 && \
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub | apt-key add - && \
     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
