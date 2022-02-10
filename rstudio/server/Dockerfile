@@ -59,7 +59,8 @@ RUN gdebi -n /tmp/shiny.deb && \
     cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/ && \
     mkdir -p /var/log/shiny-server && \
     chown rstudio:rstudio /var/log/shiny-server && \
-    chmod go+w -R /var/log/shiny-server /usr/local/lib/R /srv /var/lib/shiny-server
+    chmod go+w -R /var/log/shiny-server /usr/local/lib/R /srv /var/lib/shiny-server && \
+    chmod go+rwx /usr/lib/rstudio-server/www
 
 COPY rserver.conf rsession.conf /etc/rstudio/
 COPY start.sh /usr/local/bin/start.sh
