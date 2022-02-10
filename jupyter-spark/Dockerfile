@@ -134,8 +134,9 @@ RUN apt update && apt install -y --no-install-recommends \
        python3-netcdf4 \
        sudo && \
     apt install -y --only-upgrade openssl && \
-	apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* && \
-	ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
+    apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
+	#apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* && \
+	#ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
 
 RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
