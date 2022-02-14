@@ -1,4 +1,4 @@
-FROM quay.io/nird-toolkit/jupyter-spark:20220209-a89be2d
+FROM quay.io/nird-toolkit/jupyter-spark:20220210-b4f9c29
 LABEL maintainer = "Uninett As <system@uninett.no>"
 
 USER root
