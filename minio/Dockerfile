@@ -1,4 +1,4 @@
-FROM minio/minio:RELEASE.2021-10-27T16-29-42Z
+FROM minio/minio:latest
 
 # Setup ENV for Appstore to be picked up
-ENV PKG_MINIO=RELEASE.2021-10-08T23-58-24Z
+ENV PKG_MINIO=latest
