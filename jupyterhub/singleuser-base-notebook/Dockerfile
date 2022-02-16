@@ -37,7 +37,7 @@ USER root
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=6.3.x
+	PKG_JUPYTER_NOTEBOOK_VERSION=6.4.x
 RUN groupadd -g "$APP_GID" notebook && \
     useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
     usermod -G users notebook && chmod go+rwx -R "$CONDA_DIR/bin"
@@ -58,9 +58,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 curl && 
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
 # might also be useful for CUDA packages
 #
-ENV PKG_CUDA_VERSION=11.4 \
-    NCCL_VERSION=2.7.6 \
-    PKG_CUDNN_VERSION=8.2.4.15-1+cuda11.4
+ENV PKG_CUDA_VERSION=11.5 \
+    NCCL_VERSION=2.10.3 \
+    PKG_CUDNN_VERSION=8.3.2.44-1+cuda11.5
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	openssh-client \
@@ -93,7 +93,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     inkscape \
     "openmpi-bin" && \
-    ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda && \
+    # ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda && \
     apt-get -y autoremove && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* && \
