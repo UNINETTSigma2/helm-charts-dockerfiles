@@ -80,7 +80,7 @@ RUN apt update && apt install -y --no-install-recommends gnupg2 && \
     rm -rf /var/lib/apt/lists/*
 
 ENV PKG_CUDA_VERSION=11.5 \
-    NCCL_VERSION=2.11.4 \
+    NCCL_VERSION=2.10.3 \
     PKG_CUDNN_VERSION=8.3.2.44-1+cuda11.5
 
 
