@@ -4,9 +4,10 @@ set -e
 
 echo "Starting RSudio Server"
 echo "session-default-working-dir=/home/$USERNAME" >> /etc/rstudio/rsession.conf
+echo $USERNAME
 export USERNAME=$(whoami)
 echo "server-user=$USERNAME" >> /etc/rstudio/rserver.conf
-echo "USER=$USER" >> /etc/environment
+echo "USER=$USERNAME" >> /etc/environment
 
 if [ ! -e "$HOME/.Renviron" ]; then
 	echo -e "HOME=/home/$USERNAME\nUSER=$USERNAME\nTZ=Europe/Oslo" > "$HOME/.Renviron"
