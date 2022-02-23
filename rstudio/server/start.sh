@@ -2,10 +2,8 @@
 
 set -e
 
-echo "Starting RSudio Server"
+echo "Starting RStudio Server"
 echo "session-default-working-dir=/home/$USERNAME" >> /etc/rstudio/rsession.conf
-echo $USERNAME
-export USERNAME=$(whoami)
 echo "server-user=$USERNAME" >> /etc/rstudio/rserver.conf
 export USER=$USERNAME
 
