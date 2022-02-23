@@ -7,9 +7,9 @@ export USERNAME=$(whoami)
 echo "server-user=$USERNAME" >> /etc/rstudio/rserver.conf
 export USER=$USERNAME
 
-if [ ! -e "$HOME/.Renviron" ]; then
+#if [ ! -e "$HOME/.Renviron" ]; then
 	echo -e "HOME=/home/rstudio\nUSER=$USERNAME\nTZ=Europe/Oslo" > "$HOME/.Renviron"
-fi
+#fi
 
 /usr/lib/rstudio-server/bin/rserver &
 
