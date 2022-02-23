@@ -3,15 +3,15 @@
 set -e
 
 echo "Starting RStudio Server"
-echo "session-default-working-dir=/home/$USERNAME" >> /etc/rstudio/rsession.conf
+export USERNAME=$(whoami)
 echo "server-user=$USERNAME" >> /etc/rstudio/rserver.conf
 export USER=$USERNAME
 
 if [ ! -e "$HOME/.Renviron" ]; then
-	echo -e "HOME=/home/$USERNAME\nUSER=$USERNAME\nTZ=Europe/Oslo" > "$HOME/.Renviron"
+	echo -e "HOME=/home/rstudio\nUSER=$USERNAME\nTZ=Europe/Oslo" > "$HOME/.Renviron"
 fi
 
-/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 --auth-none 0 &
+/usr/lib/rstudio-server/bin/rserver &
 
 if [ -n "$SHINY_APPS_PATH" ]; then
 	if [ ! -d "$SHINY_APPS_PATH" ]; then
