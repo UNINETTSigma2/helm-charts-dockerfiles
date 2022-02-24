@@ -4,17 +4,6 @@ set -e
 
 echo "Starting RStudio Server"
 
-export USER=$(whoami)
-echo "USER=$USER" >> /home/rstudio/.Renviron
-echo "server-user=$USER" >> /etc/rstudio/rserver.conf
-
-if [ -d "/home/$USER" ]; then
-	echo "session-default-working-dir=/home/$USER" >> /etc/rstudio/rsession.conf
-	cp /home/rstudio/.Renviron /home/$USER/.Renviron
-else
-	echo "session-default-working-dir=/home/rstudio" >> /etc/rstudio/rsession.conf
-fi
-
 /usr/lib/rstudio-server/bin/rserver &
 
 if [ -n "$SHINY_APPS_PATH" ]; then

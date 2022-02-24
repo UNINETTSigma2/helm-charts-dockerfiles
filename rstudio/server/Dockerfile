@@ -60,16 +60,14 @@ RUN gdebi -n /tmp/shiny.deb && \
     chmod go+w -R /var/log/shiny-server /usr/local/lib/R /srv /var/lib/shiny-server && \
     chmod ugo+rwx -R /usr/lib/rstudio-server/www
 
-COPY rserver.conf rsession.conf /etc/rstudio/
 COPY start.sh /usr/local/bin/start.sh
-COPY .Renviron $HOME/.Renviron
 
 RUN usermod -u 988 rstudio-server && \
     groupmod -g 988 rstudio-server && \
     usermod -u "$APP_UID" rstudio && \
     groupmod -g "$APP_GID" rstudio && \
     chown -R rstudio:rstudio /home/rstudio && \
-    chmod -R go+w /home/rstudio /tmp/downloaded_packages /etc/rstudio/rserver.conf /etc/rstudio/rsession.conf /var/lib/rstudio-server /var/log/rstudio
+    chmod -R go+w /home/rstudio /tmp/downloaded_packages /var/lib/rstudio-server /var/log/rstudio
 
 USER root
 
