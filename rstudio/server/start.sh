@@ -3,10 +3,16 @@
 set -e
 
 echo "Starting RStudio Server"
-export USERNAME=$(whoami)
-export USER=$USERNAME
-echo "server-user=$USERNAME" >> /etc/rstudio/rserver.conf
-echo -e "HOME=/home/rstudio\nUSER=$USERNAME" > "$HOME/.Renviron"
+
+export USER=$(whoami)
+echo "USER=$USER" >> "$HOME/.Renviron"
+echo "server-user=$USER" >> /etc/rstudio/rserver.conf
+
+if [ -d "/home/$USER" ]; then
+	echo "session-default-working-dir=/home/$USER" >> /etc/rstudio/rsession.conf
+else
+	echo "session-default-working-dir=/home/rstudio" >> /etc/rstudio/rsession.conf
+fi
 
 /usr/lib/rstudio-server/bin/rserver &
 
