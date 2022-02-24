@@ -6,7 +6,7 @@ FROM rocker/r-ver:4.1.2
 LABEL maintainer Uninett AS <system@uninett.no>
 
 ENV S6_VERSION=v2.1.0.2
-#ENV RSTUDIO_VERSION=1.4.1717
+ENV RSTUDIO_VERSION=2022.02.0+443
 ENV PATH=/usr/lib/rstudio-server/bin:$PATH
 
 
@@ -39,7 +39,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
 ENV TZ="Europe/Oslo" \
     USERNAME="rstudio" \
     HOME="/home/rstudio" \
-    TINI_VERSION=v0.18.0 \
+    TINI_VERSION=v0.19.0 \
     APP_UID=999 \
     APP_GID=999 \
     PKG_R_VERSION=4.1.2 \
@@ -71,7 +71,7 @@ RUN usermod -u 988 rstudio-server && \
     usermod -u "$APP_UID" rstudio && \
     groupmod -g "$APP_GID" rstudio && \
     chown -R rstudio:rstudio /home/rstudio && \
-    chmod -R go+w /home/rstudio /tmp/downloaded_packages /etc/rstudio/rserver.conf /etc/rstudio/rsession.conf /var/lib/rstudio-server /var/log/rstudio /etc/environment
+    chmod -R go+w /home/rstudio /tmp/downloaded_packages /etc/rstudio/rserver.conf /var/lib/rstudio-server /var/log/rstudio
 
 USER root
 

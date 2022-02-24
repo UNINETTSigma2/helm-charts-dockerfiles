@@ -4,12 +4,9 @@ set -e
 
 echo "Starting RStudio Server"
 export USERNAME=$(whoami)
-echo "server-user=$USERNAME" >> /etc/rstudio/rserver.conf
 export USER=$USERNAME
-
-#if [ ! -e "$HOME/.Renviron" ]; then
-	echo -e "HOME=/home/rstudio\nUSER=$USERNAME\nTZ=Europe/Oslo" > "$HOME/.Renviron"
-#fi
+echo "server-user=$USERNAME" >> /etc/rstudio/rserver.conf
+echo -e "HOME=/home/rstudio\nUSER=$USERNAME" > "$HOME/.Renviron"
 
 /usr/lib/rstudio-server/bin/rserver &
 
