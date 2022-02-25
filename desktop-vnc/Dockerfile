@@ -61,7 +61,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcusparse-dev-${PKG_CUDA_VERSION/./-} \
     libcudnn8 \
     openmpi-bin && \
-    #ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda && \
+    ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda && \
     apt-get -y autoremove && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
