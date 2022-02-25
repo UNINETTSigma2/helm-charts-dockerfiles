@@ -27,9 +27,9 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
 # might also be useful for CUDA packages
 #
-ENV PKG_CUDA_VERSION=11.4 \
-    NCCL_VERSION=2.7.6 \
-    PKG_CUDNN_VERSION=8.2.4.15-1+cuda11.4
+ENV PKG_CUDA_VERSION=11.5 \
+    NCCL_VERSION=2.10.3 \
+    PKG_CUDNN_VERSION=8.3.2.44-1+cuda11.5
 
 ## Connection ports for controlling the UI:
 # VNC port:5901
