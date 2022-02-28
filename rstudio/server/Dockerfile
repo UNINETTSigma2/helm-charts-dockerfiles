@@ -67,7 +67,8 @@ RUN usermod -u 988 rstudio-server && \
     usermod -u "$APP_UID" rstudio && \
     groupmod -g "$APP_GID" rstudio && \
     chown -R rstudio:rstudio /home/rstudio && \
-    chmod -R go+w /home/rstudio /tmp/downloaded_packages /var/lib/rstudio-server /var/log/rstudio
+    chmod -R go+w /home/rstudio /tmp/downloaded_packages /var/lib/rstudio-server /var/log/rstudio && \
+    rm /home/rstudio/.Renviron
 
 USER root
 
