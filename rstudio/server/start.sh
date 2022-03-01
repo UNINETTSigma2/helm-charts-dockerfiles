@@ -25,12 +25,6 @@ if [ -n "$SHINY_APPS_PATH" ]; then
 	ln -s $SHINY_APPS_PATH /srv
 fi
 
-# If we have shared data mounted, the link it to current directory to have it visible in notebook
-if [ -d "$PVC_MOUNT_PATH" ]; then
-	rm -f "$HOME/data"
-	ln -sf "$PVC_MOUNT_PATH" "$HOME/data"
-fi
-
 echo "Starting Shiny Server"
 shiny-server > /var/log/shiny-server/server.log &
 
