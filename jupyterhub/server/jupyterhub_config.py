@@ -1,6 +1,8 @@
 import os
 import re
 import sys
+import string
+import escapism
 
 from tornado.httpclient import AsyncHTTPClient
 from kubernetes import client
@@ -56,7 +58,8 @@ else:
     c.JupyterHub.spawner_class = KubeSpawner
 
 # Connect to a proxy running in a different pod
-c.ConfigurableHTTPProxy.api_url = 'http://{}:{}'.format(os.environ['PROXY_API_SERVICE_HOST'], int(os.environ['PROXY_API_SERVICE_PORT']))
+api_proxy_service_name = os.environ['PROXY_API_SERVICE_NAME']
+c.ConfigurableHTTPProxy.api_url = 'http://{}:{}'.format(os.environ[api_proxy_service_name + '_HOST'], int(os.environ[api_proxy_service_name + '_PORT']))
 c.ConfigurableHTTPProxy.should_start = False
 
 # Do not shut down user pods when hub is restarted
@@ -108,15 +111,16 @@ for trait, cfg_key in (
         cfg_key = camelCaseify(trait)
     set_config_if_not_none(c.JupyterHub, trait, 'hub.' + cfg_key)
 
-c.JupyterHub.ip = os.environ['PROXY_PUBLIC_SERVICE_HOST']
-c.JupyterHub.port = int(os.environ['PROXY_PUBLIC_SERVICE_PORT'])
+public_proxy_service_name = os.environ['PROXY_PUBLIC_SERVICE_NAME']
+c.JupyterHub.ip = os.environ[public_proxy_service_name + '_HOST']
+c.JupyterHub.port = int(os.environ[public_proxy_service_name + '_PORT'])
 
 # the hub should listen on all interfaces, so the proxy can access it
 c.JupyterHub.hub_ip = '0.0.0.0'
 
 # implement common labels
 # this duplicates the jupyterhub.commonLabels helper
-common_labels = c.KubeSpawner.common_labels = {}
+common_labels = c.KubeSpawner.common_labels = get_config('custom.common-labels', {})
 common_labels['app'] = get_config(
     "nameOverride",
     default=get_config("Chart.Name", "jupyterhub"),
@@ -132,6 +136,7 @@ release = get_config('Release.Name')
 if release:
     common_labels['release'] = release
 
+c.KubeSpawner.pod_name_template = get_config('singleuser.pod-name-template', 'jupyter-{username}{servername}')
 c.KubeSpawner.namespace = os.environ.get('POD_NAMESPACE', 'default')
 
 # Max number of consecutive failures before the Hub restarts itself
@@ -176,6 +181,9 @@ for trait, cfg_key in (
     if cfg_key is None:
         cfg_key = camelCaseify(trait)
     set_config_if_not_none(c.KubeSpawner, trait, 'singleuser.' + cfg_key)
+
+safe_chars = set(string.ascii_lowercase + string.digits)
+c.KubeSpawner.environment["HOME"] = lambda spawner: "/home/{}".format(escapism.escape(str(spawner.user.name), safe=safe_chars, escape_char='-').lower())
 
 image = get_config("singleuser.image.name")
 if image:
@@ -235,6 +243,10 @@ for key in (
         )
     )
 
+c.KubeSpawner.supplemental_gids = get_config('singleuser.supplemental-gids', [])
+c.KubeSpawner.gid = get_config('singleuser.run_as_gid', 999)
+c.KubeSpawner.uid = get_config('singleuser.run_as_gid', 999)
+
 # Configure dynamically provisioning pvc
 storage_type = get_config('singleuser.storage.type')
 
@@ -281,8 +293,9 @@ c.KubeSpawner.volumes.extend(get_config('singleuser.storage.extraVolumes', []))
 c.KubeSpawner.volume_mounts.extend(get_config('singleuser.storage.extraVolumeMounts', []))
 
 # Gives spawned containers access to the API of the hub
-c.JupyterHub.hub_connect_ip = os.environ['HUB_SERVICE_HOST']
-c.JupyterHub.hub_connect_port = int(os.environ['HUB_SERVICE_PORT'])
+hub_service_name = os.environ["HUB_SERVICE_NAME"]
+c.KubeSpawner.hub_connect_ip = os.environ[hub_service_name + "_HOST"]
+c.KubeSpawner.hub_connect_port = int(os.environ[hub_service_name + '_PORT'])
 
 # Allow switching authenticators easily
 auth_type = get_config('auth.type')
