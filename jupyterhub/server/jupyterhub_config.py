@@ -4,6 +4,8 @@ import sys
 import string
 import escapism
 
+from binascii import a2b_hex
+
 from tornado.httpclient import AsyncHTTPClient
 from kubernetes import client
 from jupyterhub.utils import url_path_join
@@ -13,6 +15,14 @@ configuration_directory = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, configuration_directory)
 
 from z2jh import get_config, set_config_if_not_none
+
+def camelCaseify(s):
+    """convert snake_case to camelCase
+
+    For the common case where some_value is set from someValue
+    so we don't have to specify the name twice.
+    """
+    return re.sub(r"_([a-z])", lambda m: m.group(1).upper(), s)
 
 # Configure JupyterHub to use the curl backend for making HTTP requests,
 # rather than the pure-python implementations. The default one starts
@@ -57,9 +67,11 @@ else:
     # 0.12 or greater, defaults are safe
     c.JupyterHub.spawner_class = KubeSpawner
 
-# Connect to a proxy running in a different pod
+# Connect to a proxy running in a different pod. Note that *_SERVICE_*
+# environment variables are set by Kubernetes for Services
 api_proxy_service_name = os.environ['PROXY_API_SERVICE_NAME']
-c.ConfigurableHTTPProxy.api_url = 'http://{}:{}'.format(os.environ[api_proxy_service_name + '_HOST'], int(os.environ[api_proxy_service_name + '_PORT']))
+c.ConfigurableHTTPProxy.api_url = f"http://{os.environ[api_proxy_service_name + '_HOST']}:{os.environ[api_proxy_service_name + '_PORT']}"
+#c.ConfigurableHTTPProxy.api_url = f"http://proxy-api:{os.environ[api_proxy_service_name + '_PORT']}"
 c.ConfigurableHTTPProxy.should_start = False
 
 # Do not shut down user pods when hub is restarted
@@ -76,14 +88,6 @@ c.JupyterHub.tornado_settings = {
 }
 
 
-def camelCaseify(s):
-    """convert snake_case to camelCase
-    For the common case where some_value is set from someValue
-    so we don't have to specify the name twice.
-    """
-    return re.sub(r"_([a-z])", lambda m: m.group(1).upper(), s)
-
-
 # configure the hub db connection
 db_type = get_config('hub.db.type')
 if db_type == 'sqlite-pvc':
@@ -94,13 +98,13 @@ else:
     set_config_if_not_none(c.JupyterHub, "db_url", "hub.db.url")
 
 
+
+# c.JupyterHub configuration from Helm chart's configmap
 for trait, cfg_key in (
-    # Max number of servers that can be spawning at any one time
     ('concurrent_spawn_limit', None),
-    # Max number of servers to be running at one time
     ('active_server_limit', None),
-    # base url prefix
     ('base_url', None),
+    # ('cookie_secret', None),  # requires a Hex -> Byte transformation
     ('allow_named_servers', None),
     ('named_server_limit_per_user', None),
     ('authenticate_prometheus', None),
@@ -117,8 +121,23 @@ public_proxy_service_name = os.environ['PROXY_PUBLIC_SERVICE_NAME']
 c.JupyterHub.ip = os.environ[public_proxy_service_name + '_HOST']
 c.JupyterHub.port = int(os.environ[public_proxy_service_name + '_PORT'])
 
+# a required Hex -> Byte transformation
+#cookie_secret_hex = get_config("hub.cookieSecret")
+#if cookie_secret_hex:
+#    c.JupyterHub.cookie_secret = a2b_hex(cookie_secret_hex)
+
+# hub_bind_url configures what the JupyterHub process within the hub pod's
+# container should listen to.
+hub_container_port = 8081
+c.JupyterHub.hub_bind_url = f'http://:{hub_container_port}'
+
 # the hub should listen on all interfaces, so the proxy can access it
 c.JupyterHub.hub_ip = '0.0.0.0'
+
+# hub_connect_url is the URL for connecting to the hub for use by external
+# JupyterHub services such as the proxy. Note that *_SERVICE_* environment
+# variables are set by Kubernetes for Services.
+#c.JupyterHub.hub_connect_url = f"http://hub:{os.environ['HUB_SERVICE_PORT']}"
 
 # implement common labels
 # this duplicates the jupyterhub.commonLabels helper
@@ -150,8 +169,10 @@ set_config_if_not_none(
 )
 
 for trait, cfg_key in (
+    ('pod_name_template', None),
     ('start_timeout', None),
     ('image_pull_policy', 'image.pullPolicy'),
+    # ('image_pull_secrets', 'image.pullSecrets'), # Managed manually below
     ('events_enabled', 'events'),
     ('extra_labels', None),
     ('extra_annotations', None),
@@ -196,8 +217,19 @@ if image:
 
     c.KubeSpawner.image = image
 
-if get_config('singleuser.imagePullSecret.enabled'):
-    c.KubeSpawner.image_pull_secrets = 'singleuser-image-credentials'
+# Combine imagePullSecret.create (single), imagePullSecrets (list), and
+# singleuser.image.pullSecrets (list).
+image_pull_secrets = []
+if get_config("imagePullSecret.automaticReferenceInjection") and (
+    get_config("imagePullSecret.create") or get_config("imagePullSecret.enabled")
+):
+    image_pull_secrets.append('image-pull-secret')
+if get_config('imagePullSecrets'):
+    image_pull_secrets.extend(get_config('imagePullSecrets'))
+if get_config('singleuser.image.pullSecrets'):
+    image_pull_secrets.extend(get_config('singleuser.image.pullSecrets'))
+if image_pull_secrets:
+    c.KubeSpawner.image_pull_secrets = image_pull_secrets
 
 # scheduling:
 if get_config('scheduling.userScheduler.enabled'):
@@ -435,7 +467,7 @@ if get_config('cull.enabled', False):
     ]
     base_url = c.JupyterHub.get('base_url', '/')
     cull_cmd.append(
-        '--url=http://127.0.0.1:8081' + url_path_join(base_url, 'hub/api')
+        '--url=http://localhost:8081' + url_path_join(base_url, 'hub/api')
     )
 
     cull_timeout = get_config('cull.timeout')
@@ -480,29 +512,29 @@ for name, service in get_config('hub.services', {}).items():
 set_config_if_not_none(c.Spawner, 'cmd', 'singleuser.cmd')
 set_config_if_not_none(c.Spawner, 'default_url', 'singleuser.defaultUrl')
 
-#cloud_metadata = get_config('singleuser.cloudMetadata', {})
+cloud_metadata = get_config('singleuser.cloudMetadata', {})
 
-#if not cloud_metadata.get('enabled', False):
+ if cloud_metadata.get('block') == True or cloud_metadata.get('enabled') == False:
     # Use iptables to block access to cloud metadata by default
-#    network_tools_image_name = get_config('singleuser.networkTools.image.name')
-#    network_tools_image_tag = get_config('singleuser.networkTools.image.tag')
-#    ip_block_container = client.V1Container(
-#        name="block-cloud-metadata",
-#        image=f"{network_tools_image_name}:{network_tools_image_tag}",
-#        command=[
-#            'iptables',
-#            '-A', 'OUTPUT',
-#            '-d', cloud_metadata.get('ip', '169.254.169.254'),
-#            '-j', 'DROP'
-#        ],
-#        security_context=client.V1SecurityContext(
-#            privileged=True,
-#            run_as_user=0,
-#            capabilities=client.V1Capabilities(add=['NET_ADMIN'])
-#        )
-#    )
-#
-#    c.KubeSpawner.init_containers.append(ip_block_container)
+    network_tools_image_name = get_config('singleuser.networkTools.image.name')
+    network_tools_image_tag = get_config('singleuser.networkTools.image.tag')
+    ip_block_container = client.V1Container(
+        name="block-cloud-metadata",
+        image=f"{network_tools_image_name}:{network_tools_image_tag}",
+        command=[
+            'iptables',
+            '-A', 'OUTPUT',
+            '-d', cloud_metadata.get('ip', '169.254.169.254'),
+            '-j', 'DROP'
+        ],
+        security_context=client.V1SecurityContext(
+            privileged=True,
+            run_as_user=0,
+            capabilities=client.V1Capabilities(add=['NET_ADMIN'])
+        )
+    )
+
+    c.KubeSpawner.init_containers.append(ip_block_container)
 
 
 if get_config('debug.enabled', False):
