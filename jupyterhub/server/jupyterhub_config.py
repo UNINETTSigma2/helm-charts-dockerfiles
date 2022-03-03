@@ -33,7 +33,7 @@ c.JupyterHub.cleanup_servers = False
 # Check that the proxy has routes appropriately setup
 c.JupyterHub.last_activity_interval = 60
 
-c.JupyterHub.cookie_secret_file = os.environ.get("COOKIE_SECRET_FILE_PATH", "/srv/jupyterhub/jupyterhub_cookie_secret")                     
+c.JupyterHub.cookie_secret_file = os.environ.get("COOKIE_SECRET_FILE_PATH", "/srv/jupyterhub/jupyterhub_cookie_secret")
 
 # Don't wait at all before redirecting a spawning user to the progress page
 c.JupyterHub.tornado_settings = {
@@ -349,8 +349,8 @@ elif auth_type == 'ldap':
     set_config_if_not_none(c.LDAPAuthenticator, 'valid_username_regex', 'auth.ldap.dn.user.validRegex')
     set_config_if_not_none(c.LDAPAuthenticator, 'user_search_base', 'auth.ldap.dn.user.searchBase')
     set_config_if_not_none(c.LDAPAuthenticator, 'user_attribute', 'auth.ldap.dn.user.attribute')
-elif auth_type == 'dataporten':                                                                                                             
-    c.JupyterHub.authenticator_class =  'oauthenticator.dataporten.DataportenAuth'
+elif auth_type == 'dataporten':
+    c.JupyterHub.authenticator_class =  'oauthenticator.dataporten:DataportenAuth'
     c.OAuthenticator.login_service = 'Dataporten'
     c.DataportenAuth.token_url = 'https://auth.dataporten.no/oauth/token'
     c.DataportenAuth.oauth_callback_url = os.environ["OAUTH_CALLBACK_URL"]
@@ -381,7 +381,7 @@ set_config_if_not_none(c.Authenticator, 'whitelist', 'auth.whitelist.users')
 
 c.JupyterHub.services = []
 
-extra_containers = get_config('singleuser.extra-containers', None)                                                                          
+extra_containers = get_config('singleuser.extra-containers', None)
 if extra_containers:
     c.KubeSpawner.extra_containers  = extra_containers
 
