@@ -1,8 +1,6 @@
 import os
 import re
 import sys
-import string
-import escapism
 
 from tornado.httpclient import AsyncHTTPClient
 from kubernetes import client
@@ -11,6 +9,7 @@ from jupyterhub.utils import url_path_join
 # Make sure that modules placed in the same directory as the jupyterhub config are added to the pythonpath
 configuration_directory = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, configuration_directory)
+
 from z2jh import get_config, set_config_if_not_none
 
 # Configure JupyterHub to use the curl backend for making HTTP requests,
@@ -19,21 +18,52 @@ from z2jh import get_config, set_config_if_not_none
 # at the rate required.
 AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
 
-c.JupyterHub.spawner_class = 'kubespawner.KubeSpawner'
+# Patch for CVE-2020-15110: change default template for named servers
+# with kubespawner 0.11, {servername} *contains* a leading '-'
+# leading `{user}-{server}` to create `username--servername`,
+# preventing collision.
+# kubespawner 0.12 does not contain `-` in {servername},
+# and uses default name template `{username}--{servername}`
+# so this patch must not be used with kubespawner >= 0.12
+
+from distutils.version import LooseVersion as V
+from traitlets import default
+import kubespawner
+from kubespawner import KubeSpawner
+
+
+class PatchedKubeSpawner(KubeSpawner):
+    @default("pod_name_template")
+    def _default_pod_name_template(self):
+        if self.name:
+            return "jupyter-{username}-{servername}"
+        else:
+            return "jupyter-{username}"
+
+    @default("pvc_name_template")
+    def _default_pvc_name_template(self):
+        if self.name:
+            return "claim-{username}-{servername}"
+        else:
+            return "claim-{username}"
+
+
+kubespawner_version = getattr(kubespawner, "__version__", "0.11")
+if V(kubespawner_version) < V("0.11.999"):
+    c.JupyterHub.spawner_class = PatchedKubeSpawner
+else:
+    # 0.12 or greater, defaults are safe
+    c.JupyterHub.spawner_class = KubeSpawner
 
 # Connect to a proxy running in a different pod
-api_proxy_service_name = os.environ["PROXY_API_SERVICE_NAME"]
-c.ConfigurableHTTPProxy.api_url = 'http://{}:{}'.format(os.environ[api_proxy_service_name + "_HOST"], int(os.environ[api_proxy_service_name + "_PORT"]))
+c.ConfigurableHTTPProxy.api_url = 'http://{}:{}'.format(os.environ['PROXY_API_SERVICE_HOST'], int(os.environ['PROXY_API_SERVICE_PORT']))
 c.ConfigurableHTTPProxy.should_start = False
-
 
 # Do not shut down user pods when hub is restarted
 c.JupyterHub.cleanup_servers = False
 
 # Check that the proxy has routes appropriately setup
 c.JupyterHub.last_activity_interval = 60
-
-c.JupyterHub.cookie_secret_file = os.environ.get("COOKIE_SECRET_FILE_PATH", "/srv/jupyterhub/jupyterhub_cookie_secret")
 
 # Don't wait at all before redirecting a spawning user to the progress page
 c.JupyterHub.tornado_settings = {
@@ -43,7 +73,6 @@ c.JupyterHub.tornado_settings = {
 
 def camelCaseify(s):
     """convert snake_case to camelCase
-
     For the common case where some_value is set from someValue
     so we don't have to specify the name twice.
     """
@@ -79,16 +108,15 @@ for trait, cfg_key in (
         cfg_key = camelCaseify(trait)
     set_config_if_not_none(c.JupyterHub, trait, 'hub.' + cfg_key)
 
-public_proxy_service_name = os.environ["PROXY_PUBLIC_SERVICE_NAME"]
-c.JupyterHub.ip = os.environ[public_proxy_service_name + "_HOST"]
-c.JupyterHub.port = int(os.environ[public_proxy_service_name + "_PORT"])
+c.JupyterHub.ip = os.environ['PROXY_PUBLIC_SERVICE_HOST']
+c.JupyterHub.port = int(os.environ['PROXY_PUBLIC_SERVICE_PORT'])
 
 # the hub should listen on all interfaces, so the proxy can access it
 c.JupyterHub.hub_ip = '0.0.0.0'
 
 # implement common labels
 # this duplicates the jupyterhub.commonLabels helper
-common_labels = c.KubeSpawner.common_labels = get_config('custom.common-labels', {})
+common_labels = c.KubeSpawner.common_labels = {}
 common_labels['app'] = get_config(
     "nameOverride",
     default=get_config("Chart.Name", "jupyterhub"),
@@ -104,10 +132,7 @@ release = get_config('Release.Name')
 if release:
     common_labels['release'] = release
 
-c.KubeSpawner.pod_name_template = get_config('singleuser.pod-name-template', 'jupyter-{username}{servername}')
 c.KubeSpawner.namespace = os.environ.get('POD_NAMESPACE', 'default')
-
-safe_chars = set(string.ascii_lowercase + string.digits)
 
 # Max number of consecutive failures before the Hub restarts itself
 # requires jupyterhub 0.9.2
@@ -127,7 +152,6 @@ for trait, cfg_key in (
     ('fs_gid', None),
     ('service_account', 'serviceAccountName'),
     ('storage_extra_labels', 'storage.extraLabels'),
-    ('working_dir', None),
     ('tolerations', 'extraTolerations'),
     ('node_selector', None),
     ('node_affinity_required', 'extraNodeAffinity.required'),
@@ -152,8 +176,6 @@ for trait, cfg_key in (
     if cfg_key is None:
         cfg_key = camelCaseify(trait)
     set_config_if_not_none(c.KubeSpawner, trait, 'singleuser.' + cfg_key)
-
-c.KubeSpawner.environment["HOME"] = lambda spawner: "/home/{}".format(escapism.escape(str(spawner.user.name), safe=safe_chars, escape_char='-').lower())
 
 image = get_config("singleuser.image.name")
 if image:
@@ -216,10 +238,6 @@ for key in (
 # Configure dynamically provisioning pvc
 storage_type = get_config('singleuser.storage.type')
 
-c.KubeSpawner.supplemental_gids = get_config('singleuser.supplemental-gids', [])
-c.KubeSpawner.gid = get_config('singleuser.run_as_gid', 999)
-c.KubeSpawner.uid = get_config('singleuser.run_as_gid', 999)
-
 if storage_type == 'dynamic':
     pvc_name_template = get_config('singleuser.storage.dynamic.pvcNameTemplate')
     c.KubeSpawner.pvc_name_template = pvc_name_template
@@ -245,6 +263,14 @@ if storage_type == 'dynamic':
         }
     ]
 elif storage_type == 'static':
+    pvc_claim_name = get_config('singleuser.storage.static.pvcName')
+    c.KubeSpawner.volumes = [{
+        'name': 'home',
+        'persistentVolumeClaim': {
+            'claimName': pvc_claim_name
+        }
+    }]
+
     c.KubeSpawner.volume_mounts = [{
         'mountPath': get_config('singleuser.storage.homeMountPath'),
         'name': get_config('singleuser.storage.static.pvcName', 'shared'),
@@ -255,13 +281,8 @@ c.KubeSpawner.volumes.extend(get_config('singleuser.storage.extraVolumes', []))
 c.KubeSpawner.volume_mounts.extend(get_config('singleuser.storage.extraVolumeMounts', []))
 
 # Gives spawned containers access to the API of the hub
-hub_service_name = os.environ["HUB_SERVICE_NAME"]
-c.KubeSpawner.hub_connect_ip = os.environ[hub_service_name + "_HOST"]
-c.KubeSpawner.hub_connect_port = int(os.environ[hub_service_name + '_PORT'])
-
-c.JupyterHub.hub_connect_ip = os.environ[hub_service_name + "_HOST"]
-c.JupyterHub.hub_connect_port = int(os.environ[hub_service_name + "_PORT"])
-
+c.JupyterHub.hub_connect_ip = os.environ['HUB_SERVICE_HOST']
+c.JupyterHub.hub_connect_port = int(os.environ['HUB_SERVICE_PORT'])
 
 # Allow switching authenticators easily
 auth_type = get_config('auth.type')
@@ -302,10 +323,21 @@ elif auth_type == 'gitlab':
     for trait, cfg_key in common_oauth_traits + (
         ('gitlab_group_whitelist', None),
         ('gitlab_project_id_whitelist', None),
+        ('gitlab_url', None),
     ):
         if cfg_key is None:
             cfg_key = camelCaseify(trait)
         set_config_if_not_none(c.GitLabOAuthenticator, trait, 'auth.gitlab.' + cfg_key)
+elif auth_type == 'azuread':
+    c.JupyterHub.authenticator_class = 'oauthenticator.azuread.AzureAdOAuthenticator'
+    for trait, cfg_key in common_oauth_traits + (
+        ('tenant_id', None),
+        ('username_claim', None),
+    ):
+        if cfg_key is None:
+            cfg_key = camelCaseify(trait)
+
+        set_config_if_not_none(c.AzureAdOAuthenticator, trait, 'auth.azuread.' + cfg_key)
 elif auth_type == 'mediawiki':
     c.JupyterHub.authenticator_class = 'oauthenticator.mediawiki.MWOAuthenticator'
     for trait, cfg_key in common_oauth_traits + (
@@ -350,7 +382,7 @@ elif auth_type == 'ldap':
     set_config_if_not_none(c.LDAPAuthenticator, 'user_search_base', 'auth.ldap.dn.user.searchBase')
     set_config_if_not_none(c.LDAPAuthenticator, 'user_attribute', 'auth.ldap.dn.user.attribute')
 elif auth_type == 'dataporten':
-    c.JupyterHub.authenticator_class =  'oauthenticator.dataporten:DataportenAuth'
+    c.JupyterHub.authenticator_class = 'oauthenticator.dataporten.DataportenAuth'
     c.OAuthenticator.login_service = 'Dataporten'
     c.DataportenAuth.token_url = 'https://auth.dataporten.no/oauth/token'
     c.DataportenAuth.oauth_callback_url = os.environ["OAUTH_CALLBACK_URL"]
@@ -388,10 +420,8 @@ if extra_containers:
 if get_config('cull.enabled', False):
     cull_cmd = [
         'python3',
-        '-m',
-        'jupyterhub_idle_culler'
+        '/etc/jupyterhub/cull_idle_servers.py',
     ]
-
     base_url = c.JupyterHub.get('base_url', '/')
     cull_cmd.append(
         '--url=http://127.0.0.1:8081' + url_path_join(base_url, 'hub/api')
@@ -411,6 +441,9 @@ if get_config('cull.enabled', False):
 
     if get_config('cull.users'):
         cull_cmd.append('--cull-users')
+
+    if get_config('cull.removeNamedServers'):
+        cull_cmd.append('--remove-named-servers')
 
     cull_max_age = get_config('cull.maxAge')
     if cull_max_age:
@@ -436,6 +469,31 @@ for name, service in get_config('hub.services', {}).items():
 set_config_if_not_none(c.Spawner, 'cmd', 'singleuser.cmd')
 set_config_if_not_none(c.Spawner, 'default_url', 'singleuser.defaultUrl')
 
+cloud_metadata = get_config('singleuser.cloudMetadata', {})
+
+if not cloud_metadata.get('enabled', False):
+    # Use iptables to block access to cloud metadata by default
+    network_tools_image_name = get_config('singleuser.networkTools.image.name')
+    network_tools_image_tag = get_config('singleuser.networkTools.image.tag')
+    ip_block_container = client.V1Container(
+        name="block-cloud-metadata",
+        image=f"{network_tools_image_name}:{network_tools_image_tag}",
+        command=[
+            'iptables',
+            '-A', 'OUTPUT',
+            '-d', cloud_metadata.get('ip', '169.254.169.254'),
+            '-j', 'DROP'
+        ],
+        security_context=client.V1SecurityContext(
+            privileged=True,
+            run_as_user=0,
+            capabilities=client.V1Capabilities(add=['NET_ADMIN'])
+        )
+    )
+
+    c.KubeSpawner.init_containers.append(ip_block_container)
+
+
 if get_config('debug.enabled', False):
     c.JupyterHub.log_level = 'DEBUG'
     c.Spawner.debug = True
@@ -448,20 +506,15 @@ if isinstance(extra_config, str):
     """
     hub.extraConfig should be a dict of strings,
     but found a single string instead.
-
     extraConfig as a single string is deprecated
     as of the jupyterhub chart version 0.6.
-
     The keys can be anything identifying the
     block of extra configuration.
-
     Try this instead:
-
         hub:
           extraConfig:
             myConfig: |
               {}
-
     This configuration will still be loaded,
     but you are encouraged to adopt the nested form
     which enables easier merging of multiple extra configurations.
