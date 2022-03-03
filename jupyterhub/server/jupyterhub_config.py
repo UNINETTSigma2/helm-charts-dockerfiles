@@ -430,7 +430,8 @@ if extra_containers:
 if get_config('cull.enabled', False):
     cull_cmd = [
         'python3',
-        '/etc/jupyterhub/cull_idle_servers.py',
+        '-m',
+        'jupyterhub_idle_culler'
     ]
     base_url = c.JupyterHub.get('base_url', '/')
     cull_cmd.append(
