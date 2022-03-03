@@ -297,8 +297,10 @@ c.KubeSpawner.volume_mounts.extend(get_config('singleuser.storage.extraVolumeMou
 
 # Gives spawned containers access to the API of the hub
 hub_service_name = os.environ["HUB_SERVICE_NAME"]
-c.JupyterHub.hub_connect_ip = os.environ[hub_service_name + "_HOST"]
-c.JupyterHub.hub_connect_port = int(os.environ[hub_service_name + "_PORT"])
+c.JupyterHub.hub_connect_ip = os.environ[hub_service_name + '_HOST']
+c.JupyterHub.hub_connect_port = int(os.environ[hub_service_name + '_PORT'])
+c.KubeSpawner.hub_connect_ip = os.environ[hub_service_name + '_HOST']
+c.KubeSpawner.hub_connect_port = int(os.environ[hub_service_name + '_PORT'])
 
 # Allow switching authenticators easily
 auth_type = get_config('auth.type')
