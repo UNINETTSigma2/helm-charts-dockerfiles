@@ -68,6 +68,8 @@ c.JupyterHub.cleanup_servers = False
 # Check that the proxy has routes appropriately setup
 c.JupyterHub.last_activity_interval = 60
 
+c.JupyterHub.cookie_secret_file = os.environ.get("COOKIE_SECRET_FILE_PATH", "/srv/jupyterhub/jupyterhub_cookie_secret")
+
 # Don't wait at all before redirecting a spawning user to the progress page
 c.JupyterHub.tornado_settings = {
     'slow_spawn_timeout': 0,
@@ -157,6 +159,7 @@ for trait, cfg_key in (
     ('fs_gid', None),
     ('service_account', 'serviceAccountName'),
     ('storage_extra_labels', 'storage.extraLabels'),
+    ('working_dir', None),
     ('tolerations', 'extraTolerations'),
     ('node_selector', None),
     ('node_affinity_required', 'extraNodeAffinity.required'),
