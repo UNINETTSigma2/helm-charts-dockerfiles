@@ -517,8 +517,6 @@ for key, config_py in sorted(extra_config.items()):
 import string
 import escapism
 
-safe_chars = set(string.ascii_lowercase + string.digits)
-
 c.JupyterHub.cookie_secret_file = os.environ.get("COOKIE_SECRET_FILE_PATH", "/srv/jupyterhub/jupyterhub_cookie_secret")
 
 public_proxy_service_name = os.environ['PROXY_PUBLIC_SERVICE_NAME']
@@ -535,6 +533,7 @@ c.KubeSpawner.uid = get_config('singleuser.run_as_gid', 999)
 c.KubeSpawner.gid = get_config('singleuser.run_as_gid', 999)
 c.KubeSpawner.supplemental_gids = get_config('singleuser.supplemental-gids', [])
 
+safe_chars = set(string.ascii_lowercase + string.digits)
 c.KubeSpawner.environment["HOME"] = lambda spawner: "/home/{}".format(escapism.escape(str(spawner.user.name), safe=safe_chars, escape_char='-').lower())
 
 # Gives spawned containers access to the API of the hub
