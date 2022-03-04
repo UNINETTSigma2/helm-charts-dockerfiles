@@ -11,29 +11,6 @@ from jupyterhub.utils import url_path_join
 import string
 import escapism
 
-# Additional config for NIRD toolkit
-
-safe_chars = set(string.ascii_lowercase + string.digits)
-public_proxy_service_name = os.environ['PROXY_PUBLIC_SERVICE_NAME']
-# Gives spawned containers access to the API of the hub
-hub_service_name = os.environ["HUB_SERVICE_NAME"]
-c.JupyterHub.cookie_secret_file = os.environ.get("COOKIE_SECRET_FILE_PATH", "/srv/jupyterhub/jupyterhub_cookie_secret")
-c.JupyterHub.ip = os.environ[public_proxy_service_name + '_HOST']
-c.JupyterHub.port = int(os.environ[public_proxy_service_name + '_PORT'])
-c.JupyterHub.hub_connect_ip = os.environ[hub_service_name + '_HOST']
-c.JupyterHub.hub_connect_port = int(os.environ[hub_service_name + '_PORT'])
-c.KubeSpawner.hub_connect_ip = os.environ[hub_service_name + '_HOST']
-c.KubeSpawner.hub_connect_port = int(os.environ[hub_service_name + '_PORT'])
-c.KubeSpawner.pod_name_template = get_config('singleuser.pod-name-template', 'jupyter-{username}{servername}')
-c.KubeSpawner.environment["HOME"] = lambda spawner: "/home/{}".format(escapism.escape(str(spawner.user.name), safe=safe_chars, escape_char='-').lower())
-c.KubeSpawner.supplemental_gids = get_config('singleuser.supplemental-gids', [])
-c.KubeSpawner.gid = get_config('singleuser.run_as_gid', 999)
-c.KubeSpawner.uid = get_config('singleuser.run_as_gid', 999)
-
-extra_containers = get_config('singleuser.extra-containers', None)
-if extra_containers:
-    c.KubeSpawner.extra_containers  = extra_containers
-
 # zero-to-jupyterhub-k8s config with some adaptation
 
 # Make sure that modules placed in the same directory as the jupyterhub config are added to the pythonpath
@@ -537,3 +514,26 @@ if isinstance(extra_config, str):
 for key, config_py in sorted(extra_config.items()):
     print("Loading extra config: %s" % key)
     exec(config_py)
+
+# Additional config for NIRD toolkit
+
+safe_chars = set(string.ascii_lowercase + string.digits)
+public_proxy_service_name = os.environ['PROXY_PUBLIC_SERVICE_NAME']
+# Gives spawned containers access to the API of the hub
+hub_service_name = os.environ["HUB_SERVICE_NAME"]
+c.JupyterHub.cookie_secret_file = os.environ.get("COOKIE_SECRET_FILE_PATH", "/srv/jupyterhub/jupyterhub_cookie_secret")
+c.JupyterHub.ip = os.environ[public_proxy_service_name + '_HOST']
+c.JupyterHub.port = int(os.environ[public_proxy_service_name + '_PORT'])
+c.JupyterHub.hub_connect_ip = os.environ[hub_service_name + '_HOST']
+c.JupyterHub.hub_connect_port = int(os.environ[hub_service_name + '_PORT'])
+c.KubeSpawner.hub_connect_ip = os.environ[hub_service_name + '_HOST']
+c.KubeSpawner.hub_connect_port = int(os.environ[hub_service_name + '_PORT'])
+c.KubeSpawner.pod_name_template = get_config('singleuser.pod-name-template', 'jupyter-{username}{servername}')
+c.KubeSpawner.environment["HOME"] = lambda spawner: "/home/{}".format(escapism.escape(str(spawner.user.name), safe=safe_chars, escape_char='-').lower())
+c.KubeSpawner.supplemental_gids = get_config('singleuser.supplemental-gids', [])
+c.KubeSpawner.gid = get_config('singleuser.run_as_gid', 999)
+c.KubeSpawner.uid = get_config('singleuser.run_as_gid', 999)
+
+extra_containers = get_config('singleuser.extra-containers', None)
+if extra_containers:
+    c.KubeSpawner.extra_containers  = extra_containers
