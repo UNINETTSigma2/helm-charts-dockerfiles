@@ -70,7 +70,8 @@ else:
 # Connect to a proxy running in a different pod. Note that *_SERVICE_*
 # environment variables are set by Kubernetes for Services
 api_proxy_service_name = os.environ['PROXY_API_SERVICE_NAME']
-c.ConfigurableHTTPProxy.api_url = f"http://{os.environ[api_proxy_service_name + '_HOST']}:{os.environ[api_proxy_service_name + '_PORT']}"
+c.ConfigurableHTTPProxy.api_url = 'http://{}:{}'.format(os.environ[api_proxy_service_name + '_HOST'], int(os.environ[api_proxy_service_name + '_PORT']))
+#c.ConfigurableHTTPProxy.api_url = f"http://{os.environ[api_proxy_service_name + '_HOST']}:{os.environ[api_proxy_service_name + '_PORT']}"
 #c.ConfigurableHTTPProxy.api_url = f"http://proxy-api:{os.environ[api_proxy_service_name + '_PORT']}"
 c.ConfigurableHTTPProxy.should_start = False
 
@@ -217,19 +218,21 @@ if image:
 
     c.KubeSpawner.image = image
 
+if get_config('singleuser.imagePullSecret.enabled'):
+    c.KubeSpawner.image_pull_secrets = 'singleuser-image-credentials'
 # Combine imagePullSecret.create (single), imagePullSecrets (list), and
 # singleuser.image.pullSecrets (list).
-image_pull_secrets = []
-if get_config("imagePullSecret.automaticReferenceInjection") and (
-    get_config("imagePullSecret.create") or get_config("imagePullSecret.enabled")
-):
-    image_pull_secrets.append('image-pull-secret')
-if get_config('imagePullSecrets'):
-    image_pull_secrets.extend(get_config('imagePullSecrets'))
-if get_config('singleuser.image.pullSecrets'):
-    image_pull_secrets.extend(get_config('singleuser.image.pullSecrets'))
-if image_pull_secrets:
-    c.KubeSpawner.image_pull_secrets = image_pull_secrets
+#image_pull_secrets = []
+#if get_config("imagePullSecret.automaticReferenceInjection") and (
+#    get_config("imagePullSecret.create") or get_config("imagePullSecret.enabled")
+#):
+#    image_pull_secrets.append('image-pull-secret')
+#if get_config('imagePullSecrets'):
+#    image_pull_secrets.extend(get_config('imagePullSecrets'))
+#if get_config('singleuser.image.pullSecrets'):
+#    image_pull_secrets.extend(get_config('singleuser.image.pullSecrets'))
+#if image_pull_secrets:
+#    c.KubeSpawner.image_pull_secrets = image_pull_secrets
 
 # scheduling:
 if get_config('scheduling.userScheduler.enabled'):
