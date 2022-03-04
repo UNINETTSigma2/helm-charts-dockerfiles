@@ -15,7 +15,7 @@ RUN mamba config --set channel_priority strict && \
     'ipyparallel==6.3.0' \
     'jupyter-server-proxy==3.2.0' \
     'jupyter_contrib_nbextensions==0.5.1' \
-    'jupyterhub==1.5.0' \
+    'jupyterhub==1.2.0' \
     'nbconvert==6.4.0' \
     'nbdime==3.1.1' \
     'nodejs==17.1.0' \
