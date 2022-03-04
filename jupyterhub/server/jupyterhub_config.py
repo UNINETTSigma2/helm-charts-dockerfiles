@@ -70,8 +70,7 @@ else:
 # Connect to a proxy running in a different pod. Note that *_SERVICE_*
 # environment variables are set by Kubernetes for Services
 api_proxy_service_name = os.environ['PROXY_API_SERVICE_NAME']
-c.ConfigurableHTTPProxy.api_url = 'http://{}:{}'.format(os.environ[api_proxy_service_name + '_HOST'], int(os.environ[api_proxy_service_name + '_PORT']))
-#c.ConfigurableHTTPProxy.api_url = f"http://{os.environ[api_proxy_service_name + '_HOST']}:{os.environ[api_proxy_service_name + '_PORT']}"
+c.ConfigurableHTTPProxy.api_url = f"http://{os.environ[api_proxy_service_name + '_HOST']}:{os.environ[api_proxy_service_name + '_PORT']}"
 #c.ConfigurableHTTPProxy.api_url = f"http://proxy-api:{os.environ[api_proxy_service_name + '_PORT']}"
 c.ConfigurableHTTPProxy.should_start = False
 
@@ -218,21 +217,19 @@ if image:
 
     c.KubeSpawner.image = image
 
-if get_config('singleuser.imagePullSecret.enabled'):
-    c.KubeSpawner.image_pull_secrets = 'singleuser-image-credentials'
 # Combine imagePullSecret.create (single), imagePullSecrets (list), and
 # singleuser.image.pullSecrets (list).
-#image_pull_secrets = []
-#if get_config("imagePullSecret.automaticReferenceInjection") and (
-#    get_config("imagePullSecret.create") or get_config("imagePullSecret.enabled")
-#):
-#    image_pull_secrets.append('image-pull-secret')
-#if get_config('imagePullSecrets'):
-#    image_pull_secrets.extend(get_config('imagePullSecrets'))
-#if get_config('singleuser.image.pullSecrets'):
-#    image_pull_secrets.extend(get_config('singleuser.image.pullSecrets'))
-#if image_pull_secrets:
-#    c.KubeSpawner.image_pull_secrets = image_pull_secrets
+image_pull_secrets = []
+if get_config("imagePullSecret.automaticReferenceInjection") and (
+    get_config("imagePullSecret.create") or get_config("imagePullSecret.enabled")
+):
+    image_pull_secrets.append('image-pull-secret')
+if get_config('imagePullSecrets'):
+    image_pull_secrets.extend(get_config('imagePullSecrets'))
+if get_config('singleuser.image.pullSecrets'):
+    image_pull_secrets.extend(get_config('singleuser.image.pullSecrets'))
+if image_pull_secrets:
+    c.KubeSpawner.image_pull_secrets = image_pull_secrets
 
 # scheduling:
 if get_config('scheduling.userScheduler.enabled'):
@@ -470,7 +467,7 @@ if get_config('cull.enabled', False):
     ]
     base_url = c.JupyterHub.get('base_url', '/')
     cull_cmd.append(
-        '--url=http://127.0.0.1:8081' + url_path_join(base_url, 'hub/api')
+        '--url=http://localhost:8081' + url_path_join(base_url, 'hub/api')
     )
 
     cull_timeout = get_config('cull.timeout')
@@ -515,27 +512,27 @@ for name, service in get_config('hub.services', {}).items():
 set_config_if_not_none(c.Spawner, 'cmd', 'singleuser.cmd')
 set_config_if_not_none(c.Spawner, 'default_url', 'singleuser.defaultUrl')
 
-#cloud_metadata = get_config('singleuser.cloudMetadata', {})
+cloud_metadata = get_config('singleuser.cloudMetadata', {})
 
-#if cloud_metadata.get('block') == True or cloud_metadata.get('enabled') == False:
-#    # Use iptables to block access to cloud metadata by default
-#    network_tools_image_name = get_config('singleuser.networkTools.image.name')
-#    network_tools_image_tag = get_config('singleuser.networkTools.image.tag')
-#    ip_block_container = client.V1Container(
-#        name="block-cloud-metadata",
-#        image=f"{network_tools_image_name}:{network_tools_image_tag}",
-#        command=[
-#            'iptables',
-#            '-A', 'OUTPUT',
-#            '-d', cloud_metadata.get('ip', '169.254.169.254'),
-#            '-j', 'DROP'
-#        ],
-#        security_context=client.V1SecurityContext(
-#            privileged=True,
-#            run_as_user=0,
-#            capabilities=client.V1Capabilities(add=['NET_ADMIN'])
-#        )
-#    )
+if cloud_metadata.get('block') == True or cloud_metadata.get('enabled') == False:
+    # Use iptables to block access to cloud metadata by default
+    network_tools_image_name = get_config('singleuser.networkTools.image.name')
+    network_tools_image_tag = get_config('singleuser.networkTools.image.tag')
+    ip_block_container = client.V1Container(
+        name="block-cloud-metadata",
+        image=f"{network_tools_image_name}:{network_tools_image_tag}",
+        command=[
+            'iptables',
+            '-A', 'OUTPUT',
+            '-d', cloud_metadata.get('ip', '169.254.169.254'),
+            '-j', 'DROP'
+        ],
+        security_context=client.V1SecurityContext(
+            privileged=True,
+            run_as_user=0,
+            capabilities=client.V1Capabilities(add=['NET_ADMIN'])
+        )
+    )
 
 #    c.KubeSpawner.init_containers.append(ip_block_container)
 
