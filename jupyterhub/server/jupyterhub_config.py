@@ -1,3 +1,5 @@
+# zero-to-jupyterhub-k8s config with some adaptation
+
 import os
 import re
 import sys
@@ -7,8 +9,6 @@ from binascii import a2b_hex
 from tornado.httpclient import AsyncHTTPClient
 from kubernetes import client
 from jupyterhub.utils import url_path_join
-
-# zero-to-jupyterhub-k8s config with some adaptation
 
 # Make sure that modules placed in the same directory as the jupyterhub config are added to the pythonpath
 configuration_directory = os.path.dirname(os.path.realpath(__file__))
@@ -61,7 +61,6 @@ else:
     set_config_if_not_none(c.JupyterHub, "db_url", "hub.db.url")
 
 
-
 # c.JupyterHub configuration from Helm chart's configmap
 for trait, cfg_key in (
     ('concurrent_spawn_limit', None),
@@ -81,9 +80,9 @@ for trait, cfg_key in (
     set_config_if_not_none(c.JupyterHub, trait, 'hub.' + cfg_key)
 
 # a required Hex -> Byte transformation
-#cookie_secret_hex = get_config("hub.cookieSecret")
-#if cookie_secret_hex:
-#    c.JupyterHub.cookie_secret = a2b_hex(cookie_secret_hex)
+cookie_secret_hex = get_config("hub.cookieSecret")
+if cookie_secret_hex:
+    c.JupyterHub.cookie_secret = a2b_hex(cookie_secret_hex)
 
 # hub_bind_url configures what the JupyterHub process within the hub pod's
 # container should listen to.
@@ -124,7 +123,7 @@ set_config_if_not_none(
 )
 
 for trait, cfg_key in (
-    #('pod_name_template', None),
+    ('pod_name_template', None),
     ('start_timeout', None),
     ('image_pull_policy', 'image.pullPolicy'),
     # ('image_pull_secrets', 'image.pullSecrets'), # Managed manually below
