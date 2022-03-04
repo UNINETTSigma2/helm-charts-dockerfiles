@@ -33,10 +33,7 @@ c.JupyterHub.spawner_class = 'kubespawner.KubeSpawner'
 
 # Connect to a proxy running in a different pod. Note that *_SERVICE_*
 # environment variables are set by Kubernetes for Services
-api_proxy_service_name = os.environ['PROXY_API_SERVICE_NAME']
-c.ConfigurableHTTPProxy.api_url = 'http://{}:{}'.format(os.environ['PROXY_API_SERVICE_HOST'], int(os.environ['PROXY_API_SERVICE_PORT']))
-#c.ConfigurableHTTPProxy.api_url = f"http://{os.environ[api_proxy_service_name + '_HOST']}:{os.environ[api_proxy_service_name + '_PORT']}"
-#c.ConfigurableHTTPProxy.api_url = f"http://proxy-api:{os.environ[api_proxy_service_name + '_PORT']}"
+c.ConfigurableHTTPProxy.api_url = f"http://proxy-api:{os.environ['PROXY_API_SERVICE_PORT']}"
 c.ConfigurableHTTPProxy.should_start = False
 
 # Do not shut down user pods when hub is restarted
