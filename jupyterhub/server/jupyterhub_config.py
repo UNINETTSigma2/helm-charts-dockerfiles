@@ -18,7 +18,6 @@ from z2jh import get_config, set_config_if_not_none
 
 def camelCaseify(s):
     """convert snake_case to camelCase
-
     For the common case where some_value is set from someValue
     so we don't have to specify the name twice.
     """
@@ -134,7 +133,6 @@ for trait, cfg_key in (
     ('fs_gid', None),
     ('service_account', 'serviceAccountName'),
     ('storage_extra_labels', 'storage.extraLabels'),
-    ('working_dir', None),
     ('tolerations', 'extraTolerations'),
     ('node_selector', None),
     ('node_affinity_required', 'extraNodeAffinity.required'),
@@ -257,6 +255,14 @@ if storage_type == 'dynamic':
         }
     ]
 elif storage_type == 'static':
+    pvc_claim_name = get_config('singleuser.storage.static.pvcName')
+    c.KubeSpawner.volumes = [{
+        'name': 'home',
+        'persistentVolumeClaim': {
+            'claimName': pvc_claim_name
+        }
+    }]
+
     c.KubeSpawner.volume_mounts = [{
         'mountPath': get_config('singleuser.storage.homeMountPath'),
         'name': get_config('singleuser.storage.static.pvcName', 'shared'),
