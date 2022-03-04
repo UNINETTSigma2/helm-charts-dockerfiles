@@ -512,29 +512,29 @@ for name, service in get_config('hub.services', {}).items():
 set_config_if_not_none(c.Spawner, 'cmd', 'singleuser.cmd')
 set_config_if_not_none(c.Spawner, 'default_url', 'singleuser.defaultUrl')
 
-cloud_metadata = get_config('singleuser.cloudMetadata', {})
+#cloud_metadata = get_config('singleuser.cloudMetadata', {})
 
-if cloud_metadata.get('block') == True or cloud_metadata.get('enabled') == False:
-    # Use iptables to block access to cloud metadata by default
-    network_tools_image_name = get_config('singleuser.networkTools.image.name')
-    network_tools_image_tag = get_config('singleuser.networkTools.image.tag')
-    ip_block_container = client.V1Container(
-        name="block-cloud-metadata",
-        image=f"{network_tools_image_name}:{network_tools_image_tag}",
-        command=[
-            'iptables',
-            '-A', 'OUTPUT',
-            '-d', cloud_metadata.get('ip', '169.254.169.254'),
-            '-j', 'DROP'
-        ],
-        security_context=client.V1SecurityContext(
-            privileged=True,
-            run_as_user=0,
-            capabilities=client.V1Capabilities(add=['NET_ADMIN'])
-        )
-    )
+#if cloud_metadata.get('block') == True or cloud_metadata.get('enabled') == False:
+#    # Use iptables to block access to cloud metadata by default
+#    network_tools_image_name = get_config('singleuser.networkTools.image.name')
+#    network_tools_image_tag = get_config('singleuser.networkTools.image.tag')
+#    ip_block_container = client.V1Container(
+#        name="block-cloud-metadata",
+#        image=f"{network_tools_image_name}:{network_tools_image_tag}",
+#        command=[
+#            'iptables',
+#            '-A', 'OUTPUT',
+#            '-d', cloud_metadata.get('ip', '169.254.169.254'),
+#            '-j', 'DROP'
+#        ],
+#        security_context=client.V1SecurityContext(
+#            privileged=True,
+#            run_as_user=0,
+#            capabilities=client.V1Capabilities(add=['NET_ADMIN'])
+#        )
+#    )
 
-    c.KubeSpawner.init_containers.append(ip_block_container)
+#    c.KubeSpawner.init_containers.append(ip_block_container)
 
 
 if get_config('debug.enabled', False):
