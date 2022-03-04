@@ -128,11 +128,8 @@ c.JupyterHub.port = int(os.environ[public_proxy_service_name + '_PORT'])
 
 # hub_bind_url configures what the JupyterHub process within the hub pod's
 # container should listen to.
-#hub_container_port = 8081
-#c.JupyterHub.hub_bind_url = f'http://:{hub_container_port}'
-
-# the hub should listen on all interfaces, so the proxy can access it
-c.JupyterHub.hub_ip = '0.0.0.0'
+hub_container_port = 8081
+c.JupyterHub.hub_bind_url = f'http://:{hub_container_port}'
 
 # hub_connect_url is the URL for connecting to the hub for use by external
 # JupyterHub services such as the proxy. Note that *_SERVICE_* environment
@@ -534,7 +531,7 @@ if cloud_metadata.get('block') == True or cloud_metadata.get('enabled') == False
         )
     )
 
-#    c.KubeSpawner.init_containers.append(ip_block_container)
+    c.KubeSpawner.init_containers.append(ip_block_container)
 
 
 if get_config('debug.enabled', False):
