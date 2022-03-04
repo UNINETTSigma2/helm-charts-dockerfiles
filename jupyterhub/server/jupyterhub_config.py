@@ -8,9 +8,6 @@ from tornado.httpclient import AsyncHTTPClient
 from kubernetes import client
 from jupyterhub.utils import url_path_join
 
-import string
-import escapism
-
 # zero-to-jupyterhub-k8s config with some adaptation
 
 # Make sure that modules placed in the same directory as the jupyterhub config are added to the pythonpath
@@ -517,22 +514,32 @@ for key, config_py in sorted(extra_config.items()):
 
 # Additional config for NIRD toolkit
 
+import string
+import escapism
+
 safe_chars = set(string.ascii_lowercase + string.digits)
-public_proxy_service_name = os.environ['PROXY_PUBLIC_SERVICE_NAME']
-# Gives spawned containers access to the API of the hub
-hub_service_name = os.environ["HUB_SERVICE_NAME"]
+
 c.JupyterHub.cookie_secret_file = os.environ.get("COOKIE_SECRET_FILE_PATH", "/srv/jupyterhub/jupyterhub_cookie_secret")
+
+public_proxy_service_name = os.environ['PROXY_PUBLIC_SERVICE_NAME']
 c.JupyterHub.ip = os.environ[public_proxy_service_name + '_HOST']
 c.JupyterHub.port = int(os.environ[public_proxy_service_name + '_PORT'])
+
+hub_service_name = os.environ["HUB_SERVICE_NAME"]
 c.JupyterHub.hub_connect_ip = os.environ[hub_service_name + '_HOST']
 c.JupyterHub.hub_connect_port = int(os.environ[hub_service_name + '_PORT'])
+
+c.KubeSpawner.pod_name_template = get_config('singleuser.pod-name-template', 'jupyter-{username}{servername}')
+
+c.KubeSpawner.uid = get_config('singleuser.run_as_gid', 999)
+c.KubeSpawner.gid = get_config('singleuser.run_as_gid', 999)
+c.KubeSpawner.supplemental_gids = get_config('singleuser.supplemental-gids', [])
+
+c.KubeSpawner.environment["HOME"] = lambda spawner: "/home/{}".format(escapism.escape(str(spawner.user.name), safe=safe_chars, escape_char='-').lower())
+
+# Gives spawned containers access to the API of the hub
 c.KubeSpawner.hub_connect_ip = os.environ[hub_service_name + '_HOST']
 c.KubeSpawner.hub_connect_port = int(os.environ[hub_service_name + '_PORT'])
-c.KubeSpawner.pod_name_template = get_config('singleuser.pod-name-template', 'jupyter-{username}{servername}')
-c.KubeSpawner.environment["HOME"] = lambda spawner: "/home/{}".format(escapism.escape(str(spawner.user.name), safe=safe_chars, escape_char='-').lower())
-c.KubeSpawner.supplemental_gids = get_config('singleuser.supplemental-gids', [])
-c.KubeSpawner.gid = get_config('singleuser.run_as_gid', 999)
-c.KubeSpawner.uid = get_config('singleuser.run_as_gid', 999)
 
 extra_containers = get_config('singleuser.extra-containers', None)
 if extra_containers:
