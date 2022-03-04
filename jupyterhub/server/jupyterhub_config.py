@@ -128,8 +128,8 @@ c.JupyterHub.port = int(os.environ[public_proxy_service_name + '_PORT'])
 
 # hub_bind_url configures what the JupyterHub process within the hub pod's
 # container should listen to.
-hub_container_port = 8081
-c.JupyterHub.hub_bind_url = f'http://:{hub_container_port}'
+#hub_container_port = 8081
+#c.JupyterHub.hub_bind_url = f'http://:{hub_container_port}'
 
 # the hub should listen on all interfaces, so the proxy can access it
 c.JupyterHub.hub_ip = '0.0.0.0'
@@ -169,7 +169,7 @@ set_config_if_not_none(
 )
 
 for trait, cfg_key in (
-    ('pod_name_template', None),
+    #('pod_name_template', None),
     ('start_timeout', None),
     ('image_pull_policy', 'image.pullPolicy'),
     # ('image_pull_secrets', 'image.pullSecrets'), # Managed manually below
