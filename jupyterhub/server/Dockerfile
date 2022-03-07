@@ -1,6 +1,7 @@
-FROM jupyterhub/k8s-hub:0.11.0
+FROM jupyterhub/k8s-hub:1.0.0
 
 USER root
+# paste directory needs to include the python version number used in k8s-hub
 COPY dataporten.py /usr/local/lib/python3.8/dist-packages/oauthenticator/
 COPY z2jh.py jupyterhub_config.py /srv/
 
