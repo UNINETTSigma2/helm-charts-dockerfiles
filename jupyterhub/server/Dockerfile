@@ -1,7 +1,7 @@
 FROM jupyterhub/k8s-hub:0.10.0
 
 USER root
-COPY dataporten.py /usr/local/lib/python3.6/dist-packages/oauthenticator/
+COPY dataporten.py /usr/local/lib/python3.7/dist-packages/oauthenticator/
 COPY z2jh.py jupyterhub_config.py /srv/
 
 
