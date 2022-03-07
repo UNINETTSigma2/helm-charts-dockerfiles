@@ -32,6 +32,8 @@ RUN mamba config --set channel_priority strict && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
     mamba clean --all -f -y
 
+RUN echo "With jupyterhub 1.2"
+
 FROM jupyter/datascience-notebook:ee77b7831e16
 
 LABEL maintainer = "Uninett As <system@uninett.no>"
