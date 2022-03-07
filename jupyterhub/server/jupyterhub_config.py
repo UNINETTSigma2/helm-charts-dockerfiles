@@ -359,13 +359,13 @@ elif auth_type == 'ldap':
     set_config_if_not_none(c.LDAPAuthenticator, 'valid_username_regex', 'auth.ldap.dn.user.validRegex')
     set_config_if_not_none(c.LDAPAuthenticator, 'user_search_base', 'auth.ldap.dn.user.searchBase')
     set_config_if_not_none(c.LDAPAuthenticator, 'user_attribute', 'auth.ldap.dn.user.attribute')
-elif auth_type == 'dataporten':
-    c.JupyterHub.authenticator_class = 'oauthenticator.dataporten.DataportenAuth'
-    c.OAuthenticator.login_service = 'Dataporten'
-    c.DataportenAuth.token_url = 'https://auth.dataporten.no/oauth/token'
-    c.DataportenAuth.oauth_callback_url = os.environ["OAUTH_CALLBACK_URL"]
-    c.DataportenAuth.userdata_method = 'GET'
-    c.DataportenAuth.username_key = 'sub'
+#elif auth_type == 'dataporten':
+#    c.JupyterHub.authenticator_class = 'oauthenticator.dataporten.DataportenAuth'
+#    c.OAuthenticator.login_service = 'Dataporten'
+#    c.DataportenAuth.token_url = 'https://auth.dataporten.no/oauth/token'
+#    c.DataportenAuth.oauth_callback_url = os.environ["OAUTH_CALLBACK_URL"]
+#    c.DataportenAuth.userdata_method = 'GET'
+#    c.DataportenAuth.username_key = 'sub'
 elif auth_type == 'custom':
     # full_class_name looks like "myauthenticator.MyAuthenticator".
     # To create a docker image with this class availabe, you can just have the
