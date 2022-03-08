@@ -1,5 +1,3 @@
-# zero-to-jupyterhub-k8s config with some adaptation
-
 import os
 import re
 import sys
@@ -18,7 +16,6 @@ from z2jh import get_config, set_config_if_not_none
 
 def camelCaseify(s):
     """convert snake_case to camelCase
-
     For the common case where some_value is set from someValue
     so we don't have to specify the name twice.
     """
@@ -90,7 +87,7 @@ c.JupyterHub.hub_bind_url = f'http://:{hub_container_port}'
 # hub_connect_url is the URL for connecting to the hub for use by external
 # JupyterHub services such as the proxy. Note that *_SERVICE_* environment
 # variables are set by Kubernetes for Services.
-#c.JupyterHub.hub_connect_url = f"http://hub:{os.environ['HUB_SERVICE_PORT']}"
+c.JupyterHub.hub_connect_url = f"http://hub:{os.environ['HUB_SERVICE_PORT']}"
 
 # implement common labels
 # this duplicates the jupyterhub.commonLabels helper
@@ -256,8 +253,8 @@ if storage_type == 'dynamic':
 elif storage_type == 'static':
     c.KubeSpawner.volume_mounts = [{
         'mountPath': get_config('singleuser.storage.homeMountPath'),
-        'name': get_config('singleuser.storage.static.pvcName', 'shared'),
-        'subPath': get_config('singleuser.storage.static.subPath', "dataporten-home/{username}").format(username="{username}")
+        'name': 'home',
+        'subPath': get_config('singleuser.storage.static.subPath')
     }]
 
 c.KubeSpawner.volumes.extend(get_config('singleuser.storage.extraVolumes', []))
@@ -360,13 +357,6 @@ elif auth_type == 'ldap':
     set_config_if_not_none(c.LDAPAuthenticator, 'valid_username_regex', 'auth.ldap.dn.user.validRegex')
     set_config_if_not_none(c.LDAPAuthenticator, 'user_search_base', 'auth.ldap.dn.user.searchBase')
     set_config_if_not_none(c.LDAPAuthenticator, 'user_attribute', 'auth.ldap.dn.user.attribute')
-#elif auth_type == 'dataporten':
-#    c.JupyterHub.authenticator_class = 'oauthenticator.dataporten.DataportenAuth'
-#    c.OAuthenticator.login_service = 'Dataporten'
-#    c.DataportenAuth.token_url = 'https://auth.dataporten.no/oauth/token'
-#    c.DataportenAuth.oauth_callback_url = os.environ["OAUTH_CALLBACK_URL"]
-#    c.DataportenAuth.userdata_method = 'GET'
-#    c.DataportenAuth.username_key = 'sub'
 elif auth_type == 'custom':
     # full_class_name looks like "myauthenticator.MyAuthenticator".
     # To create a docker image with this class availabe, you can just have the
