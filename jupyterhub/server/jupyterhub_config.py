@@ -251,17 +251,9 @@ if storage_type == 'dynamic':
         }
     ]
 elif storage_type == 'static':
-    pvc_claim_name = get_config('singleuser.storage.static.pvcName')
-    c.KubeSpawner.volumes = [{
-        'name': 'home',
-        'persistentVolumeClaim': {
-            'claimName': pvc_claim_name
-        }
-    }]
-
     c.KubeSpawner.volume_mounts = [{
         'mountPath': get_config('singleuser.storage.homeMountPath'),
-        'name': 'home',
+        'name': get_config('singleuser.storage.static.pvcName', 'shared'),
         'subPath': get_config('singleuser.storage.static.subPath')
     }]
 
