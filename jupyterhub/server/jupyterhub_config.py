@@ -18,6 +18,7 @@ from z2jh import get_config, set_config_if_not_none
 
 def camelCaseify(s):
     """convert snake_case to camelCase
+
     For the common case where some_value is set from someValue
     so we don't have to specify the name twice.
     """
@@ -33,7 +34,7 @@ c.JupyterHub.spawner_class = 'kubespawner.KubeSpawner'
 
 # Connect to a proxy running in a different pod. Note that *_SERVICE_*
 # environment variables are set by Kubernetes for Services
-c.ConfigurableHTTPProxy.api_url = f"http://{os.environ['PROXY_API_SERVICE_HOST']}:{os.environ['PROXY_API_SERVICE_PORT']}"
+c.ConfigurableHTTPProxy.api_url = f"http://proxy-api:{os.environ['PROXY_API_SERVICE_PORT']}"
 c.ConfigurableHTTPProxy.should_start = False
 
 # Do not shut down user pods when hub is restarted
@@ -89,7 +90,7 @@ c.JupyterHub.hub_bind_url = f'http://:{hub_container_port}'
 # hub_connect_url is the URL for connecting to the hub for use by external
 # JupyterHub services such as the proxy. Note that *_SERVICE_* environment
 # variables are set by Kubernetes for Services.
-#c.JupyterHub.hub_connect_url = f"http://hub:{os.environ['HUB_SERVICE_PORT']}"
+c.JupyterHub.hub_connect_url = f"http://hub:{os.environ['HUB_SERVICE_PORT']}"
 
 # implement common labels
 # this duplicates the jupyterhub.commonLabels helper
@@ -506,35 +507,3 @@ if isinstance(extra_config, str):
 for key, config_py in sorted(extra_config.items()):
     print("Loading extra config: %s" % key)
     exec(config_py)
-
-# Additional config for NIRD toolkit
-
-import string
-import escapism
-
-c.JupyterHub.cookie_secret_file = os.environ.get("COOKIE_SECRET_FILE_PATH", "/srv/jupyterhub/jupyterhub_cookie_secret")
-
-public_proxy_service_name = os.environ['PROXY_PUBLIC_SERVICE_NAME']
-c.JupyterHub.ip = os.environ[public_proxy_service_name + '_HOST']
-c.JupyterHub.port = int(os.environ[public_proxy_service_name + '_PORT'])
-
-hub_service_name = os.environ["HUB_SERVICE_NAME"]
-c.JupyterHub.hub_connect_ip = os.environ[hub_service_name + '_HOST']
-c.JupyterHub.hub_connect_port = int(os.environ[hub_service_name + '_PORT'])
-
-c.KubeSpawner.pod_name_template = get_config('singleuser.pod-name-template', 'jupyter-{username}{servername}')
-
-c.KubeSpawner.uid = get_config('singleuser.run_as_gid', 999)
-c.KubeSpawner.gid = get_config('singleuser.run_as_gid', 999)
-c.KubeSpawner.supplemental_gids = get_config('singleuser.supplemental-gids', [])
-
-safe_chars = set(string.ascii_lowercase + string.digits)
-c.KubeSpawner.environment["HOME"] = lambda spawner: "/home/{}".format(escapism.escape(str(spawner.user.name), safe=safe_chars, escape_char='-').lower())
-
-# Gives spawned containers access to the API of the hub
-c.KubeSpawner.hub_connect_ip = os.environ[hub_service_name + '_HOST']
-c.KubeSpawner.hub_connect_port = int(os.environ[hub_service_name + '_PORT'])
-
-extra_containers = get_config('singleuser.extra-containers', None)
-if extra_containers:
-    c.KubeSpawner.extra_containers  = extra_containers
