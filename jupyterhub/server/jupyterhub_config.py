@@ -91,7 +91,7 @@ c.JupyterHub.hub_connect_url = f"http://hub:{os.environ['HUB_SERVICE_PORT']}"
 
 # implement common labels
 # this duplicates the jupyterhub.commonLabels helper
-common_labels = c.KubeSpawner.common_labels = get_config('custom.common-labels', {})
+common_labels = c.KubeSpawner.common_labels = {}
 common_labels['app'] = get_config(
     "nameOverride",
     default=get_config("Chart.Name", "jupyterhub"),
@@ -251,9 +251,17 @@ if storage_type == 'dynamic':
         }
     ]
 elif storage_type == 'static':
+    pvc_claim_name = get_config('singleuser.storage.static.pvcName')
+    c.KubeSpawner.volumes = [{
+        'name': 'home',
+        'persistentVolumeClaim': {
+            'claimName': pvc_claim_name
+        }
+    }]
+
     c.KubeSpawner.volume_mounts = [{
         'mountPath': get_config('singleuser.storage.homeMountPath'),
-        'name': get_config('singleuser.storage.static.pvcName', 'shared'),
+        'name': 'home',
         'subPath': get_config('singleuser.storage.static.subPath')
     }]
 
