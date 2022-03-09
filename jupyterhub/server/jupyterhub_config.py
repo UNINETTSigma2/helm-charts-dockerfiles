@@ -1,3 +1,4 @@
+import glob
 import os
 import re
 import sys
@@ -12,7 +13,13 @@ from jupyterhub.utils import url_path_join
 configuration_directory = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, configuration_directory)
 
-from z2jh import get_config, set_config_if_not_none
+from z2jh import (
+    get_config,
+    set_config_if_not_none,
+    get_name,
+    get_name_env,
+    get_secret_value,
+)
 
 
 def camelCaseify(s):
@@ -34,7 +41,7 @@ c.JupyterHub.spawner_class = "kubespawner.KubeSpawner"
 # Connect to a proxy running in a different pod. Note that *_SERVICE_*
 # environment variables are set by Kubernetes for Services
 c.ConfigurableHTTPProxy.api_url = (
-    f"http://proxy-api:{os.environ['PROXY_API_SERVICE_PORT']}"
+    f'http://{get_name("proxy-api")}:{get_name_env("proxy-api", "_SERVICE_PORT")}'
 )
 c.ConfigurableHTTPProxy.should_start = False
 
@@ -58,6 +65,12 @@ elif db_type == "sqlite-memory":
     c.JupyterHub.db_url = "sqlite://"
 else:
     set_config_if_not_none(c.JupyterHub, "db_url", "hub.db.url")
+db_password = get_secret_value("hub.db.password", None)
+if db_password is not None:
+    if db_type == "mysql":
+        os.environ["MYSQL_PWD"] = db_password
+    elif db_type == "postgres":
+        os.environ["PGPASSWORD"] = db_password
 
 
 # c.JupyterHub configuration from Helm chart's configmap
@@ -65,7 +78,6 @@ for trait, cfg_key in (
     ("concurrent_spawn_limit", None),
     ("active_server_limit", None),
     ("base_url", None),
-    # ('cookie_secret', None),  # requires a Hex -> Byte transformation
     ("allow_named_servers", None),
     ("named_server_limit_per_user", None),
     ("authenticate_prometheus", None),
@@ -78,11 +90,6 @@ for trait, cfg_key in (
         cfg_key = camelCaseify(trait)
     set_config_if_not_none(c.JupyterHub, trait, "hub." + cfg_key)
 
-# a required Hex -> Byte transformation
-cookie_secret_hex = get_config("hub.cookieSecret")
-if cookie_secret_hex:
-    c.JupyterHub.cookie_secret = a2b_hex(cookie_secret_hex)
-
 # hub_bind_url configures what the JupyterHub process within the hub pod's
 # container should listen to.
 hub_container_port = 8081
@@ -91,7 +98,9 @@ c.JupyterHub.hub_bind_url = f"http://:{hub_container_port}"
 # hub_connect_url is the URL for connecting to the hub for use by external
 # JupyterHub services such as the proxy. Note that *_SERVICE_* environment
 # variables are set by Kubernetes for Services.
-c.JupyterHub.hub_connect_url = f"http://hub:{os.environ['HUB_SERVICE_PORT']}"
+c.JupyterHub.hub_connect_url = (
+    f'http://{get_name("hub")}:{get_name_env("hub", "_SERVICE_PORT")}'
+)
 
 # implement common labels
 # this duplicates the jupyterhub.commonLabels helper
@@ -134,7 +143,7 @@ for trait, cfg_key in (
     ("fs_gid", None),
     ("service_account", "serviceAccountName"),
     ("storage_extra_labels", "storage.extraLabels"),
-    ("tolerations", "extraTolerations"),
+    # ("tolerations", "extraTolerations"), # Managed manually below
     ("node_selector", None),
     ("node_affinity_required", "extraNodeAffinity.required"),
     ("node_affinity_preferred", "extraNodeAffinity.preferred"),
@@ -170,10 +179,10 @@ if image:
 # Combine imagePullSecret.create (single), imagePullSecrets (list), and
 # singleuser.image.pullSecrets (list).
 image_pull_secrets = []
-if get_config("imagePullSecret.automaticReferenceInjection") and (
-    get_config("imagePullSecret.create") or get_config("imagePullSecret.enabled")
+if get_config("imagePullSecret.automaticReferenceInjection") and get_config(
+    "imagePullSecret.create"
 ):
-    image_pull_secrets.append("image-pull-secret")
+    image_pull_secrets.append(get_name("image-pull-secret"))
 if get_config("imagePullSecrets"):
     image_pull_secrets.extend(get_config("imagePullSecrets"))
 if get_config("singleuser.image.pullSecrets"):
@@ -183,11 +192,9 @@ if image_pull_secrets:
 
 # scheduling:
 if get_config("scheduling.userScheduler.enabled"):
-    c.KubeSpawner.scheduler_name = os.environ["HELM_RELEASE_NAME"] + "-user-scheduler"
+    c.KubeSpawner.scheduler_name = get_name("user-scheduler")
 if get_config("scheduling.podPriority.enabled"):
-    c.KubeSpawner.priority_class_name = (
-        os.environ["HELM_RELEASE_NAME"] + "-default-priority"
-    )
+    c.KubeSpawner.priority_class_name = get_name("priority")
 
 # add node-purpose affinity
 match_node_purpose = get_config("scheduling.userPods.nodeAffinity.matchNodePurpose")
@@ -217,24 +224,15 @@ if match_node_purpose:
             "Unrecognized value for matchNodePurpose: %r" % match_node_purpose
         )
 
-# add dedicated-node toleration
-for key in (
-    "hub.jupyter.org/dedicated",
-    # workaround GKE not supporting / in initial node taints
-    "hub.jupyter.org_dedicated",
-):
-    c.KubeSpawner.tolerations.append(
-        dict(
-            key=key,
-            operator="Equal",
-            value="user",
-            effect="NoSchedule",
-        )
-    )
+# Combine the common tolerations for user pods with singleuser tolerations
+scheduling_user_pods_tolerations = get_config("scheduling.userPods.tolerations", [])
+singleuser_extra_tolerations = get_config("singleuser.extraTolerations", [])
+tolerations = scheduling_user_pods_tolerations + singleuser_extra_tolerations
+if tolerations:
+    c.KubeSpawner.tolerations = tolerations
 
 # Configure dynamically provisioning pvc
 storage_type = get_config("singleuser.storage.type")
-
 if storage_type == "dynamic":
     pvc_name_template = get_config("singleuser.storage.dynamic.pvcNameTemplate")
     c.KubeSpawner.pvc_name_template = pvc_name_template
@@ -279,6 +277,43 @@ elif storage_type == "static":
         }
     ]
 
+# Inject singleuser.extraFiles as volumes and volumeMounts with data loaded from
+# the dedicated k8s Secret prepared to hold the extraFiles actual content.
+extra_files = get_config("singleuser.extraFiles", {})
+if extra_files:
+    volume = {
+        "name": "files",
+    }
+    items = []
+    for file_key, file_details in extra_files.items():
+        # Each item is a mapping of a key in the k8s Secret to a path in this
+        # abstract volume, the goal is to enable us to set the mode /
+        # permissions only though so we don't change the mapping.
+        item = {
+            "key": file_key,
+            "path": file_key,
+        }
+        if "mode" in file_details:
+            item["mode"] = file_details["mode"]
+        items.append(item)
+    volume["secret"] = {
+        "secretName": get_name("singleuser"),
+        "items": items,
+    }
+    c.KubeSpawner.volumes.append(volume)
+
+    volume_mounts = []
+    for file_key, file_details in extra_files.items():
+        volume_mounts.append(
+            {
+                "mountPath": file_details["mountPath"],
+                "subPath": file_key,
+                "name": "files",
+            }
+        )
+    c.KubeSpawner.volume_mounts.extend(volume_mounts)
+
+# Inject extraVolumes / extraVolumeMounts
 c.KubeSpawner.volumes.extend(get_config("singleuser.storage.extraVolumes", []))
 c.KubeSpawner.volume_mounts.extend(
     get_config("singleuser.storage.extraVolumeMounts", [])
@@ -322,13 +357,17 @@ if get_config("cull.enabled", False):
     )
 
 for name, service in get_config("hub.services", {}).items():
-    # jupyterhub.services is a list of dicts, but
-    # in the helm chart it is a dict of dicts for easier merged-config
+    # c.JupyterHub.services is a list of dicts, but
+    # hub.services is a dict of dicts to make the config mergable
     service.setdefault("name", name)
-    # handle camelCase->snake_case of api_token
-    api_token = service.pop("apiToken", None)
+
+    # As the api_token could be exposed in hub.existingSecret, we need to read
+    # it it from there or fall back to the chart managed k8s Secret's value.
+    service.pop("apiToken", None)
+    api_token = get_secret_value(f"hub.services.{service['name']}.apiToken", None)
     if api_token:
         service["api_token"] = api_token
+
     c.JupyterHub.services.append(service)
 
 
@@ -337,10 +376,7 @@ set_config_if_not_none(c.Spawner, "default_url", "singleuser.defaultUrl")
 
 cloud_metadata = get_config("singleuser.cloudMetadata", {})
 
-if (
-    cloud_metadata.get("blockWithIptables") == True
-    or cloud_metadata.get("enabled") == False
-):
+if cloud_metadata.get("blockWithIptables") == True:
     # Use iptables to block access to cloud metadata by default
     network_tools_image_name = get_config("singleuser.networkTools.image.name")
     network_tools_image_tag = get_config("singleuser.networkTools.image.tag")
@@ -370,10 +406,38 @@ if get_config("debug.enabled", False):
     c.JupyterHub.log_level = "DEBUG"
     c.Spawner.debug = True
 
+# load /usr/local/etc/jupyterhub/jupyterhub_config.d config files
+config_dir = "/usr/local/etc/jupyterhub/jupyterhub_config.d"
+if os.path.isdir(config_dir):
+    for file_path in sorted(glob.glob(f"{config_dir}/*.py")):
+        file_name = os.path.basename(file_path)
+        print(f"Loading {config_dir} config: {file_name}")
+        with open(file_path) as f:
+            file_content = f.read()
+        # compiling makes debugging easier: https://stackoverflow.com/a/437857
+        exec(compile(source=file_content, filename=file_name, mode="exec"))
 
-# load hub.config values
-for section, sub_cfg in get_config("hub.config", {}).items():
-    c[section].update(sub_cfg)
+# load potentially seeded secrets
+#
+# NOTE: ConfigurableHTTPProxy.auth_token is set through an environment variable
+#       that is set using the chart managed secret.
+c.JupyterHub.cookie_secret = get_secret_value("hub.config.JupyterHub.cookie_secret")
+# NOTE: CryptKeeper.keys should be a list of strings, but we have encoded as a
+#       single string joined with ; in the k8s Secret.
+#
+c.CryptKeeper.keys = get_secret_value("hub.config.CryptKeeper.keys").split(";")
+
+# load hub.config values, except potentially seeded secrets already loaded
+for app, cfg in get_config("hub.config", {}).items():
+    if app == "JupyterHub":
+        cfg.pop("proxy_auth_token", None)
+        cfg.pop("cookie_secret", None)
+        cfg.pop("services", None)
+    elif app == "ConfigurableHTTPProxy":
+        cfg.pop("auth_token", None)
+    elif app == "CryptKeeper":
+        cfg.pop("keys", None)
+    c[app].update(cfg)
 
 # execute hub.extraConfig string
 extra_config = get_config("hub.extraConfig", {})
