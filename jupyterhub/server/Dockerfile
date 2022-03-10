@@ -5,8 +5,8 @@ USER root
 COPY dataporten.py /usr/local/lib/python3.8/dist-packages/oauthenticator/
 COPY z2jh.py jupyterhub_config.py /srv/
 
-RUN mkdir -p /usr/local/etc/jupyterhub/config && \
-    chmod -R go+w /usr/local/etc/jupyterhub/config
+RUN mkdir -p /usr/local/etc/jupyterhub/config /usr/local/etc/jupyterhub/secret && \
+    chmod -R go+w /usr/local/etc/jupyterhub/config /usr/local/etc/jupyterhub/secret
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
