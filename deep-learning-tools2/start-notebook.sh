@@ -44,6 +44,10 @@ else
 fi
 
 tensorboard --logdir="$TENSORBOARD_LOGDIR" --port=6006 &
+
+if [ ! -f $MLFLOW_DATADIR/mlflow.db ]; then
+	sqlite3 $MLFLOW_DATADIR/mlflow.db "VACUUM;"
+fi
 mlflow server --backend-store-uri "sqlite:///$MLFLOW_DATADIR/mlflow.db" --host 0.0.0.0 &
 export MLFLOW_TRACKING_URI="http://localhost:5000"
 
