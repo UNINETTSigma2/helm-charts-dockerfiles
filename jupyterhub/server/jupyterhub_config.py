@@ -71,6 +71,8 @@ if db_password is not None:
         os.environ["MYSQL_PWD"] = db_password
     elif db_type == "postgres":
         os.environ["PGPASSWORD"] = db_password
+    else:
+        print(f"Warning: hub.db.password is ignored for hub.db.type={db_type}")
 
 
 # c.JupyterHub configuration from Helm chart's configmap
@@ -356,17 +358,15 @@ if get_config("cull.enabled", False):
         }
     )
 
-for name, service in get_config("hub.services", {}).items():
+for key, service in get_config("hub.services", {}).items():
     # c.JupyterHub.services is a list of dicts, but
     # hub.services is a dict of dicts to make the config mergable
-    service.setdefault("name", name)
+    service.setdefault("name", key)
 
     # As the api_token could be exposed in hub.existingSecret, we need to read
     # it it from there or fall back to the chart managed k8s Secret's value.
     service.pop("apiToken", None)
-    api_token = get_secret_value(f"hub.services.{service['name']}.apiToken", None)
-    if api_token:
-        service["api_token"] = api_token
+    service["api_token"] = get_secret_value(f"hub.services.{key}.apiToken")
 
     c.JupyterHub.services.append(service)
 
@@ -439,32 +439,7 @@ for app, cfg in get_config("hub.config", {}).items():
         cfg.pop("keys", None)
     c[app].update(cfg)
 
-# execute hub.extraConfig string
-extra_config = get_config("hub.extraConfig", {})
-if isinstance(extra_config, str):
-    from textwrap import indent, dedent
-
-    msg = dedent(
-        """
-    hub.extraConfig should be a dict of strings,
-    but found a single string instead.
-    extraConfig as a single string is deprecated
-    as of the jupyterhub chart version 0.6.
-    The keys can be anything identifying the
-    block of extra configuration.
-    Try this instead:
-        hub:
-          extraConfig:
-            myConfig: |
-              {}
-    This configuration will still be loaded,
-    but you are encouraged to adopt the nested form
-    which enables easier merging of multiple extra configurations.
-    """
-    )
-    print(msg.format(indent(extra_config, " " * 10).lstrip()), file=sys.stderr)
-    extra_config = {"deprecated string": extra_config}
-
-for key, config_py in sorted(extra_config.items()):
+# execute hub.extraConfig entries
+for key, config_py in sorted(get_config("hub.extraConfig", {}).items()):
     print("Loading extra config: %s" % key)
     exec(config_py)
