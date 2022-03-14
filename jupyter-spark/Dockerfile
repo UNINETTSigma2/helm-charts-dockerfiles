@@ -8,7 +8,7 @@
 # Base: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/base-notebook/Dockerfile
 
 
-FROM jupyter/all-spark-notebook:ee77b7831e16 as miniconda
+FROM jupyter/all-spark-notebook:8f0a73e76d17 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -66,7 +66,7 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
 
 
 
-FROM jupyter/all-spark-notebook:ee77b7831e16
+FROM jupyter/all-spark-notebook:8f0a73e76d17
 LABEL maintainer = "Uninett As <system@uninett.no>"
 
 RUN mamba remove --quiet --yes -c conda-forge ipyparallel
