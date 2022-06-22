@@ -8,7 +8,7 @@
 # Base: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/base-notebook/Dockerfile
 
 
-FROM jupyter/all-spark-notebook:8f0a73e76d17 as miniconda
+FROM jupyter/all-spark-notebook:666416b385e8 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -21,15 +21,15 @@ RUN mamba config --set channel_priority strict && \
     'cufflinks-py==0.17.3' \
     'decorator==5.1.1' \
     'ipyparallel==6.3.0' \
-    'jupyter-server-proxy==3.2.0' \
+    'jupyter-server-proxy==3.2.1' \
     'jupyter_contrib_nbextensions==0.5.1' \
-    'jupyterlab_iframe==0.4.1' \
-    'nbconvert==6.4.0' \
+    'jupyterlab_iframe==0.4.4' \
+    'nbconvert==6.5.0' \
     'nbdime==3.1.1' \
-    'nodejs==17.1.0' \
-    'plotly==5.5.0' \
-    'tqdm==4.62.3' \
-    'xarray==0.20.2' \
+    'nodejs==17.9.0' \
+    'plotly==5.8.2' \
+    'tqdm==4.64.0' \
+    'xarray==2022.3.0' \
     'yapf==0.32.0' \
     && mamba clean --all -f -y
 
@@ -52,11 +52,11 @@ RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda inst
 
 RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter labextension install \
-    '@jupyter-widgets/jupyterlab-manager@3.0.1' \
-    '@jupyterlab/server-proxy@3.2.0' \
+    '@jupyter-widgets/jupyterlab-manager@3.1.0' \
+    '@jupyterlab/server-proxy@3.2.1' \
     'jupyter-matplotlib@0.10.4' \
-    'jupyterlab-plotly@5.5.0' \
-    'jupyterlab_iframe@0.4.1' \
+    'jupyterlab-plotly@5.8.2' \
+    'jupyterlab_iframe@0.4.4' \
     'nbdime-jupyterlab@2.1.1' && \
     pip install git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
@@ -66,7 +66,7 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
 
 
 
-FROM jupyter/all-spark-notebook:8f0a73e76d17
+FROM jupyter/all-spark-notebook:666416b385e8
 LABEL maintainer = "Uninett As <system@uninett.no>"
 
 RUN mamba remove --quiet --yes -c conda-forge ipyparallel
