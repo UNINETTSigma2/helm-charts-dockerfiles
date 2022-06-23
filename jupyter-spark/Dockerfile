@@ -31,6 +31,10 @@ RUN mamba config --set channel_priority strict && \
     'tqdm==4.64.0' \
     'xarray==2022.3.0' \
     'yapf==0.32.0' \
+    'esmpy==7.1.0' \
+    'cartopy== 0.20.2' \
+    'xesmf==0.6.2' \  
+    'netCDF4==  1.5.8' \  
     && mamba clean --all -f -y
 
 
@@ -156,7 +160,7 @@ ENV TZ="Europe/Oslo" \
 	PKG_SPARK_VERSION=${APACHE_SPARK_VERSION} \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.3.0-incubating \
-	PKG_R_VERSION=4.1.2  \
+	PKG_R_VERSION=4.1.3  \
 	PKG_VS_CODE_VERSION=2.1692-vsc1.39.2 \
 	HOME=/home/notebook \
    PATH=$PATH:$SPARK_HOME/bin \
