@@ -32,9 +32,9 @@ RUN mamba config --set channel_priority strict && \
     'xarray==2022.3.0' \
     'yapf==0.32.0' \
     'esmpy==8.2.0' \
-    'cartopy== 0.20.2' \
+    'cartopy==0.20.2' \
     'xesmf==0.6.2' \  
-    'netCDF4==  1.5.8' \  
+    'netcdf4==1.5.8' \  
     && mamba clean --all -f -y
 
 
