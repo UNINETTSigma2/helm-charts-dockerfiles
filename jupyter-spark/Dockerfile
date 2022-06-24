@@ -31,7 +31,7 @@ RUN mamba config --set channel_priority strict && \
     'tqdm==4.64.0' \
     'xarray==2022.3.0' \
     'yapf==0.32.0' \
-    'esmpy==7.1.0' \
+    'esmpy==8.2.0' \
     'cartopy==0.20.2' \
     'xesmf==0.6.2' \  
     'netcdf4==1.5.8' \  
