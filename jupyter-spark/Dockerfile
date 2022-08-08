@@ -8,7 +8,7 @@
 # Base: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/base-notebook/Dockerfile
 
 
-FROM jupyter/all-spark-notebook:666416b385e8 as miniconda
+FROM jupyter/all-spark-notebook:180033e2e6cf as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -70,7 +70,7 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
 
 
 
-FROM jupyter/all-spark-notebook:666416b385e8
+FROM jupyter/all-spark-notebook:180033e2e6cf
 LABEL maintainer = "Uninett As <system@uninett.no>"
 
 RUN mamba remove --quiet --yes -c conda-forge ipyparallel
@@ -86,9 +86,9 @@ RUN apt update && apt install -y --no-install-recommends gnupg2 && \
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
-ENV PKG_CUDA_VERSION=11.5 \
+ENV PKG_CUDA_VERSION=11.4 \
     NCCL_VERSION=2.10.3 \
-    PKG_CUDNN_VERSION=8.3.2.44-1+cuda11.5
+    PKG_CUDNN_VERSION=8.2.4.15-1+cuda11.4
 
 
 
