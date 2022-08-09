@@ -19,9 +19,9 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/mpi/lib:/usr/local/cuda/lib:/usr/local/cuda/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all \
-    PKG_KERAS_VERSION=2.9.0 \
-    PKG_TENSORFLOW_VERSION=2.9.0 \
-    PKG_TENSORFLOW_PROBABILITY_VERSION=0.17.0 \
+    PKG_KERAS_VERSION=2.8.0 \
+    PKG_TENSORFLOW_VERSION=2.8.0 \
+    PKG_TENSORFLOW_PROBABILITY_VERSION=0.16.0 \
     PKG_PYTORCH_VERSION=1.12.1 \
     PKG_XGBOOST_VERSION=1.6.1 \
     PKG_CATBOOST_VERSION=1.0.6 \
@@ -47,7 +47,7 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     opencv-python \
     "tensorflow-gpu==$PKG_TENSORFLOW_VERSION" \
     "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
-    "tensorboard-plugin-profile==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
+    "tensorboard-plugin-profile==$PKG_TENSORFLOW_VERSION" \
     "tensorboardx" \
     "xgboost==$PKG_XGBOOST_VERSION" \
     "catboost==$PKG_CATBOOST_VERSION" \
