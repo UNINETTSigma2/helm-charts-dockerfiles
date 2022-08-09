@@ -73,7 +73,7 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
 FROM jupyter/all-spark-notebook:180033e2e6cf
 LABEL maintainer = "Uninett As <system@uninett.no>"
 
-RUN mamba remove --quiet --yes -c conda-forge ipyparallel
+# RUN mamba remove --quiet --yes -c conda-forge ipyparallel
 
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
