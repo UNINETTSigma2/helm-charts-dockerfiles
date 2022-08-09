@@ -1,4 +1,4 @@
-FROM quay.io/nird-toolkit/jupyter-spark:20220314-7bb4ac4
+FROM quay.io/nird-toolkit/jupyter-spark:20220809-e552b59
 LABEL maintainer = "Uninett As <system@uninett.no>"
 
 USER root
@@ -19,9 +19,9 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/mpi/lib:/usr/local/cuda/lib:/usr/local/cuda/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all \
-    PKG_KERAS_VERSION=2.8.0 \
-    PKG_TENSORFLOW_VERSION=2.8.0 \
-    PKG_TENSORFLOW_PROBABILITY_VERSION=0.16.0 \
+    PKG_KERAS_VERSION=2.9.0 \
+    PKG_TENSORFLOW_VERSION=2.9.0 \
+    PKG_TENSORFLOW_PROBABILITY_VERSION=0.17.0 \
     PKG_PYTORCH_VERSION=1.10.2 \
     PKG_XGBOOST_VERSION=1.5.2 \
     PKG_CATBOOST_VERSION=1.0.4 \
