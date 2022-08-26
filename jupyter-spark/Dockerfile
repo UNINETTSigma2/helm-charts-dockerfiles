@@ -63,6 +63,7 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
     'jupyterlab_iframe@0.4.4' \
     'nbdime-jupyterlab@2.1.1' && \
     pip install git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
+    pip install jupyter-codeserver-proxy==0.1.0 && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
@@ -156,15 +157,16 @@ ENV TZ="Europe/Oslo" \
 	APP_GID=999 \
 	NB_UID=999 \
 	NB_GID=999 \
-   PKG_JUPYTER_NOTEBOOK_VERSION=6.4.x \
+    PKG_JUPYTER_NOTEBOOK_VERSION=6.4.x \
 	PKG_SPARK_VERSION=${APACHE_SPARK_VERSION} \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.3.0-incubating \
 	PKG_R_VERSION=4.1.3  \
-	PKG_VS_CODE_VERSION=2.1692-vsc1.39.2 \
+	#PKG_VS_CODE_VERSION=2.1692-vsc1.39.2 \
+    PKG_VS_CODE_VERSION=1.70.1 \
 	HOME=/home/notebook \
-   PATH=$PATH:$SPARK_HOME/bin \
-   XDG_CACHE_HOME=/home/notebook/.cache/
+    PATH=$PATH:$SPARK_HOME/bin \
+    XDG_CACHE_HOME=/home/notebook/.cache/
 
 RUN groupadd -g "$APP_GID" notebook && \
 	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
@@ -178,12 +180,12 @@ COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels
 RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
 
 
-RUN wget -q "https://github.com/cdr/code-server/releases/download/$PKG_VS_CODE_VERSION/code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
-    tar zxf "code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
-    mv "code-server$PKG_VS_CODE_VERSION-linux-x86_64/code-server" /usr/local/bin/ && \
-    rm -rf "code-server*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
+#RUN wget -q "https://github.com/coder/code-server/releases/download/$PKG_VS_CODE_VERSION/code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
+#    tar zxf "code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
+#    mv "code-server$PKG_VS_CODE_VERSION-linux-x86_64/code-server" /usr/local/bin/ && \
+#    rm -rf "code-server*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
 
-
+RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version=4.6.0
 
 RUN chown notebook:notebook $CONDA_DIR "$CONDA_DIR/.condatmp"
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
