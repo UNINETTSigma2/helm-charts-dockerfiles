@@ -53,6 +53,8 @@ RUN mamba config --set channel_priority strict && \
 
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 
+RUN mamba create -n scenic_protocol python=3.6 -y && bash -c 'source activate scenic_protocol && mamba install -c conda-forge -y ipykernel numpy pandas matplotlib seaborn scikit-learn statsmodels numba pytables python-igraph louvain multicore-tsne cytoolz&&pip install pyscenic && ipython kernel install --name=scenic_protocol --display-name="Python 3 (scenic_protocol conda)" && mamba clean --all -f -y && mamba deactivate'
+
 
 RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter labextension install \
@@ -177,6 +179,8 @@ COPY mem_parser.py /usr/local/bin/
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
 COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
 COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/minimal /usr/local/share/jupyter/kernels/minimal
+COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/scenic_protocol /usr/local/share/jupyter/kernels/scenic_protocol
+
 RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
 
 
