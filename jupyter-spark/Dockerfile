@@ -49,7 +49,7 @@ RUN mamba config --set channel_priority strict && \
 
 # RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 
-#RUN mamba create -n scenic_protocol python=3.6 -y && bash -c 'source activate scenic_protocol && mamba install -c conda-forge -y ipykernel ipywidgets numpy pandas matplotlib seaborn scanpy scikit-learn statsmodels numba pytables python-igraph louvain multicore-tsne cytoolz&&pip install pyscenic && ipython kernel install --name=scenic_protocol --display-name="Python 3 (scenic_protocol conda)" && mamba clean --all -f -y && conda deactivate'
+#RUN mamba create -n scenic_protocol python=3.8 -y && bash -c 'source activate scenic_protocol && mamba install -c conda-forge -y ipykernel ipywidgets numpy pandas matplotlib seaborn scanpy scikit-learn statsmodels numba pytables python-igraph louvain multicore-tsne cytoolz&&pip install pyscenic && ipython kernel install --name=scenic_protocol --display-name="Python 3 (scenic_protocol conda)" && mamba clean --all -f -y && conda deactivate'
 
 RUN mamba create -y -n dictys -c conda-forge python=3.9  && bash -c 'source activate dictys && mamba install  -y -c lingfeiwang -c bioconda -c conda-forge -c pytorch ipykernel pytorch dictys cudatoolkit=11.3 && ipython kernel install --name=dictys --display-name="Python 3 (dictys conda)" && mamba clean --all -f -y && conda deactivate'
 
