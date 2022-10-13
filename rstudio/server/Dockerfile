@@ -30,7 +30,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
     gdebi-core \
     libxt-dev \
     man-db \
-    strace && \
+    strace \
     libglpk-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
