@@ -31,6 +31,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
     libxt-dev \
     man-db \
     strace && \
+    libglpk-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Setup various variables
@@ -72,8 +73,6 @@ RUN usermod -u 988 rstudio-server && \
 USER root
 
 RUN rstudio-server verify-installation
-
-RUN install2.r --error igraph
 
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
