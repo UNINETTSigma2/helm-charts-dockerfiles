@@ -73,6 +73,8 @@ USER root
 
 RUN rstudio-server verify-installation
 
+RUN install2.r --error igraph
+
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
 EXPOSE 8787 3838
