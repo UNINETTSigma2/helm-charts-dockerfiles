@@ -6,25 +6,25 @@
 
 
 
-FROM jupyter/datascience-notebook:ee77b7831e16 as miniconda
+FROM jupyter/datascience-notebook:5168eb6548a3 as miniconda
 
 # Note: jupyterhub currently has to be pinned to version 1.1.0 (same as server)
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
     'decorator==5.1.1' \
     'ipyparallel==6.3.0' \
-    'jupyter-server-proxy==3.2.0' \
+    'jupyter-server-proxy==3.2.2' \
     'jupyter_contrib_nbextensions==0.5.1' \
     'jupyterhub==3.0.0' \
-    'nbconvert==6.4.0' \
+    'nbconvert==7.2.3' \
     'nbdime==3.1.1' \
-    'nodejs==17.1.0' \
-    'tqdm==4.62.3' \
+    'nodejs==18.11.0' \
+    'tqdm==4.64.1' \
     'yapf==0.32.0' && \
     jupyter labextension install \
-    '@jupyter-widgets/jupyterlab-manager@3.0.1' \
-    'jupyter-matplotlib@0.10.4' \
-    'nbdime-jupyterlab@2.1.1' && \
+    '@jupyter-widgets/jupyterlab-manager@5.0.3' \
+    'jupyter-matplotlib@0.11.2' \
+    'nbdime-jupyterlab@3.1.1' && \
     pip install escapism==1.0.1 jupyterlab-github==3.0.1 git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
     jupyter server extension enable jupyter_server_proxy --sys-prefix && \
     jupyter server extension enable --py nbresuse --sys-prefix && \
@@ -34,7 +34,7 @@ RUN mamba config --set channel_priority strict && \
 
 RUN echo "With jupyterhub 1.2"
 
-FROM jupyter/datascience-notebook:ee77b7831e16
+FROM jupyter/datascience-notebook:5168eb6548a3
 
 LABEL maintainer = "Uninett As <system@uninett.no>"
 USER root
