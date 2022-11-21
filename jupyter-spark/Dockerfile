@@ -47,9 +47,9 @@ RUN mamba config --set channel_priority strict && \
  #    'python-graphviz=0.16' \
  #'pydot=1.4.1' \
 
-# RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
+RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 
-RUN mamba create -n scenic_protocol python=3.9 -y && bash -c 'source activate scenic_protocol && mamba install -c conda-forge -y ipykernel ipywidgets numpy pandas matplotlib seaborn scanpy=1.7.2 scikit-learn statsmodels numba pytables python-igraph anndata=0.7.8 louvain=0.7.0 multicore-tsne cytoolz&&pip install pyscenic && ipython kernel install --name=scenic_protocol --display-name="Python 3 (scenic_protocol conda)" && mamba clean --all -f -y && conda deactivate'
+#RUN mamba create -n scenic_protocol python=3.9 -y && bash -c 'source activate scenic_protocol && mamba install -c conda-forge -y ipykernel ipywidgets numpy pandas matplotlib seaborn scanpy=1.7.2 scikit-learn statsmodels numba pytables python-igraph anndata=0.7.8 louvain=0.7.0 multicore-tsne cytoolz&&pip install pyscenic && ipython kernel install --name=scenic_protocol --display-name="Python 3 (scenic_protocol conda)" && mamba clean --all -f -y && conda deactivate'
 
 #RUN mamba create -y -n dictys -c conda-forge python=3.9  && bash -c 'source activate dictys && mamba install  -y -c lingfeiwang -c bioconda -c conda-forge -c pytorch ipykernel pytorch dictys cudatoolkit=11.3 && ipython kernel install --name=dictys --display-name="Python 3 (dictys conda)" && mamba clean --all -f -y && conda deactivate'
 
@@ -175,8 +175,8 @@ COPY start-*.sh /usr/local/bin/
 COPY mem_parser.py /usr/local/bin/
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
 COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
-# COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/minimal /usr/local/share/jupyter/kernels/minimal
-COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/scenic_protocol /usr/local/share/jupyter/kernels/scenic_protocol
+COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/minimal /usr/local/share/jupyter/kernels/minimal
+# COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/scenic_protocol /usr/local/share/jupyter/kernels/scenic_protocol
 # COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/dictys  /usr/local/share/jupyter/kernels/dictys 
 
 
