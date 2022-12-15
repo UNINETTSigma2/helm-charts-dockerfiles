@@ -141,8 +141,10 @@ class DataportenAuth(OAuthenticator):
 
         resp_json = json.loads(resp.body.decode('utf8', 'replace'))
 
+        self.log.info("Extracting username using key %s", self.username_key)
         username = resp_json.get(self.username_key)
         if not username:
+            self.log.info("Username not obtained, falling back to username key")
             username = resp_json.get("username")
 
         if not username:
