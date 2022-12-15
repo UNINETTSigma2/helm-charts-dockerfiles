@@ -154,6 +154,9 @@ class DataportenAuth(OAuthenticator):
             self.log.error("OAuth user contains no key %s: %s", self.principals_key, resp_json)
             principals = []
 
+        self.log.info("Detected user %s, principals %s", username, principals)
+        self.log.info("Authorized groups: %s", self.authorized_groups)
+
         if self.authorized_groups:
             authorized = False
 
