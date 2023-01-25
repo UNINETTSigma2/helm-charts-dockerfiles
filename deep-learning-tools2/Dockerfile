@@ -53,7 +53,7 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     "catboost==$PKG_CATBOOST_VERSION" \
     sentencepiece \
     "fastai==$PKG_FASTAI_VERSION" \
-    torch \
+    "torch==$PKG_PYTORCH_VERSION" \
     torchtext \
     torchvision \
     nvidia-ml-py3 && \
