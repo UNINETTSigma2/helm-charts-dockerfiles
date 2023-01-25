@@ -47,6 +47,13 @@ class DataportenAuth(OAuthenticator):
         config=True,
         help="Userdata username key from returned json for USERDATA_URL"
     )
+
+    principals_key = Unicode(
+        os.environ.get('OAUTH2_PRINCIPALS_KEY', 'principals'),
+        config=True,
+        help="Userdata principals key from returned json for USERDATA_URL"
+    )
+
     userdata_params = Dict(
         os.environ.get('OAUTH2_USERDATA_PARAMS', {}),
         help="Userdata params to get user data login information"
@@ -64,11 +71,11 @@ class DataportenAuth(OAuthenticator):
         help="The groups that allowed to access the application. If none are specified, all groups are allowed access."
     )
 
-    group_urls = Unicode(
-        os.environ.get('GROUP_URLS', "https://groups-api.dataporten.no/groups/me/groups"),
-        config=True,
-        help="A comma separated string of URLs to fetch groups from."
-    )
+    # group_urls = Unicode(
+    #     os.environ.get('GROUP_URLS', "https://groups-api.dataporten.no/groups/me/groups"),
+    #     config=True,
+    #     help="A comma separated string of URLs to fetch groups from."
+    # )
 
     @gen.coroutine
     def authenticate(self, handler, data=None):
@@ -134,13 +141,23 @@ class DataportenAuth(OAuthenticator):
 
         resp_json = json.loads(resp.body.decode('utf8', 'replace'))
 
+        self.log.info("Extracting username using key %s", self.username_key)
         username = resp_json.get(self.username_key)
         if not username:
+            self.log.info("Username not obtained, falling back to username key")
             username = resp_json.get("username")
 
         if not username:
             self.log.error("OAuth user contains no key %s: %s", self.username_key, resp_json)
             return
+
+        principals = resp_json.get(self.principals_key)
+        if not principals:
+            self.log.error("OAuth user contains no key %s: %s", self.principals_key, resp_json)
+            principals = []
+
+        self.log.info("Detected user %s, principals %s", username, principals)
+        self.log.info("Authorized groups: %s", self.authorized_groups)
 
         if self.authorized_groups:
             authorized = False
@@ -149,32 +166,37 @@ class DataportenAuth(OAuthenticator):
                 authorized = True
 
             if not authorized:
-                _group_urls = self.group_urls.split(",")
-                for g_url in _group_urls:
-                    groups_req = HTTPRequest(g_url.strip(),
-                                             method="GET",
-                                             headers=headers
-                    )
-                    groups_resp = None
-                    try:
-                        groups_resp = yield http_client.fetch(groups_req)
-                    except HTTPClientError as e:
-                        if e.response:
-                            self.log.error("failed to fetch groups for: %s. Reason: %s", g_url, e.response.reason)
-
-                        continue
-
-                    groups_resp_json = json.loads(groups_resp.body.decode('utf8', 'replace'))
-
-                    # Determine whether the user is member of one of the authorized groups
-                    user_group_id = [g["id"] for g in groups_resp_json]
-                    for group_id in self.authorized_groups.split(","):
-                        if group_id in user_group_id:
-                            authorized = True
-                            break
-
-                    if authorized:
+                for group_id in self.authorized_groups.split(","):
+                    if group_id in principals:
+                        authorized = True
                         break
+            # if not authorized:
+            #     _group_urls = self.group_urls.split(",")
+            #     for g_url in _group_urls:
+            #         groups_req = HTTPRequest(g_url.strip(),
+            #                                  method="GET",
+            #                                  headers=headers
+            #         )
+            #         groups_resp = None
+            #         try:
+            #             groups_resp = yield http_client.fetch(groups_req)
+            #         except HTTPClientError as e:
+            #             if e.response:
+            #                 self.log.error("failed to fetch groups for: %s. Reason: %s", g_url, e.response.reason)
+
+            #             continue
+
+            #         groups_resp_json = json.loads(groups_resp.body.decode('utf8', 'replace'))
+
+            #         # Determine whether the user is member of one of the authorized groups
+            #         user_group_id = [g["id"] for g in groups_resp_json]
+            #         for group_id in self.authorized_groups.split(","):
+            #             if group_id in user_group_id:
+            #                 authorized = True
+            #                 break
+
+            #         if authorized:
+            #             break
 
             if not authorized:
                 return
