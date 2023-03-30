@@ -17,7 +17,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
     apt-utils \
     nano \
     curl \
-    libnode64 \
+    libnode72 \
     libbz2-dev \
     liblzma-dev \
     librsvg2-dev \
