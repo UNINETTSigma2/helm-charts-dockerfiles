@@ -8,13 +8,13 @@ LABEL maintainer Uninett AS <system@uninett.no>
 ENV S6_VERSION=v2.1.0.2
 ENV RSTUDIO_VERSION=2022.02.3+492
 ENV PANDOC_VERSION=default
-ENV QUARTO_VERSION=default
+
 ENV PATH=/usr/lib/rstudio-server/bin:$PATH
 
 RUN /rocker_scripts/install_rstudio.sh
 RUN /rocker_scripts/install_pandoc.sh
 RUN /rocker_scripts/install_tidyverse.sh
-RUN /rocker_scripts/install_quarto.sh
+
 
 
 RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
