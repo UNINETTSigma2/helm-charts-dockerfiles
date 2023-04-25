@@ -6,12 +6,16 @@ FROM rocker/r-ver:4.2.3
 LABEL maintainer Uninett AS <system@uninett.no>
 
 ENV S6_VERSION=v2.1.0.2
-ENV RSTUDIO_VERSION=2023.03.0+386
+ENV RSTUDIO_VERSION=2022.12.0+353
+ENV PANDOC_VERSION=default
+ENV QUARTO_VERSION=default
 ENV PATH=/usr/lib/rstudio-server/bin:$PATH
 
 RUN /rocker_scripts/install_rstudio.sh
 RUN /rocker_scripts/install_pandoc.sh
 RUN /rocker_scripts/install_tidyverse.sh
+RUN /rocker_scripts/install_quarto.sh
+
 
 RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
     apt-utils \
@@ -42,7 +46,7 @@ ENV TZ="Europe/Oslo" \
     APP_UID=999 \
     APP_GID=999 \
     PKG_R_VERSION=4.2.3 \
-    PKG_RSTUDIO_VERSION=2023.03.0+386 \
+    PKG_RSTUDIO_VERSION=2022.12.0+353 \
     PKG_SHINY_VERSION=1.5.20.1002
 
 # Setup Tini, as S6 does not work when run as non-root users
