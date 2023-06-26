@@ -46,7 +46,7 @@ RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda inst
 
 RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter labextension install \
-    '@jupyter-widgets/jupyterlab-manager@3.1.0' \
+    '@jupyter-widgets/jupyterlab-manager@5.0.7' \
     '@jupyterlab/server-proxy@4.0.0' \
     'jupyter-matplotlib@0.10.4' \
     'jupyterlab-plotly@5.15.0' \
