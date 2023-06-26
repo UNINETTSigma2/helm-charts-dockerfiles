@@ -21,7 +21,7 @@ RUN mamba config --set channel_priority strict && \
     'decorator==5.1.1' \
     'ipyparallel==6.3.0' \
     'jupyter-server-proxy==4.0.0' \
-    'jupyter_contrib_nbextensions==0.7.0' \
+    #'jupyter_contrib_nbextensions==0.7.0' \
     'jupyterlab_iframe==0.4.4' \
     'nbconvert==7.6.0' \
     'nbdime==3.2.1' \
