@@ -15,8 +15,8 @@ ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
     NB_GID=999
 
-RUN apt update && apt install -y eatmydata apt-utils
-RUN mamba config --set channel_priority strict && \
+RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-utils && \
+    mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge \
     'decorator==5.1.1' \
     'ipyparallel==6.3.0' \
@@ -52,8 +52,8 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
     'jupyterlab-plotly@5.15.0' \
     'jupyterlab_iframe@0.4.4' \
     'nbdime-jupyterlab@3.2.1' && \
-    pip install git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
-    pip install jupyter-codeserver-proxy==0.1.0 && \
+    pip install --no-cache-dir git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
+    pip install --no-cache-dir jupyter-codeserver-proxy==0.1.0 && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
     jupyter nbextension install --py nbresuse --sys-prefix && \
     jupyter nbextension enable --py nbresuse --sys-prefix && \
@@ -70,7 +70,7 @@ USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 
-RUN apt update && apt install -y --no-install-recommends gnupg2 && \
+RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 && \
     curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/3bf863cc.pub | apt-key add - && \
     echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
     #curl -fsSL https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2204/x86_64/7fa2af80.pub | apt-key add - && \
@@ -83,7 +83,7 @@ ENV PKG_CUDA_VERSION=11.7 \
 
 
 
-RUN apt update && apt install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
        build-essential \
        cuda-command-line-tools-${PKG_CUDA_VERSION/./-} \
        libcublas-${PKG_CUDA_VERSION/./-} \
@@ -131,7 +131,7 @@ RUN apt update && apt install -y --no-install-recommends \
        libnetcdf-dev \
        python3-netcdf4 \
        sudo && \
-    apt install -y --only-upgrade openssl && \
+    apt-get install -y --only-upgrade openssl && \
     apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 	#ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
 
@@ -200,6 +200,6 @@ ENV LANG=en_US.UTF-8 \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all
 
-RUN pip install jupyterlab_github && jupyter serverextension enable --sys-prefix jupyterlab_github
+RUN pip install --no-cache-dir jupyterlab_github && jupyter serverextension enable --sys-prefix jupyterlab_github
 
 CMD ["/usr/local/bin/start-notebook.sh"]
