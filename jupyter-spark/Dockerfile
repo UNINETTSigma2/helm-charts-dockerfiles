@@ -1,14 +1,14 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# All Spark: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/all-spark-notebook/Dockerfile
-# PySpark: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/pyspark-notebook/Dockerfile
-# SciPy: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/scipy-notebook/Dockerfile
-# Minimal: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/ubuntu-18.04/base-notebook/Dockerfile
+# All Spark: https://github.com/jupyter/docker-stacks/blob/main/all-spark-notebook/Dockerfile
+# PySpark: https://github.com/jupyter/docker-stacks/blob/main/pyspark-notebook/Dockerfile
+# SciPy: https://github.com/jupyter/docker-stacks/blob/main/scipy-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/blob/main/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
 
 
-FROM jupyter/all-spark-notebook:ed2908bbb62e as miniconda
+FROM jupyter/all-spark-notebook:846f4cd31970 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -18,25 +18,20 @@ ENV DEBIAN_FRONTEND noninteractive \
 RUN apt update && apt install -y eatmydata apt-utils
 RUN mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge \
-    'cufflinks-py==0.17.3' \
     'decorator==5.1.1' \
     'ipyparallel==6.3.0' \
-    'jupyter-server-proxy==3.2.1' \
-    'jupyter_contrib_nbextensions==0.5.1' \
+    'jupyter-server-proxy==4.0.0' \
+    'jupyter_contrib_nbextensions==0.7.0' \
     'jupyterlab_iframe==0.4.4' \
-    'nbconvert==6.5.0' \
-    'nbdime==3.1.1' \
-    'nodejs==17.9.0' \
-    'plotly==5.8.2' \
-    'tqdm==4.64.0' \
-    'xarray==2022.3.0' \
-    'yapf==0.32.0' \
+    'nbconvert==7.6.0' \
+    'nbdime==3.2.1' \
+    'nodejs==18.15.0' \
+    'plotly==5.15.0' \
+    'tqdm==4.65.0' \
+    'xarray==2023.5.0' \
+    'yapf==0.33.0' \
     && mamba clean --all -f -y
 
-
-
-
-#spacy=3.0.1' \
 #cudatoolkit==11.5.0' \
  #    'mkl-service=2.3.0' \
  #    'pygpu=0.7.6' \
@@ -49,18 +44,14 @@ RUN mamba config --set channel_priority strict && \
 
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 
-#RUN mamba create -n scenic_protocol python=3.9 -y && bash -c 'source activate scenic_protocol && mamba install -c conda-forge -y ipykernel ipywidgets numpy pandas matplotlib seaborn scanpy=1.7.2 scikit-learn statsmodels numba pytables python-igraph anndata=0.7.8 louvain=0.7.0 multicore-tsne cytoolz&&pip install pyscenic && ipython kernel install --name=scenic_protocol --display-name="Python 3 (scenic_protocol conda)" && mamba clean --all -f -y && conda deactivate'
-
-#RUN mamba create -y -n dictys -c conda-forge python=3.9  && bash -c 'source activate dictys && mamba install  -y -c lingfeiwang -c bioconda -c conda-forge -c pytorch ipykernel pytorch dictys cudatoolkit=11.3 && ipython kernel install --name=dictys --display-name="Python 3 (dictys conda)" && mamba clean --all -f -y && conda deactivate'
-
 RUN jupyter serverextension enable --py jupyterlab_iframe && \
     jupyter labextension install \
     '@jupyter-widgets/jupyterlab-manager@3.1.0' \
-    '@jupyterlab/server-proxy@3.2.1' \
+    '@jupyterlab/server-proxy@4.0.0' \
     'jupyter-matplotlib@0.10.4' \
-    'jupyterlab-plotly@5.8.2' \
+    'jupyterlab-plotly@5.15.0' \
     'jupyterlab_iframe@0.4.4' \
-    'nbdime-jupyterlab@2.1.1' && \
+    'nbdime-jupyterlab@3.2.1' && \
     pip install git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
     pip install jupyter-codeserver-proxy==0.1.0 && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
@@ -70,8 +61,8 @@ RUN jupyter serverextension enable --py jupyterlab_iframe && \
 
 
 
-FROM jupyter/all-spark-notebook:180033e2e6cf
-LABEL maintainer = "Uninett As <system@uninett.no>"
+FROM jupyter/all-spark-notebook:846f4cd31970
+LABEL maintainer = "contact@sigma2.no"
 
 # RUN mamba remove --quiet --yes -c conda-forge ipyparallel
 
@@ -80,15 +71,15 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 
 RUN apt update && apt install -y --no-install-recommends gnupg2 && \
-    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/3bf863cc.pub | apt-key add - && \
-    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
-    curl -fsSL https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64/7fa2af80.pub | apt-key add - && \
-    echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
+    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/3bf863cc.pub | apt-key add - && \
+    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
+    #curl -fsSL https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2204/x86_64/7fa2af80.pub | apt-key add - && \
+    #echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2204/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
     rm -rf /var/lib/apt/lists/*
 
-ENV PKG_CUDA_VERSION=11.4 \
-    NCCL_VERSION=2.10.3 \
-    PKG_CUDNN_VERSION=8.2.4.15-1+cuda11.4
+ENV PKG_CUDA_VERSION=11.7 \
+    NCCL_VERSION=2.14.3-1 \
+    PKG_CUDNN_VERSION=8.5.0.96-1+cuda11.7
 
 
 
@@ -142,7 +133,6 @@ RUN apt update && apt install -y --no-install-recommends \
        sudo && \
     apt install -y --only-upgrade openssl && \
     apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
-	#apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* && \
 	#ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
 
 RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
@@ -156,13 +146,12 @@ ENV TZ="Europe/Oslo" \
 	APP_GID=999 \
 	NB_UID=999 \
 	NB_GID=999 \
-    PKG_JUPYTER_NOTEBOOK_VERSION=6.4.x \
+    PKG_JUPYTER_NOTEBOOK_VERSION=6.5.x \
 	PKG_SPARK_VERSION=${APACHE_SPARK_VERSION} \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
-	PKG_TOREE_VERSION=0.3.0-incubating \
-	PKG_R_VERSION=4.1.3  \
-	#PKG_VS_CODE_VERSION=2.1692-vsc1.39.2 \
-    PKG_VS_CODE_VERSION=1.70.1 \
+	PKG_TOREE_VERSION=0.4.0-incubating \
+	PKG_R_VERSION=4.2.3  \
+    PKG_VS_CODE_VERSION=4.14.0 \
 	HOME=/home/notebook \
     PATH=$PATH:$SPARK_HOME/bin \
     XDG_CACHE_HOME=/home/notebook/.cache/
@@ -176,8 +165,6 @@ COPY mem_parser.py /usr/local/bin/
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
 COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
 COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/minimal /usr/local/share/jupyter/kernels/minimal
-# COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/scenic_protocol /usr/local/share/jupyter/kernels/scenic_protocol
-# COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/dictys  /usr/local/share/jupyter/kernels/dictys 
 
 
 RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
@@ -188,7 +175,7 @@ RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/
 #    mv "code-server$PKG_VS_CODE_VERSION-linux-x86_64/code-server" /usr/local/bin/ && \
 #    rm -rf "code-server*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
 
-RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version=4.6.0
+RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version=4.14.0
 
 RUN chown notebook:notebook $CONDA_DIR "$CONDA_DIR/.condatmp"
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
