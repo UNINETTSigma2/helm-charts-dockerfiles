@@ -44,14 +44,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
 
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 
+#(Deprecated) Installing extensions with the jupyter labextension install command is now deprecated and will be removed in a future major version of JupyterLab.
+
+
 RUN jupyter serverextension enable --py jupyterlab_iframe && \
-    jupyter labextension install \
-    '@jupyter-widgets/jupyterlab-manager@5.0.7' \
-    '@jupyterlab/server-proxy@4.0.0' \
-    'jupyter-matplotlib@0.10.4' \
-    'jupyterlab-plotly@5.15.0' \
-    'jupyterlab_iframe@0.4.4' \
-    'nbdime-jupyterlab@3.2.1' && \
+    #jupyter labextension install \
+    #'@jupyter-widgets/jupyterlab-manager@5.0.7' \
+    #'@jupyterlab/server-proxy@4.0.0' \
+    #'jupyter-matplotlib@0.10.4' \
+    #'jupyterlab-plotly@5.15.0' \
+    #'jupyterlab_iframe@0.4.4' \
+    #'nbdime-jupyterlab@3.2.1' && \
     pip install --no-cache-dir git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
     pip install --no-cache-dir jupyter-codeserver-proxy==0.1.0 && \
     jupyter serverextension enable --py nbresuse --sys-prefix && \
