@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
     'jupyter-server-proxy==4.0.0' \
     #'jupyter_contrib_nbextensions==0.7.0' \
     'jupyterlab_iframe==0.4.4' \
-    'nbconvert==7.6.0' \
+    # 'nbconvert==7.6.0' \ already in jupyter docker stacks
     'nbdime==3.2.1' \
     'nodejs==18.15.0' \
     'plotly==5.15.0' \
