@@ -34,30 +34,29 @@ COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
 ENV NV_CUDA_LIB_VERSION=11.7.1-1  \
     NV_CUDNN_VERSION=8.5.0.96 \
     NV_CUDNN_PACKAGE_NAME="libcudnn8" \
-    NV_CUDNN_PACKAGE="libcudnn8=$NV_CUDNN_VERSION-1+cuda11.7" \
-    PKG_CUDNN_VERSION="$NV_CUDNN_VERSION-1+cuda11.7" \
     NV_CUDA_CUDART_VERSION=11.7.99-1 \
     NV_CUDA_COMPAT_PACKAGE=cuda-compat-11-7 \
     CUDA_VERSION=11.7.1  \
     NV_NVTX_VERSION=11.7.91-1 \
     NV_LIBNPP_VERSION=11.7.4.75-1 \
-    NV_LIBNPP_PACKAGE="libnpp-11-7=${NV_LIBNPP_VERSION}"\
     NV_LIBCUSPARSE_VERSION=11.7.4.91-1 \
     NV_LIBCUBLAS_PACKAGE_NAME=libcublas-11-7 \
     NV_LIBCUBLAS_VERSION=11.10.3.66-1 \
-    NV_LIBCUBLAS_PACKAGE="${NV_LIBCUBLAS_PACKAGE_NAME}=${NV_LIBCUBLAS_VERSION}" \
     NV_LIBNCCL_PACKAGE_NAME=libnccl2 \
     NV_LIBNCCL_PACKAGE_VERSION=2.13.4-1 \
-    NCCL_VERSION=2.13.4-1 \
+    NCCL_VERSION=2.13.4-1 
+
+ENV NV_CUDNN_PACKAGE="libcudnn8=$NV_CUDNN_VERSION-1+cuda11.7" \
+    PKG_CUDNN_VERSION="$NV_CUDNN_VERSION-1+cuda11.7" \
+    NV_LIBNPP_PACKAGE="libnpp-11-7=${NV_LIBNPP_VERSION}"\
+    NV_LIBCUBLAS_PACKAGE="${NV_LIBCUBLAS_PACKAGE_NAME}=${NV_LIBCUBLAS_VERSION}" \
     NV_LIBNCCL_PACKAGE="${NV_LIBNCCL_PACKAGE_NAME}=${NV_LIBNCCL_PACKAGE_VERSION}+cuda11.7"
-
-
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 curl ca-certificates && \
-    apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/3bf863cc.pub && \
-    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
+    curl -fsLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb && \
+    dpkg -i cuda-keyring_1.0-1_all.deb && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/*
 
@@ -92,7 +91,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get -y autoremove && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* && \
-    ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime \
+    ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
 
 RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf \
     && echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
