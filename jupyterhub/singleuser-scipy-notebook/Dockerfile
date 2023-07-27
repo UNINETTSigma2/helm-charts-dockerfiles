@@ -25,8 +25,6 @@ RUN groupadd -g "$APP_GID" notebook && \
     usermod -G users notebook && chmod go+rwx -R "$CONDA_DIR/bin"
 COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
 # Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.7.1/ubuntu2204/base/Dockerfile
 # https://www.tensorflow.org/install/gpu
 # and
@@ -53,12 +51,13 @@ ENV NV_CUDA_LIB_VERSION 11.7.1-1  \
     NCCL_VERSION 2.13.4-1 \
     NV_LIBNCCL_PACKAGE ${NV_LIBNCCL_PACKAGE_NAME}=${NV_LIBNCCL_PACKAGE_VERSION}+cuda11.7
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 curl ca-certificates && \
-    curl -fsLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb && \
-    dpkg -i cuda-keyring_1.0-1_all.deb && \
+    apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/3bf863cc.pub && \
+    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
     apt-get -y autoremove && \
-    && rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     cuda-cudart-11-7=${NV_CUDA_CUDART_VERSION} \
