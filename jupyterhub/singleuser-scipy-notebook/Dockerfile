@@ -51,11 +51,11 @@ ENV NV_CUDA_LIB_VERSION 11.7.1-1  \
     NV_LIBNCCL_PACKAGE_NAME libnccl2 \
     NV_LIBNCCL_PACKAGE_VERSION 2.13.4-1 \
     NCCL_VERSION 2.13.4-1 \
-    NV_LIBNCCL_PACKAGE ${NV_LIBNCCL_PACKAGE_NAME}=${NV_LIBNCCL_PACKAGE_VERSION}+cuda11.7 \
+    NV_LIBNCCL_PACKAGE ${NV_LIBNCCL_PACKAGE_NAME}=${NV_LIBNCCL_PACKAGE_VERSION}+cuda11.7
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 curl ca-certificates && \
-    curl -fsSLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb && \
+    curl -fsLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb && \
     dpkg -i cuda-keyring_1.0-1_all.deb && \
     apt-get -y autoremove && \
     && rm -rf /var/lib/apt/lists/*
