@@ -6,6 +6,7 @@
 FROM jupyter/scipy-notebook:bfe5f20914d0 as miniconda
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
+    'escapism==1.0.1' \
     'ipyparallel==6.3.0' && \
     mamba clean --all -f -y
 
@@ -44,7 +45,7 @@ ENV NV_CUDA_LIB_VERSION=11.7.1-1  \
     NV_LIBCUBLAS_VERSION=11.10.3.66-1 \
     NV_LIBNCCL_PACKAGE_NAME=libnccl2 \
     NV_LIBNCCL_PACKAGE_VERSION=2.13.4-1 \
-    NCCL_VERSION=2.13.4-1 
+    NCCL_VERSION=2.13.4-1
 
 ENV NV_CUDNN_PACKAGE="libcudnn8=$NV_CUDNN_VERSION-1+cuda11.7" \
     PKG_CUDNN_VERSION="$NV_CUDNN_VERSION-1+cuda11.7" \
