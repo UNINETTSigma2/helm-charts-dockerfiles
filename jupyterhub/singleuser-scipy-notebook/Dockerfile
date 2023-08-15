@@ -1,24 +1,26 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# Minimal: https://github.com/jupyter/docker-stacks/tree/bfe5f20914d0/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/bfe5f20914d0/base-notebook/Dockerfile
-FROM jupyter/scipy-notebook:bfe5f20914d0 as miniconda
+# Minimal: https://github.com/jupyter/docker-stacks/tree/72ef9bc17da0/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/72ef9bc17da0/base-notebook/Dockerfile
+FROM jupyter/scipy-notebook:72ef9bc17da0 as miniconda
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
     'escapism==1.0.1' \
-    'ipyparallel==6.3.0' && \
+    'jupyterlab-github==4.0.0' \
+    'ipyparallel==6.3.0' \
+    'yapf==0.40.1' && \
     mamba clean --all -f -y
 
 
-FROM jupyter/scipy-notebook:bfe5f20914d0
+FROM jupyter/scipy-notebook:72ef9bc17da0
 LABEL maintainer = "contact@sigma2.no"
 USER root
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.0 \
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.2 \
 	PKG_CUDA_VERSION=11.7.1
 
 RUN groupadd -g "$APP_GID" notebook && \
@@ -94,8 +96,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/* && \
     ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
 
-RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf \
-    && echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
+RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
+    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
 
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
