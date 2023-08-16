@@ -8,7 +8,7 @@
 # Base: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
 
 
-FROM jupyter/all-spark-notebook:846f4cd31970 as miniconda
+FROM jupyter/all-spark-notebook:72ef9bc17da0  as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -18,88 +18,72 @@ ENV DEBIAN_FRONTEND noninteractive \
 RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-utils && \
     mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge \
-    'decorator==5.1.1' \
+    'jupyterlab-github==4.0.0' \
     'ipyparallel==6.3.0' \
-    'jupyter-server-proxy==4.0.0' \
-    #'jupyter_contrib_nbextensions==0.7.0' \
-    'jupyterlab_iframe==0.4.4' \
-    # 'nbconvert==7.6.0' \ already in jupyter docker stacks
-    'nbdime==3.2.1' \
-    'nodejs==18.15.0' \
-    'plotly==5.15.0' \
-    'tqdm==4.65.0' \
-    'xarray==2023.5.0' \
-    'yapf==0.33.0' \
+    'plotly==5.16.0' \
+    'xarray==2023.7.0' \
+    'yapf==0.40.1' \
     && mamba clean --all -f -y
 
-#cudatoolkit==11.5.0' \
- #    'mkl-service=2.3.0' \
- #    'pygpu=0.7.6' \
- #    'libjpeg-turbo=2.*' \
- #    'bcolz=1.2.1' \
- #    'jax=0.2.9' \
- #    'libtiff=4.2.0' \
- #    'python-graphviz=0.16' \
- #'pydot=1.4.1' \
 
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 
-#(Deprecated) Installing extensions with the jupyter labextension install command is now deprecated and will be removed in a future major version of JupyterLab.
-
-
-RUN jupyter serverextension enable --py jupyterlab_iframe && \
-    #jupyter labextension install \
-    #'@jupyter-widgets/jupyterlab-manager@5.0.7' \
-    #'@jupyterlab/server-proxy@4.0.0' \
-    #'jupyter-matplotlib@0.10.4' \
-    #'jupyterlab-plotly@5.15.0' \
-    #'jupyterlab_iframe@0.4.4' \
-    #'nbdime-jupyterlab@3.2.1' && \
-    pip install --no-cache-dir git+https://github.com/paalka/nbresuse.git@ca7b3422fcab2d4d78d70d0536b4efc1c36ba814 && \
-    pip install --no-cache-dir jupyter-codeserver-proxy==0.1.0 && \
-    jupyter serverextension enable --py nbresuse --sys-prefix && \
-    jupyter nbextension install --py nbresuse --sys-prefix && \
-    jupyter nbextension enable --py nbresuse --sys-prefix && \
-    jupyter lab build
-
-
-
-FROM jupyter/all-spark-notebook:846f4cd31970
+FROM jupyter/all-spark-notebook:72ef9bc17da0
 LABEL maintainer = "contact@sigma2.no"
-
-# RUN mamba remove --quiet --yes -c conda-forge ipyparallel
-
 USER root
+
+# Setup ENV for Appstore to be picked up
+ENV APP_UID=999 \
+	APP_GID=999 \
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.2 \
+	PKG_CUDA_VERSION=11.7.1
+
+# Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.7.1/ubuntu2204/base/Dockerfile
+# https://www.tensorflow.org/install/gpu
+# and
+# https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
+# might also be useful for CUDA packages
+
+ENV NV_CUDA_LIB_VERSION=11.7.1-1  \
+    NV_CUDNN_VERSION=8.5.0.96 \
+    NV_CUDNN_PACKAGE_NAME="libcudnn8" \
+    NV_CUDA_CUDART_VERSION=11.7.99-1 \
+    NV_CUDA_COMPAT_PACKAGE=cuda-compat-11-7 \
+    CUDA_VERSION=11.7.1  \
+    NV_NVTX_VERSION=11.7.91-1 \
+    NV_LIBNPP_VERSION=11.7.4.75-1 \
+    NV_LIBCUSPARSE_VERSION=11.7.4.91-1 \
+    NV_LIBCUBLAS_PACKAGE_NAME=libcublas-11-7 \
+    NV_LIBCUBLAS_VERSION=11.10.3.66-1 \
+    NV_LIBNCCL_PACKAGE_NAME=libnccl2 \
+    NV_LIBNCCL_PACKAGE_VERSION=2.13.4-1 \
+    NCCL_VERSION=2.13.4-1
+
+ENV NV_CUDNN_PACKAGE="libcudnn8=$NV_CUDNN_VERSION-1+cuda11.7" \
+    PKG_CUDNN_VERSION="$NV_CUDNN_VERSION-1+cuda11.7" \
+    NV_LIBNPP_PACKAGE="libnpp-11-7=${NV_LIBNPP_VERSION}"\
+    NV_LIBCUBLAS_PACKAGE="${NV_LIBCUBLAS_PACKAGE_NAME}=${NV_LIBCUBLAS_VERSION}" \
+    NV_LIBNCCL_PACKAGE="${NV_LIBNCCL_PACKAGE_NAME}=${NV_LIBNCCL_PACKAGE_VERSION}+cuda11.7"
+
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-
-RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 && \
-    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/3bf863cc.pub | apt-key add - && \
-    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /" > /etc/apt/sources.list.d/cuda.list && \
-    #curl -fsSL https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2204/x86_64/7fa2af80.pub | apt-key add - && \
-    #echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2204/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list && \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gnupg2 curl ca-certificates && \
+    curl -fsLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb && \
+    dpkg -i cuda-keyring_1.0-1_all.deb && \
+    apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/*
-
-ENV PKG_CUDA_VERSION=11.7 \
-    NCCL_VERSION=2.14.3-1 \
-    PKG_CUDNN_VERSION=8.5.0.96-1+cuda11.7
-
-
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
        build-essential \
-       cuda-command-line-tools-${PKG_CUDA_VERSION/./-} \
-       libcublas-${PKG_CUDA_VERSION/./-} \
-       libcublas-dev-${PKG_CUDA_VERSION/./-} \
-       libcufft-${PKG_CUDA_VERSION/./-} \
-       libcurand-${PKG_CUDA_VERSION/./-} \
-       libcurand-dev-${PKG_CUDA_VERSION/./-} \
-       libcusolver-${PKG_CUDA_VERSION/./-} \
-       libcusolver-dev-${PKG_CUDA_VERSION/./-} \
-       libcusparse-${PKG_CUDA_VERSION/./-} \
-       libcusparse-dev-${PKG_CUDA_VERSION/./-} \
-       curl \
-       libcudnn8 \
+       cuda-cudart-11-7=${NV_CUDA_CUDART_VERSION} \
+       ${NV_CUDA_COMPAT_PACKAGE} \
+       cuda-libraries-11-7=${NV_CUDA_LIB_VERSION} \
+       ${NV_LIBNPP_PACKAGE} \
+       cuda-nvtx-11-7=${NV_NVTX_VERSION} \
+       libcusparse-11-7=${NV_LIBCUSPARSE_VERSION} \
+       ${NV_LIBCUBLAS_PACKAGE} \
+       ${NV_LIBNCCL_PACKAGE} \
+       ${NV_CUDNN_PACKAGE} \
        libfreetype6-dev \
        libhdf5-serial-dev \
        libzmq3-dev \
@@ -130,30 +114,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
        unrar \
        vim \
        "openmpi-bin" \
-       ca-certificates \
        libnetcdf-dev \
        python3-netcdf4 \
        sudo && \
+    apt-mark hold ${NV_CUDNN_PACKAGE_NAME} ${NV_LIBCUBLAS_PACKAGE_NAME} ${NV_LIBNCCL_PACKAGE_NAME} && \
     apt-get install -y --only-upgrade openssl && \
-    apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
-	#ln -s "cuda-$PKG_CUDA_VERSION" /usr/local/cuda
+    apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* \ && \
+    ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
+
 
 RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
-    ln -s /usr/local/cuda/include/* /usr/include/
+    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
 
 
 ENV TZ="Europe/Oslo" \
-	APP_UID=999 \
-	APP_GID=999 \
 	NB_UID=999 \
 	NB_GID=999 \
-    PKG_JUPYTER_NOTEBOOK_VERSION=6.5.x \
 	PKG_SPARK_VERSION=${APACHE_SPARK_VERSION} \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.4.0-incubating \
-	PKG_R_VERSION=4.2.3  \
+	PKG_R_VERSION=4.3.1  \
     PKG_VS_CODE_VERSION=4.14.0 \
 	HOME=/home/notebook \
     PATH=$PATH:$SPARK_HOME/bin \
@@ -172,12 +152,6 @@ COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels
 
 RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
 
-
-#RUN wget -q "https://github.com/coder/code-server/releases/download/$PKG_VS_CODE_VERSION/code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
-#    tar zxf "code-server$PKG_VS_CODE_VERSION-linux-x86_64.tar.gz" && \
-#    mv "code-server$PKG_VS_CODE_VERSION-linux-x86_64/code-server" /usr/local/bin/ && \
-#    rm -rf "code-server*" "$HOME/.wget-hsts" && locale-gen en_US.UTF-8
-
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version=4.14.0
 
 RUN chown notebook:notebook $CONDA_DIR "$CONDA_DIR/.condatmp"
@@ -185,10 +159,6 @@ COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
 
 COPY --chown=notebook:notebook .jupyter/ /etc/default/jupyter
 RUN chmod go+w -R "$HOME"
-
-RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \
-    && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
-    && ldconfig
 
 RUN fix-permissions $CONDA_DIR
 
@@ -199,10 +169,9 @@ RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-* && \
 WORKDIR $HOME
 ENV LANG=en_US.UTF-8 \
     PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
-    LD_LIBRARY_PATH=/usr/local/cuda/extras/CUPTI/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
+    LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all
 
-RUN pip install --no-cache-dir jupyterlab_github && jupyter serverextension enable --sys-prefix jupyterlab_github
 
 CMD ["/usr/local/bin/start-notebook.sh"]
