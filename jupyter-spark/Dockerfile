@@ -116,6 +116,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
        "openmpi-bin" \
        libnetcdf-dev \
        python3-netcdf4 \
+       netcat \
        sudo && \
     apt-mark hold ${NV_CUDNN_PACKAGE_NAME} ${NV_LIBCUBLAS_PACKAGE_NAME} ${NV_LIBNCCL_PACKAGE_NAME} && \
     apt-get install -y --only-upgrade openssl && \
