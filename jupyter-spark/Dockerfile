@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
     mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge \
     'jupyterlab-github==4.0.0' \
+    'jupyter-server-proxy==4.0.0' \
     'ipyparallel==6.3.0' \
     'plotly==5.16.0' \
     'xarray==2023.7.0' \

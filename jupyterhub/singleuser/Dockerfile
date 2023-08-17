@@ -8,6 +8,7 @@ RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
     'escapism==1.0.1' \
     'jupyterlab-github==4.0.0' \
+    'jupyter-server-proxy==4.0.0' \
     'ipyparallel==6.3.0' \
     'yapf==0.40.1' && \
     mamba clean --all -f -y
