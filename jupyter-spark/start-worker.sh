@@ -10,6 +10,7 @@ if [[ $core_limit == *m ]]; then
     core_limit="${core_limit/%?/}"
     core_limit="$((($core_limit + 999) / 1000))"
 fi
+echo "spark.ui.reverseProxyUrl  https://${SPARK_PUBLIC_DNS}" >> $SPARK_HOME/conf/spark-defaults.conf
 
 mem="${SPARK_WORKER_MEMORY:-1g}"
 read daemon_mem executor_mem < <(mem_parser.py $mem 0.4 1000M)
