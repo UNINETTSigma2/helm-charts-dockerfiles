@@ -44,7 +44,6 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     mlflow \
     "lightgbm==$PKG_LIGHTGBM_VERSION" \
     opencv-python \
-    "tensorflow-gpu==$PKG_TENSORFLOW_VERSION" \
     "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
     "tensorboard-plugin-profile==$PKG_TENSORFLOW_VERSION" \
     "tensorboardx" \
