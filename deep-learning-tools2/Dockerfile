@@ -31,7 +31,7 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
     hyperopt \
-    pycuda \
+    ##pycuda \
     "keras==$PKG_KERAS_VERSION" \
     keras-tqdm \
     pandas-summary \
