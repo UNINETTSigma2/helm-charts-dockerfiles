@@ -20,41 +20,63 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all \
     PKG_KERAS_VERSION=2.13.1 \
-    PKG_TENSORFLOW_VERSION=2.13.0 \
-    PKG_TENSORFLOW_PROBABILITY_VERSION=0.21.0 \
-    PKG_PYTORCH_VERSION=2.0.1 \
+    PKG_TENSORFLOW_VERSION=2.12.1 \
+    PKG_TENSORFLOW_PROBABILITY_VERSION=0.20.0 \
+    PKG_PYTORCH_VERSION=2.0.0 \
     PKG_XGBOOST_VERSION=1.7.6 \
     PKG_CATBOOST_VERSION=1.2 \
     PKG_LIGHTGBM_VERSION=4.0.0\
     PKG_FASTAI_VERSION=2.7.12
 
+RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-utils && \
+    mamba config --set channel_priority strict && \
+    eatmydata mamba install --quiet --update-all --yes -c conda-forge \
+    'hyperopt==0.2.7' \
+    'keras==$PKG_KERAS_VERSION' \
+    'feather-format==0.4.1' \
+    'plotnine==0.12.2' \
+    'isoweek==1.3.3' \
+    'kaggle==1.5.16' \
+    'hypothesis==6.82.6' \
+    'mlflow==2.6.0' \
+    'lightgbm==$PKG_LIGHTGBM_VERSION' \
+    'tensorflow==$PKG_TENSORFLOW_VERSION' \
+    'tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION' \
+    'tensorboardx==2.6.2' \
+    'xgboost==$PKG_XGBOOST_VERSION"' \
+    'catboost==$PKG_CATBOOST_VERSION' \
+    'sentencepiece==0.1.99' \
+    'fastai==$PKG_FASTAI_VERSION' \
+    'pytorch==$PKG_PYTORCH_VERSION' \
+    'torchtext==0.15.2' \
+    'torchvision==0.15.2' \
+    && mamba clean --all -f -y
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
-    hyperopt \
+    ##hyperopt \
     ##pycuda \
-    "keras==$PKG_KERAS_VERSION" \
-    keras-tqdm \
+    ##"keras==$PKG_KERAS_VERSION" \
     pandas-summary \
     sklearn_pandas \
-    feather-format \
-    plotnine \
-    isoweek \
-    kaggle \
-    hypothesis \
-    mlflow \
-    "lightgbm==$PKG_LIGHTGBM_VERSION" \
+    ##feather-format \
+    ##plotnine \
+    ##isoweek \
+    ##kaggle \
+    ##hypothesis \
+    ##mlflow \
+    ##"lightgbm==$PKG_LIGHTGBM_VERSION" \
     opencv-python \
-    "tensorflow==$PKG_TENSORFLOW_VERSION" \
-    "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
+    ##tensorflow==$PKG_TENSORFLOW_VERSION" \
+    ##"tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
     "tensorboard-plugin-profile==$PKG_TENSORFLOW_VERSION" \
-    "tensorboardx" \
-    "xgboost==$PKG_XGBOOST_VERSION" \
-    "catboost==$PKG_CATBOOST_VERSION" \
-    sentencepiece \
-    "fastai==$PKG_FASTAI_VERSION" \
-    "torch==$PKG_PYTORCH_VERSION" \
-    torchtext \
-    torchvision \
+    ##"tensorboardx" \
+    #"xgboost==$PKG_XGBOOST_VERSION" \
+    #"catboost==$PKG_CATBOOST_VERSION" \
+    # sentencepiece \
+    #"fastai==$PKG_FASTAI_VERSION" \
+    #"torch==$PKG_PYTORCH_VERSION" \
+    #torchtext \
+    #torchvision \
     nvidia-ml-py3 && \
     mamba clean -y --all && \
     jupyter lab build
