@@ -51,6 +51,7 @@ RUN mamba config --set channel_priority strict && \
     torchtext==0.15.2 \
     torchvision==0.15.2 \
     pycuda==2022.2.2 \
+    nvidia-ml-py==12.535.77 \
     && mamba clean --all -f -y
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
@@ -69,7 +70,7 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     opencv-python \
     ##tensorflow==$PKG_TENSORFLOW_VERSION" \
     ##"tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
-    "tensorboard-plugin-profile==$PKG_TENSORFLOW_VERSION" \
+    ####"tensorboard-plugin-profile==$PKG_TENSORFLOW_VERSION" \
     ##"tensorboardx" \
     #"xgboost==$PKG_XGBOOST_VERSION" \
     #"catboost==$PKG_CATBOOST_VERSION" \
@@ -78,8 +79,8 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     #"torch==$PKG_PYTORCH_VERSION" \
     #torchtext \
     #torchvision \
-    nvidia-ml-py3 && \
-    mamba clean -y --all && \
+    #nvidia-ml-py3 \
+    && mamba clean -y --all && \
     jupyter lab build
 
 RUN rm -fr /home/notebook/.cache/yarn
