@@ -20,8 +20,8 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/mpi/lib:/usr/local/cuda/lib:/usr/local/cuda/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all \
-    PKG_KERAS_VERSION=2.13.1 \
-    PKG_TENSORFLOW_VERSION=2.13.* \
+    PKG_KERAS_VERSION=2.12.0 \
+    PKG_TENSORFLOW_VERSION=2.12.1 \
     PKG_TENSORFLOW_PROBABILITY_VERSION=0.20.0 \
     PKG_PYTORCH_VERSION=2.0.0 \
     PKG_XGBOOST_VERSION=1.7.6 \
@@ -50,6 +50,7 @@ RUN mamba config --set channel_priority strict && \
     "pytorch==$PKG_PYTORCH_VERSION" \
     torchtext==0.15.2 \
     torchvision==0.15.2 \
+    pycuda==2022.2.2 \
     && mamba clean --all -f -y
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
