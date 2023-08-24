@@ -7,8 +7,7 @@
 # Minimal: https://github.com/jupyter/docker-stacks/blob/main/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
 
-
-FROM jupyter/all-spark-notebook:72ef9bc17da0  as miniconda
+FROM jupyter/all-spark-notebook:d400e383cc1d  as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -29,7 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
 
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 
-FROM jupyter/all-spark-notebook:72ef9bc17da0
+FROM jupyter/all-spark-notebook:d400e383cc1d
 LABEL maintainer = "contact@sigma2.no"
 USER root
 

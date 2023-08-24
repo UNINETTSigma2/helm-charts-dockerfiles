@@ -1,9 +1,9 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# Minimal: https://github.com/jupyter/docker-stacks/tree/72ef9bc17da0/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/72ef9bc17da0/base-notebook/Dockerfile
-FROM jupyter/datascience-notebook:72ef9bc17da0 as miniconda
+# Minimal: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/base-notebook/Dockerfile
+FROM jupyter/datascience-notebook:d400e383cc1d as miniconda
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
     'escapism==1.0.1' \
@@ -13,7 +13,7 @@ RUN mamba config --set channel_priority strict && \
     'yapf==0.40.1' && \
     mamba clean --all -f -y
 
-FROM jupyter/datascience-notebook:72ef9bc17da0
+FROM jupyter/datascience-notebook:d400e383cc1d
 
 LABEL maintainer = "contact@sigma2.no"
 USER root

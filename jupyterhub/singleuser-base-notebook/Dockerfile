@@ -1,12 +1,12 @@
 # Link to all the dockerfiles which this image is based upon. This provides info about various packages
 # already present in the image. When updating the upstream image tag, remember to update the links as well.
 
-# Minimal: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/minimal-notebook/Dockerfile
-# Base: https://github.com/jupyter/docker-stacks/tree/83ed2c63671f/base-notebook/Dockerfile
+# Minimal: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/minimal-notebook/Dockerfile
+# Base: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/base-notebook/Dockerfile
 
 
 
-FROM jupyter/base-notebook:ee77b7831e16 as miniconda
+FROM jupyter/base-notebook:d400e383cc1d as miniconda
 
 # Note: jupyterhub currently has to be pinned to version 1.1.0 (same as server)
 RUN mamba config --set channel_priority strict && \
@@ -29,9 +29,9 @@ RUN mamba config --set channel_priority strict && \
     jupyter server extension enable jupyter_server_proxy --sys-prefix && \
     mamba clean --all -f -y
 
-FROM jupyter/base-notebook:ee77b7831e16
+FROM jupyter/base-notebook:d400e383cc1d
 
-LABEL maintainer = "Uninett As <system@uninett.no>"
+LABEL maintainer = "contact@sigma2.no"
 USER root
 
 # Setup ENV for Appstore to be picked up
