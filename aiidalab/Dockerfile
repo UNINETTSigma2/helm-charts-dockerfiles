@@ -18,6 +18,7 @@ ENV APP_UID=999 \
     RABBITMQ_CTL_ERL_ARGS="-setcookie rabbit" \
     PROFILE_NAME=default
 
+
 # We here create the user instead of using 10_create-system-user
 RUN groupadd -g "$APP_GID" notebook && \
   useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
