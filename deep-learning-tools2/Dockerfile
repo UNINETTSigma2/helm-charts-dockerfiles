@@ -1,4 +1,4 @@
-FROM quay.io/nird-toolkit/jupyter-spark:20230818-54bb1ee
+FROM sigma2as/jupyter-spark:20230824-008da3b
 LABEL maintainer = "contact@sigma2.no"
 
 USER root
