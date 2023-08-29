@@ -7,7 +7,8 @@ function build_image() {
 #    img="quay.io/nird-toolkit/$1:$2"
 #    curl -s "https://quay.io/api/v1/repository/nird-toolkit/$1/tag/?specificTag=$2" | grep "$2" > /dev/null 2>&1
     img="docker.io/sigma2as/$1:$2"
-    curl -s "https://docker.io/api/v1/repository/sigma2as/$1/tag/?specificTag=$2" | grep "$2" > /dev/null 2>&1
+    #curl -s "https://docker.io/api/v1/repository/sigma2as/$1/tag/?specificTag=$2" | grep "$2" > /dev/null 2>&1
+    curl --silent -f --head -lL https://hub.docker.com/v2/repositories/sigma2as/$1/tags/$2/ > /dev/null 2>&1
     if test $? -ne 0
     then
 	echo "Building container $img"
