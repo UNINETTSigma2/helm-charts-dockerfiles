@@ -13,7 +13,7 @@ RUN mamba config --set channel_priority strict && \
     'ipyparallel==6.3.0' \
     'jupyter-server-proxy==4.0.0' \
     'escapism==1.0.1' \
-    'jupyterlab-github==4.0.0'
+    'jupyterlab-github==4.0.0' && \
     jupyter server extension enable jupyter_server_proxy --sys-prefix && \
     mamba clean --all -f -y
 
