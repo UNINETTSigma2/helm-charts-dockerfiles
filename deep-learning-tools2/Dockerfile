@@ -1,4 +1,4 @@
-FROM sigma2as/jupyter-spark:20230824-008da3b
+FROM sigma2as/jupyter-spark:20231006-b3b6054
 LABEL maintainer = "contact@sigma2.no"
 
 USER root
@@ -20,9 +20,9 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/mpi/lib:/usr/local/cuda/lib:/usr/local/cuda/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all \
-    PKG_KERAS_VERSION=2.12.0 \
-    PKG_TENSORFLOW_VERSION=2.12.1 \
-    PKG_TENSORFLOW_PROBABILITY_VERSION=0.20.0 \
+    PKG_KERAS_VERSION=2.14.0 \
+    PKG_TENSORFLOW_VERSION=2.14.0 \
+    PKG_TENSORFLOW_PROBABILITY_VERSION=0.22.0 \
     PKG_PYTORCH_VERSION=2.0.0 \
     PKG_XGBOOST_VERSION=1.7.6 \
     PKG_CATBOOST_VERSION=1.2 \
@@ -32,7 +32,7 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 RUN mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge \
     hyperopt==0.2.7 \
-    "keras==$PKG_KERAS_VERSION" \
+    #"keras==$PKG_KERAS_VERSION" \
     feather-format==0.4.1 \
     plotnine==0.12.2 \
     isoweek==1.3.3 \
@@ -40,9 +40,9 @@ RUN mamba config --set channel_priority strict && \
     hypothesis==6.82.6 \
     mlflow==2.6.0 \
     "lightgbm==$PKG_LIGHTGBM_VERSION" \
-    "tensorflow==$PKG_TENSORFLOW_VERSION" \
-    "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
-    tensorboardx==2.6.2 \
+    #"tensorflow==$PKG_TENSORFLOW_VERSION" \
+    #"tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
+    tensorboardx==2.6.2.2 \
     "xgboost==$PKG_XGBOOST_VERSION" \
     "catboost==$PKG_CATBOOST_VERSION" \
     sentencepiece==0.1.99 \
@@ -57,7 +57,7 @@ RUN mamba config --set channel_priority strict && \
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
     ##hyperopt \
     ##pycuda \
-    ##"keras==$PKG_KERAS_VERSION" \
+    "keras==$PKG_KERAS_VERSION" \
     pandas-summary \
     sklearn_pandas \
     ##feather-format \
@@ -68,9 +68,9 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     ##mlflow \
     ##"lightgbm==$PKG_LIGHTGBM_VERSION" \
     opencv-python \
-    ##tensorflow==$PKG_TENSORFLOW_VERSION" \
-    ##"tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
-    ####"tensorboard-plugin-profile==$PKG_TENSORFLOW_VERSION" \
+    "tensorflow==$PKG_TENSORFLOW_VERSION" \
+    "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
+    "tensorboard-plugin-profile==$PKG_TENSORFLOW_VERSION" \
     ##"tensorboardx" \
     #"xgboost==$PKG_XGBOOST_VERSION" \
     #"catboost==$PKG_CATBOOST_VERSION" \
