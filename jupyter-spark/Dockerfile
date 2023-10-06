@@ -6,7 +6,7 @@
 # SciPy: https://github.com/jupyter/docker-stacks/blob/main/scipy-notebook/Dockerfile
 # Minimal: https://github.com/jupyter/docker-stacks/blob/main/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
-FROM jupyter/all-spark-notebook:52a999a554fe  as miniconda
+FROM jupyter/all-spark-notebook:7e1a19a8427f  as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -27,14 +27,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
 
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 
-FROM jupyter/all-spark-notebook:52a999a554fe
+FROM jupyter/all-spark-notebook:7e1a19a8427f
 LABEL maintainer = "contact@sigma2.no"
 USER root
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.3 \
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.4 \
 	PKG_CUDA_VERSION=11.7.1
 
 # Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.7.1/ubuntu2204/base/Dockerfile
@@ -151,8 +151,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 
 RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
-
+    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
+    echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
+    ln -s /usr/local/cuda/include/* /usr/include/
 
 ENV TZ="Europe/Oslo" \
 	NB_UID=999 \
@@ -186,6 +187,10 @@ COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
 
 COPY --chown=notebook:notebook .jupyter/ /etc/default/jupyter
 RUN chmod go+w -R "$HOME"
+
+RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \
+    && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
+    && ldconfig
 
 RUN fix-permissions $CONDA_DIR
 
