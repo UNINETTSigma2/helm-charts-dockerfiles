@@ -11,7 +11,7 @@ USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
     NB_UID=999 \
-    NB_GID=999 \
+    NB_GID=999
 
 RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-utils && \
     mamba config --set channel_priority strict && \
