@@ -31,7 +31,7 @@ function build_image() {
     fi
 }
 
-for rawd in $(ls -dr */)
+for rawd in $(ls -d */)
 do
     directory=$(echo $rawd|sed 's/\///')
     if test -f "$directory/Dockerfile"
@@ -45,7 +45,7 @@ do
         cd ..
     else
         cd $directory
-        for innerawd in $(ls -dr */)
+        for innerawd in $(ls -d */)
         do
             innerdir=$(echo $innerawd|sed 's/\///')
             tag="$(git log -n 1 --pretty=format:%cd --date=short -- $innerdir| sed s/-//g)-$(git log -n 1 --pretty=format:%h -- $innerdir)"
