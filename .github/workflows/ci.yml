@@ -13,7 +13,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-dockerfiles.outputs.matrix }}
     steps:
-    - uses: actions/checkout@v2 
+    - uses: actions/checkout@v3
     - id: set-dockerfiles
       run: |
         #echo "::set-output name=matrix::$(./paths_to_dockerfile.sh | jq .)"
@@ -44,7 +44,7 @@ jobs:
     strategy:
       matrix: ${{fromJSON(needs.matrix.outputs.matrix)}}
     steps:
-      - uses: actions/checkout@v2 
+      - uses: actions/checkout@v3
       - uses: hadolint/hadolint-action@v1.5.0
         with:
           dockerfile: ${{ matrix.dockerfiles }}
@@ -54,7 +54,7 @@ jobs:
     # Should consider to use https://github.com/marketplace/actions/build-and-push-docker-images instead, but requires rewrite
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with: 
           fetch-depth: 0
       - uses: docker/setup-qemu-action@v1
