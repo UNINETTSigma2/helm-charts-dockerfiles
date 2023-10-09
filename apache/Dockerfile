@@ -15,7 +15,7 @@ RUN chgrp 48 /var/{log,run}/httpd
 RUN chmod g+rwx /var/{log,run}/httpd
 
 # Simple startup script to avoid some issues observed with container restart
-ADD run-httpd.sh /run-httpd.sh
+COPY run-httpd.sh /run-httpd.sh
 RUN chgrp 48 /run-httpd.sh && chmod g+rx /run-httpd.sh
 
 COPY project.conf /etc/httpd/conf.d/
