@@ -95,9 +95,9 @@ ENV HOME=/home/vncuser \
     XFCE_PANEL_MIGRATE_DEFAULT=true
 
 WORKDIR $HOME
-ADD ./src/common/install/ $INST_SCRIPTS/
-ADD ./src/ubuntu/install/ $INST_SCRIPTS/
-ADD ./src/common/xfce/ $HOME/
+COPY ./src/common/install/ $INST_SCRIPTS/
+COPY ./src/ubuntu/install/ $INST_SCRIPTS/
+COPY ./src/common/xfce/ $HOME/
 
 ### Install xvnc-server & noVNC - HTML5 based VNC viewer
 RUN $INST_SCRIPTS/tigervnc.sh &&   \
@@ -106,7 +106,7 @@ RUN $INST_SCRIPTS/tigervnc.sh &&   \
     $INST_SCRIPTS/libnss_wrapper.sh
 
 # configure startup
-ADD ./src/common/scripts $STARTUPDIR
+COPY ./src/common/scripts $STARTUPDIR
 RUN $INST_SCRIPTS/set_user_permission.sh $STARTUPDIR $HOME /headless
 ENV HOME=""
 
