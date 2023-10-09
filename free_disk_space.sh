@@ -34,14 +34,17 @@ dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
 df -h
 echo "Removing large packages"
 sudo apt-get remove -y '^ghc-8.*'
+sudo apt-get remove -y '^ghc-9.*'
 sudo apt-get remove -y '^dotnet-.*'
 sudo apt-get remove -y '^llvm-.*'
 sudo apt-get remove -y 'php.*'
-sudo apt-get remove -y azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell mono-devel
+sudo apt-get remove -y azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell mono-devel microsoft-edge-stable
 sudo apt-get autoremove -y
 sudo apt-get clean
 df -h
 echo "Removing large directories"
 # deleting 15GB
 rm -rf /usr/share/dotnet/
+rm -rf /usr/lib/dotnet/
+rm -rf /usr/local/share/dotnet/
 df -h
