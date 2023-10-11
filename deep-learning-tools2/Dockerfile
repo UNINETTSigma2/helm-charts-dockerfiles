@@ -1,4 +1,4 @@
-FROM sigma2as/jupyter-spark:20231006-b3b6054
+FROM sigma2as/jupyter-spark:20231011-603e878
 LABEL maintainer = "contact@sigma2.no"
 
 USER root
@@ -23,14 +23,15 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     PKG_KERAS_VERSION=2.14.0 \
     PKG_TENSORFLOW_VERSION=2.14.0 \
     PKG_TENSORFLOW_PROBABILITY_VERSION=0.22.0 \
-    PKG_PYTORCH_VERSION=2.0.0 \
+    PKG_PYTORCH_VERSION=2.1.0 \
     PKG_XGBOOST_VERSION=1.7.6 \
     PKG_CATBOOST_VERSION=1.2 \
     PKG_LIGHTGBM_VERSION=4.0.0\
     PKG_FASTAI_VERSION=2.7.12
 
+
 RUN mamba config --set channel_priority strict && \
-    eatmydata mamba install --quiet --update-all --yes -c conda-forge \
+    eatmydata mamba install --quiet --update-all --yes -c conda-forge -c pytorch\
     hyperopt==0.2.7 \
     #"keras==$PKG_KERAS_VERSION" \
     feather-format==0.4.1 \
@@ -48,8 +49,9 @@ RUN mamba config --set channel_priority strict && \
     sentencepiece==0.1.99 \
     "fastai==$PKG_FASTAI_VERSION" \
     "pytorch==$PKG_PYTORCH_VERSION" \
-    torchtext==0.15.2 \
-    torchvision==0.15.2 \
+    torchtext==0.16.0 \
+    torchvision==0.16.0 \
+    pytorch-cuda==11.8  \
     pycuda==2022.2.2 \
     nvidia-ml-py==12.535.77 \
     && mamba clean --all -f -y
