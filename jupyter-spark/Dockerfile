@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
 
 
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
+USER notebook
 
 FROM jupyter/all-spark-notebook:7e1a19a8427f
 LABEL maintainer = "contact@sigma2.no"
@@ -145,7 +146,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
        sudo && \
     apt-mark hold ${NV_CUDNN_PACKAGE_NAME} ${NV_LIBCUBLAS_PACKAGE_NAME} ${NV_LIBNCCL_PACKAGE_NAME} && \
     apt-mark hold ${NV_LIBCUBLAS_DEV_PACKAGE_NAME} ${NV_LIBNCCL_DEV_PACKAGE_NAME} && \
-    apt-get install -y --only-upgrade openssl && \
+    apt-get install -y --only-upgrade --no-install-recommends openssl && \
     apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* \ && \
     ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
 
@@ -182,7 +183,7 @@ RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version=4.16.1
 
-RUN chown notebook:notebook $CONDA_DIR "$CONDA_DIR/.condatmp"
+RUN chown notebook:notebook "$CONDA_DIR" "$CONDA_DIR/.condatmp"
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
 
 COPY --chown=notebook:notebook .jupyter/ /etc/default/jupyter
@@ -192,7 +193,7 @@ RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/lib
     && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
     && ldconfig
 
-RUN fix-permissions $CONDA_DIR
+RUN fix-permissions "$CONDA_DIR"
 
 USER notebook
 RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-* && \
