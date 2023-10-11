@@ -31,7 +31,7 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 
 
 RUN mamba config --set channel_priority strict && \
-    eatmydata mamba install --quiet --update-all --yes -c conda-forge -c pytorch\
+    eatmydata mamba install --quiet --update-all --yes -c conda-forge -c pytorch -c nvidia\
     hyperopt==0.2.7 \
     #"keras==$PKG_KERAS_VERSION" \
     feather-format==0.4.1 \
