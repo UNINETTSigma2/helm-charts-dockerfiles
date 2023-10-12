@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 
 RUN mkdir -p /var/log/tensorboard/ /usr/local/test-scripts && chmod o+w /var/log/tensorboard/  && \
-    wget https://storage.googleapis.com/tensorflow_docs/docs/site/en/tutorials/images/cnn.ipynb -O /usr/local/test-scripts/tf-cnn.ipynb && \
-    wget https://raw.githubusercontent.com/pytorch/examples/master/mnist/main.py -O /usr/local/test-scripts/pytorch-mnist.py
+    wget --progress=dot:giga https://storage.googleapis.com/tensorflow_docs/docs/site/en/tutorials/images/cnn.ipynb -O /usr/local/test-scripts/tf-cnn.ipynb && \
+    wget --progress=dot:giga https://raw.githubusercontent.com/pytorch/examples/master/mnist/main.py -O /usr/local/test-scripts/pytorch-mnist.py
 
 USER notebook
 ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
@@ -23,17 +23,17 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     PKG_KERAS_VERSION=2.14.0 \
     PKG_TENSORFLOW_VERSION=2.14.0 \
     PKG_TENSORFLOW_PROBABILITY_VERSION=0.22.0 \
-    PKG_PYTORCH_VERSION=2.1.0 \
+    PKG_PYTORCH_VERSION=2.0.1 \
     PKG_XGBOOST_VERSION=1.7.6 \
     PKG_CATBOOST_VERSION=1.2 \
     PKG_LIGHTGBM_VERSION=4.0.0\
     PKG_FASTAI_VERSION=2.7.12
 
 
+
 RUN mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge -c pytorch -c nvidia\
     hyperopt==0.2.7 \
-    #"keras==$PKG_KERAS_VERSION" \
     feather-format==0.4.1 \
     plotnine==0.12.2 \
     isoweek==1.3.3 \
@@ -41,51 +41,30 @@ RUN mamba config --set channel_priority strict && \
     hypothesis==6.82.6 \
     mlflow==2.6.0 \
     "lightgbm==$PKG_LIGHTGBM_VERSION" \
-    #"tensorflow==$PKG_TENSORFLOW_VERSION" \
-    #"tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
     tensorboardx==2.6.2.2 \
     "xgboost==$PKG_XGBOOST_VERSION" \
     "catboost==$PKG_CATBOOST_VERSION" \
     sentencepiece==0.1.99 \
     "fastai==$PKG_FASTAI_VERSION" \
     "pytorch==$PKG_PYTORCH_VERSION" \
-    torchtext==0.16.0 \
-    torchvision==0.16.0 \
+    torchtext==0.15.2 \
+    torchvision==0.15.2 \
     pytorch-cuda==11.8  \
     pycuda==2022.2.2 \
     nvidia-ml-py==12.535.77 \
     && mamba clean --all -f -y
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
-    ##hyperopt \
-    ##pycuda \
     "keras==$PKG_KERAS_VERSION" \
     pandas-summary \
     sklearn_pandas \
-    ##feather-format \
-    ##plotnine \
-    ##isoweek \
-    ##kaggle \
-    ##hypothesis \
-    ##mlflow \
-    ##"lightgbm==$PKG_LIGHTGBM_VERSION" \
     opencv-python \
     "tensorflow==$PKG_TENSORFLOW_VERSION" \
     "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
     "tensorboard-plugin-profile==$PKG_TENSORFLOW_VERSION" \
-    ##"tensorboardx" \
-    #"xgboost==$PKG_XGBOOST_VERSION" \
-    #"catboost==$PKG_CATBOOST_VERSION" \
-    # sentencepiece \
-    #"fastai==$PKG_FASTAI_VERSION" \
-    #"torch==$PKG_PYTORCH_VERSION" \
-    #torchtext \
-    #torchvision \
-    #nvidia-ml-py3 \
-    && mamba clean -y --all && \
-    jupyter lab build
-
-RUN rm -fr /home/notebook/.cache/yarn
-RUN dd if=/dev/zero of=testfile bs=1M count=1024
+    && mamba clean -y -f --all && \
+    jupyter lab build && \
+    rm -fr /home/notebook/.cache/yarn && \
+    dd if=/dev/zero of=testfile bs=1M count=1024
 
 COPY start-notebook.sh /usr/local/bin/

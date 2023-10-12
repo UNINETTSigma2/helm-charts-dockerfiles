@@ -90,26 +90,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
        build-essential \
-       cuda-cudart-11-8=${NV_CUDA_CUDART_VERSION} \
-       ${NV_CUDA_COMPAT_PACKAGE} \
-       cuda-libraries-11-8=${NV_CUDA_LIB_VERSION} \
-       ${NV_LIBNPP_PACKAGE} \
-       cuda-nvtx-11-8=${NV_NVTX_VERSION} \
-       libcusparse-11-8=${NV_LIBCUSPARSE_VERSION} \
-       ${NV_LIBCUBLAS_PACKAGE} \
-       ${NV_LIBNCCL_PACKAGE} \
-       ${NV_CUDNN_PACKAGE} \
-        cuda-cudart-dev-11-8=${NV_CUDA_CUDART_DEV_VERSION} \
-        cuda-command-line-tools-11-8=${NV_CUDA_LIB_VERSION} \
-        cuda-minimal-build-11-8=${NV_CUDA_LIB_VERSION} \
-        cuda-libraries-dev-11-8=${NV_CUDA_LIB_VERSION} \
-        cuda-nvml-dev-11-8=${NV_NVML_DEV_VERSION} \
-        ${NV_NVPROF_DEV_PACKAGE} \
-        ${NV_LIBNPP_DEV_PACKAGE} \
-        libcusparse-dev-11-8=${NV_LIBCUSPARSE_DEV_VERSION} \
-        ${NV_LIBCUBLAS_DEV_PACKAGE} \
-        ${NV_LIBNCCL_DEV_PACKAGE} \
-        ${NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE} \
+       cuda-cudart-11-8="${NV_CUDA_CUDART_VERSION}" \
+       "${NV_CUDA_COMPAT_PACKAGE}" \
+       cuda-libraries-11-8="${NV_CUDA_LIB_VERSION}" \
+       "${NV_LIBNPP_PACKAGE}" \
+       cuda-nvtx-11-8="${NV_NVTX_VERSION}" \
+       libcusparse-11-8="${NV_LIBCUSPARSE_VERSION}" \
+       "${NV_LIBCUBLAS_PACKAGE}" \
+       "${NV_LIBNCCL_PACKAGE}" \
+       "${NV_CUDNN_PACKAGE}" \
+        cuda-cudart-dev-11-8="${NV_CUDA_CUDART_DEV_VERSION}" \
+        cuda-command-line-tools-11-8="${NV_CUDA_LIB_VERSION}" \
+        cuda-minimal-build-11-8="${NV_CUDA_LIB_VERSION}" \
+        cuda-libraries-dev-11-8="${NV_CUDA_LIB_VERSION}" \
+        cuda-nvml-dev-11-8="${NV_NVML_DEV_VERSION}" \
+        "${NV_NVPROF_DEV_PACKAGE}" \
+        "${NV_LIBNPP_DEV_PACKAGE}" \
+        libcusparse-dev-11-8="${NV_LIBCUSPARSE_DEV_VERSION}" \
+        "${NV_LIBCUBLAS_DEV_PACKAGE}" \
+        "${NV_LIBNCCL_DEV_PACKAGE}" \
+        "${NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE}" \
        libfreetype6-dev \
        libhdf5-serial-dev \
        libzmq3-dev \
@@ -144,8 +144,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
        python3-netcdf4 \
        netcat \
        sudo && \
-    apt-mark hold ${NV_CUDNN_PACKAGE_NAME} ${NV_LIBCUBLAS_PACKAGE_NAME} ${NV_LIBNCCL_PACKAGE_NAME} && \
-    apt-mark hold ${NV_LIBCUBLAS_DEV_PACKAGE_NAME} ${NV_LIBNCCL_DEV_PACKAGE_NAME} && \
+    apt-mark hold "${NV_CUDNN_PACKAGE_NAME}" "${NV_LIBCUBLAS_PACKAGE_NAME}" "${NV_LIBNCCL_PACKAGE_NAME}" && \
+    apt-mark hold "${NV_LIBCUBLAS_DEV_PACKAGE_NAME}" "${NV_LIBNCCL_DEV_PACKAGE_NAME}" && \
     apt-get install -y --only-upgrade --no-install-recommends openssl && \
     apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* \ && \
     ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
