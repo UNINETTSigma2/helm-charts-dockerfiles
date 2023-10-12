@@ -20,8 +20,8 @@ function build_image() {
 	    MAYBE_ARGS="--label $v $MAYBE_ARGS"
 	done
 
-#	docker build $MAYBE_ARGS --cache-from="quay.io/nird-toolkit/$1:$3" -t $img .
-	docker build $MAYBE_ARGS --cache-from="docker.io/sigma2as/$1:$3" -t $img .
+   docker build $MAYBE_ARGS --no-cache -t $img .
+	#docker build $MAYBE_ARGS --cache-from="docker.io/sigma2as/$1:$3" -t $img .
 
 	
 	docker push $img

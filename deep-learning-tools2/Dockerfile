@@ -31,26 +31,26 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 
 
 RUN mamba config --set channel_priority strict && \
-    eatmydata mamba install --quiet --update-all --yes -c conda-forge -c pytorch -c nvidia\
-    #hyperopt==0.2.7 \
-    #feather-format==0.4.1 \
-    #plotnine==0.12.2 \
-    #isoweek==1.3.3 \
-    #kaggle==1.5.16 \
-    #hypothesis==6.82.6 \
-    #mlflow==2.6.0 \
-    #"lightgbm==$PKG_LIGHTGBM_VERSION" \
-    tensorboardx==2.6.2.2 \
-    #"xgboost==$PKG_XGBOOST_VERSION" \
-    #"catboost==$PKG_CATBOOST_VERSION" \
-    #sentencepiece==0.1.99 \
-    #"fastai==$PKG_FASTAI_VERSION" \
-    "pytorch==$PKG_PYTORCH_VERSION" \
-    torchtext==0.15.2 \
-    torchvision==0.15.2 \
-    pytorch-cuda==11.8  \
-    #pycuda==2022.2.2 \
-    #nvidia-ml-py==12.535.77 \
+    eatmydata mamba install --quiet --update-all --yes -c conda-forge \
+    hyperopt==0.2.7 \
+    feather-format==0.4.1 \
+    plotnine==0.12.2 \
+    isoweek==1.3.3 \
+    kaggle==1.5.16 \
+    hypothesis==6.82.6 \
+    mlflow==2.6.0 \
+    "lightgbm==$PKG_LIGHTGBM_VERSION" \
+    #tensorboardx==2.6.2.2 \
+    "xgboost==$PKG_XGBOOST_VERSION" \
+    "catboost==$PKG_CATBOOST_VERSION" \
+    sentencepiece==0.1.99 \
+    "fastai==$PKG_FASTAI_VERSION" \
+    #"pytorch==$PKG_PYTORCH_VERSION" \
+    #torchtext==0.15.2 \
+    #torchvision==0.15.2 \
+    #pytorch-cuda==11.8  \
+    pycuda==2022.2.2 \
+    nvidia-ml-py==12.535.77 \
     && mamba clean --all -f -y
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
