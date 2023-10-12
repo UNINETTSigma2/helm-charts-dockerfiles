@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
 
 
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
+USER notebook
 
 FROM jupyter/all-spark-notebook:7e1a19a8427f
 LABEL maintainer = "contact@sigma2.no"
@@ -43,41 +44,41 @@ ENV APP_UID=999 \
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
 # might also be useful for CUDA packages
 
-ENV NV_CUDA_LIB_VERSION=11.7.1-1  \
-    NV_CUDNN_VERSION=8.5.0.96 \
+ENV NV_CUDA_LIB_VERSION=11.8.0-1  \
+    NV_CUDNN_VERSION=8.9.0.131 \
     NV_CUDNN_PACKAGE_NAME="libcudnn8" \
-    NV_CUDA_CUDART_VERSION=11.7.99-1 \
-    NV_CUDA_COMPAT_PACKAGE=cuda-compat-11-7 \
-    CUDA_VERSION=11.7.1  \
-    NV_NVTX_VERSION=11.7.91-1 \
-    NV_LIBNPP_VERSION=11.7.4.75-1 \
-    NV_LIBCUSPARSE_VERSION=11.7.4.91-1 \
-    NV_LIBCUBLAS_PACKAGE_NAME=libcublas-11-7 \
-    NV_LIBCUBLAS_VERSION=11.10.3.66-1 \
+    NV_CUDA_CUDART_VERSION=11.8.89-1 \
+    NV_CUDA_COMPAT_PACKAGE=cuda-compat-11-8 \
+    CUDA_VERSION=11.8.0  \
+    NV_NVTX_VERSION=11.8.86-1 \
+    NV_LIBNPP_VERSION=11.8.0.86-1 \
+    NV_LIBCUSPARSE_VERSION=11.7.5.86-1 \
+    NV_LIBCUBLAS_PACKAGE_NAME=libcublas-11-8 \
+    NV_LIBCUBLAS_VERSION=11.11.3.6-1 \
     NV_LIBNCCL_PACKAGE_NAME=libnccl2 \
-    NV_LIBNCCL_PACKAGE_VERSION=2.13.4-1 \
-    NV_CUDA_CUDART_DEV_VERSION=11.7.99-1 \
-    NV_NVML_DEV_VERSION=11.7.91-1 \
-    NV_NVPROF_VERSION=11.7.101-1 \
-    NCCL_VERSION=2.13.4-1 \
-    NV_LIBNPP_DEV_VERSION=11.7.4.75-1 \
-    NV_LIBCUSPARSE_DEV_VERSION=11.7.4.91-1 \
-    NV_LIBCUBLAS_DEV_VERSION=11.10.3.66-1 \
-    NV_LIBCUBLAS_DEV_PACKAGE_NAME=libcublas-dev-11-7 \
+    NV_LIBNCCL_PACKAGE_VERSION=2.15.5-1 \
+    NV_CUDA_CUDART_DEV_VERSION=11.8.89-1 \
+    NV_NVML_DEV_VERSION=11.8.86-1 \
+    NV_NVPROF_VERSION=11.8.87-1 \
+    NCCL_VERSION=2.15.5-1 \
+    NV_LIBNPP_DEV_VERSION=11.8.0.86-1 \
+    NV_LIBCUSPARSE_DEV_VERSION=11.7.5.86-1 \
+    NV_LIBCUBLAS_DEV_VERSION=11.11.3.6-1 \
+    NV_LIBCUBLAS_DEV_PACKAGE_NAME=libcublas-dev-11-8 \
     NV_LIBNCCL_DEV_PACKAGE_NAME=libnccl-dev \
-    NV_LIBNCCL_DEV_PACKAGE_VERSION=2.13.4-1 \
-    NV_CUDA_NSIGHT_COMPUTE_VERSION=11.7.1-1
+    NV_LIBNCCL_DEV_PACKAGE_VERSION=2.15.5-1 \
+    NV_CUDA_NSIGHT_COMPUTE_VERSION=11.8.0-1
 
-ENV NV_CUDNN_PACKAGE="libcudnn8=$NV_CUDNN_VERSION-1+cuda11.7" \
-    PKG_CUDNN_VERSION="$NV_CUDNN_VERSION-1+cuda11.7" \
-    NV_LIBNPP_PACKAGE="libnpp-11-7=${NV_LIBNPP_VERSION}"\
+ENV NV_CUDNN_PACKAGE="libcudnn8=$NV_CUDNN_VERSION-1+cuda11.8" \
+    PKG_CUDNN_VERSION="$NV_CUDNN_VERSION-1+cuda11.8" \
+    NV_LIBNPP_PACKAGE="libnpp-11-8=${NV_LIBNPP_VERSION}"\
     NV_LIBCUBLAS_PACKAGE="${NV_LIBCUBLAS_PACKAGE_NAME}=${NV_LIBCUBLAS_VERSION}" \
-    NV_NVPROF_DEV_PACKAGE="cuda-nvprof-11-7=${NV_NVPROF_VERSION}" \
-    NV_LIBNCCL_PACKAGE="${NV_LIBNCCL_PACKAGE_NAME}=${NV_LIBNCCL_PACKAGE_VERSION}+cuda11.7" \
-    NV_LIBNPP_DEV_PACKAGE="libnpp-dev-11-7=${NV_LIBNPP_DEV_VERSION}" \
+    NV_NVPROF_DEV_PACKAGE="cuda-nvprof-11-8=${NV_NVPROF_VERSION}" \
+    NV_LIBNCCL_PACKAGE="${NV_LIBNCCL_PACKAGE_NAME}=${NV_LIBNCCL_PACKAGE_VERSION}+cuda11.8" \
+    NV_LIBNPP_DEV_PACKAGE="libnpp-dev-11-8=${NV_LIBNPP_DEV_VERSION}" \
     NV_LIBCUBLAS_DEV_PACKAGE="${NV_LIBCUBLAS_DEV_PACKAGE_NAME}=${NV_LIBCUBLAS_DEV_VERSION}"  \
-    NV_LIBNCCL_DEV_PACKAGE="${NV_LIBNCCL_DEV_PACKAGE_NAME}=${NV_LIBNCCL_DEV_PACKAGE_VERSION}+cuda11.7" \
-    NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE="cuda-nsight-compute-11-7=${NV_CUDA_NSIGHT_COMPUTE_VERSION}"
+    NV_LIBNCCL_DEV_PACKAGE="${NV_LIBNCCL_DEV_PACKAGE_NAME}=${NV_LIBNCCL_DEV_PACKAGE_VERSION}+cuda11.8" \
+    NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE="cuda-nsight-compute-11-8=${NV_CUDA_NSIGHT_COMPUTE_VERSION}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -89,26 +90,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
        build-essential \
-       cuda-cudart-11-7=${NV_CUDA_CUDART_VERSION} \
-       ${NV_CUDA_COMPAT_PACKAGE} \
-       cuda-libraries-11-7=${NV_CUDA_LIB_VERSION} \
-       ${NV_LIBNPP_PACKAGE} \
-       cuda-nvtx-11-7=${NV_NVTX_VERSION} \
-       libcusparse-11-7=${NV_LIBCUSPARSE_VERSION} \
-       ${NV_LIBCUBLAS_PACKAGE} \
-       ${NV_LIBNCCL_PACKAGE} \
-       ${NV_CUDNN_PACKAGE} \
-        cuda-cudart-dev-11-7=${NV_CUDA_CUDART_DEV_VERSION} \
-        cuda-command-line-tools-11-7=${NV_CUDA_LIB_VERSION} \
-        cuda-minimal-build-11-7=${NV_CUDA_LIB_VERSION} \
-        cuda-libraries-dev-11-7=${NV_CUDA_LIB_VERSION} \
-        cuda-nvml-dev-11-7=${NV_NVML_DEV_VERSION} \
-        ${NV_NVPROF_DEV_PACKAGE} \
-        ${NV_LIBNPP_DEV_PACKAGE} \
-        libcusparse-dev-11-7=${NV_LIBCUSPARSE_DEV_VERSION} \
-        ${NV_LIBCUBLAS_DEV_PACKAGE} \
-        ${NV_LIBNCCL_DEV_PACKAGE} \
-        ${NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE} \
+       cuda-cudart-11-8="${NV_CUDA_CUDART_VERSION}" \
+       "${NV_CUDA_COMPAT_PACKAGE}" \
+       "cuda-libraries-11-8=${NV_CUDA_LIB_VERSION}" \
+       "${NV_LIBNPP_PACKAGE}" \
+       cuda-nvtx-11-8="${NV_NVTX_VERSION}" \
+       libcusparse-11-8="${NV_LIBCUSPARSE_VERSION}" \
+       "${NV_LIBCUBLAS_PACKAGE}" \
+       "${NV_LIBNCCL_PACKAGE}" \
+       "${NV_CUDNN_PACKAGE}" \
+        cuda-cudart-dev-11-8="${NV_CUDA_CUDART_DEV_VERSION}" \
+        cuda-command-line-tools-11-8="${NV_CUDA_LIB_VERSION}"\
+        cuda-minimal-build-11-8="${NV_CUDA_LIB_VERSION}" \
+        cuda-libraries-dev-11-8="${NV_CUDA_LIB_VERSION}" \
+        cuda-nvml-dev-11-8="${NV_NVML_DEV_VERSION}" \
+        "${NV_NVPROF_DEV_PACKAGE}" \
+        "${NV_LIBNPP_DEV_PACKAGE}" \
+        libcusparse-dev-11-8="${NV_LIBCUSPARSE_DEV_VERSION}" \
+        "${NV_LIBCUBLAS_DEV_PACKAGE}" \
+        "${NV_LIBNCCL_DEV_PACKAGE}" \
+        "${NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE}" \
        libfreetype6-dev \
        libhdf5-serial-dev \
        libzmq3-dev \
@@ -142,12 +143,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
        libnetcdf-dev \
        python3-netcdf4 \
        netcat \
-        "eatmydata" \
-      "libglfw3" \
+       "eatmydata" \
+       "libglfw3" \
        sudo && \
-    apt-mark hold ${NV_CUDNN_PACKAGE_NAME} ${NV_LIBCUBLAS_PACKAGE_NAME} ${NV_LIBNCCL_PACKAGE_NAME} && \
-    apt-mark hold ${NV_LIBCUBLAS_DEV_PACKAGE_NAME} ${NV_LIBNCCL_DEV_PACKAGE_NAME} && \
-    apt-get install -y --only-upgrade openssl && \
+    apt-mark hold "${NV_CUDNN_PACKAGE_NAME}" "${NV_LIBCUBLAS_PACKAGE_NAME}" "${NV_LIBNCCL_PACKAGE_NAME}" && \
+    apt-mark hold "${NV_LIBCUBLAS_DEV_PACKAGE_NAME}" "${NV_LIBNCCL_DEV_PACKAGE_NAME}" && \
+    apt-get install -y --only-upgrade --no-install-recommends openssl && \
     apt-get -y clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* \ && \
     ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
 
@@ -169,13 +170,14 @@ ENV TZ="Europe/Oslo" \
     PATH=$PATH:$SPARK_HOME/bin \
     XDG_CACHE_HOME=/home/notebook/.cache/ \
     PKG_KERAS_VERSION=2.14.0 \
-        PKG_TENSORFLOW_VERSION=2.14.0 \
-        PKG_TENSORFLOW_PROBABILITY_VERSION=0.22.0 \
-        PKG_PYTORCH_VERSION=2.0.0 \
-        PKG_XGBOOST_VERSION=1.7.6 \
-        PKG_CATBOOST_VERSION=1.2 \
-        PKG_LIGHTGBM_VERSION=4.0.0\
-        PKG_FASTAI_VERSION=2.7.12
+    PKG_TENSORFLOW_VERSION=2.14.0 \
+    PKG_TENSORFLOW_PROBABILITY_VERSION=0.22.0 \
+    PKG_PYTORCH_VERSION=2.0.0 \
+    PKG_XGBOOST_VERSION=1.7.6 \
+    PKG_XGBOOST_VERSION=1.7.6 \
+    PKG_CATBOOST_VERSION=1.2 \
+    PKG_LIGHTGBM_VERSION=4.0.0\
+    PKG_FASTAI_VERSION=2.7.12
 
 
 RUN groupadd -g "$APP_GID" notebook && \
@@ -191,68 +193,14 @@ COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels
 
 RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf  && \
     mkdir -p /var/log/tensorboard/ /usr/local/test-scripts && chmod o+w /var/log/tensorboard/  && \
-    wget https://storage.googleapis.com/tensorflow_docs/docs/site/en/tutorials/images/cnn.ipynb -O /usr/local/test-scripts/tf-cnn.ipynb && \
-    wget https://raw.githubusercontent.com/pytorch/examples/master/mnist/main.py -O /usr/local/test-scripts/pytorch-mnist.py
+    wget --progress=dot:giga https://storage.googleapis.com/tensorflow_docs/docs/site/en/tutorials/images/cnn.ipynb -O /usr/local/test-scripts/tf-cnn.ipynb && \
+    wget --progress=dot:giga https://raw.githubusercontent.com/pytorch/examples/master/mnist/main.py -O /usr/local/test-scripts/pytorch-mnist.py
 
-
-RUN mamba config --set channel_priority strict && \
-    eatmydata mamba install --quiet --update-all --yes -c conda-forge \
-    hyperopt==0.2.7 \
-    #"keras==$PKG_KERAS_VERSION" \
-    feather-format==0.4.1 \
-    plotnine==0.12.2 \
-    isoweek==1.3.3 \
-    kaggle==1.5.16 \
-    hypothesis==6.82.6 \
-    mlflow==2.6.0 \
-    "lightgbm==$PKG_LIGHTGBM_VERSION" \
-    #"tensorflow==$PKG_TENSORFLOW_VERSION" \
-    #"tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
-    tensorboardx==2.6.2.2 \
-    "xgboost==$PKG_XGBOOST_VERSION" \
-    "catboost==$PKG_CATBOOST_VERSION" \
-    sentencepiece==0.1.99 \
-    "fastai==$PKG_FASTAI_VERSION" \
-    "pytorch==$PKG_PYTORCH_VERSION" \
-    torchtext==0.15.2 \
-    torchvision==0.15.2 \
-    pycuda==2022.2.2 \
-    nvidia-ml-py==12.535.77 \
-    && mamba clean --all -f -y
-
-RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
-    ##hyperopt \
-    ##pycuda \
-    "keras==$PKG_KERAS_VERSION" \
-    pandas-summary \
-    sklearn_pandas \
-    ##feather-format \
-    ##plotnine \
-    ##isoweek \
-    ##kaggle \
-    ##hypothesis \
-    ##mlflow \
-    ##"lightgbm==$PKG_LIGHTGBM_VERSION" \
-    opencv-python \
-    "tensorflow==$PKG_TENSORFLOW_VERSION" \
-    "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
-    "tensorboard-plugin-profile==$PKG_TENSORFLOW_VERSION" \
-    ##"tensorboardx" \
-    #"xgboost==$PKG_XGBOOST_VERSION" \
-    #"catboost==$PKG_CATBOOST_VERSION" \
-    # sentencepiece \
-    #"fastai==$PKG_FASTAI_VERSION" \
-    #"torch==$PKG_PYTORCH_VERSION" \
-    #torchtext \
-    #torchvision \
-    #nvidia-ml-py3 \
-    && mamba clean -y --all && \
-    jupyter lab build
 
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version=4.16.1
 
-RUN chown notebook:notebook $CONDA_DIR "$CONDA_DIR/.condatmp"
+RUN chown notebook:notebook "$CONDA_DIR" "$CONDA_DIR/.condatmp"
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
 
 COPY --chown=notebook:notebook .jupyter/ /etc/default/jupyter
@@ -261,6 +209,41 @@ RUN chmod go+w -R "$HOME"
 RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \
     && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
     && ldconfig
+
+
+RUN mamba config --set channel_priority strict && \
+    eatmydata mamba install --quiet --update-all --yes -c conda-forge \
+    hyperopt==0.2.7 \
+    feather-format==0.4.1 \
+    plotnine==0.12.2 \
+    isoweek==1.3.3 \
+    kaggle==1.5.16 \
+    hypothesis==6.82.6 \
+    mlflow==2.6.0 \
+    "lightgbm==$PKG_LIGHTGBM_VERSION" \
+    tensorboardx==2.6.2.2 \
+    "xgboost==$PKG_XGBOOST_VERSION" \
+    "catboost==$PKG_CATBOOST_VERSION" \
+    sentencepiece==0.1.99 \
+    "fastai==$PKG_FASTAI_VERSION" \
+    #"pytorch==$PKG_PYTORCH_VERSION" \
+    #torchtext==0.15.2 \
+    #torchvision==0.15.2 \
+    pycuda==2022.2.2 \
+    nvidia-ml-py==12.535.77 \
+    && mamba clean --all -f -y
+
+RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
+    "keras==$PKG_KERAS_VERSION" \
+    pandas-summary \
+    sklearn_pandas \
+    opencv-python \
+    "tensorflow==$PKG_TENSORFLOW_VERSION" \
+    "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
+    "tensorboard-plugin-profile==$PKG_TENSORFLOW_VERSION" \
+    && mamba clean -y --all && \
+    jupyter lab build
+
 
 RUN fix-permissions $CONDA_DIR
 
