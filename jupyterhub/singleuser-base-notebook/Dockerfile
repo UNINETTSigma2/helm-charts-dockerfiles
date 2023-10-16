@@ -6,7 +6,7 @@
 
 
 
-FROM jupyter/base-notebook:d400e383cc1d as miniconda
+FROM jupyter/base-notebook:4c0c0aa1715f as miniconda
 
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
@@ -17,7 +17,7 @@ RUN mamba config --set channel_priority strict && \
     jupyter server extension enable jupyter_server_proxy --sys-prefix && \
     mamba clean --all -f -y
 
-FROM jupyter/base-notebook:d400e383cc1d
+FROM jupyter/base-notebook:4c0c0aa1715fg
 
 LABEL maintainer = "contact@sigma2.no"
 USER root
