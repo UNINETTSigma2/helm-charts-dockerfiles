@@ -6,7 +6,7 @@
 # SciPy: https://github.com/jupyter/docker-stacks/blob/main/scipy-notebook/Dockerfile
 # Minimal: https://github.com/jupyter/docker-stacks/blob/main/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
-FROM jupyter/all-spark-notebook:7e1a19a8427f  as miniconda
+FROM jupyter/all-spark-notebook:4c0c0aa1715f  as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -19,8 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
     'jupyterlab-github==4.0.0' \
     'jupyter-server-proxy==4.0.0' \
     'ipyparallel==6.3.0' \
-    'plotly==5.16.0' \
-    'xarray==2023.7.0' \
+    'plotly==5.17.0' \
+    'xarray==2023.9.0' \
     'yapf==0.40.1' \
     && mamba clean --all -f -y
 
@@ -28,15 +28,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 USER notebook
 
-FROM jupyter/all-spark-notebook:7e1a19a8427f
+FROM jupyter/all-spark-notebook:4c0c0aa1715f
 LABEL maintainer = "contact@sigma2.no"
 USER root
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.4 \
-	PKG_CUDA_VERSION=11.7.1
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.5 \
+	PKG_CUDA_VERSION=11.8.0
 
 # Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.7.1/ubuntu2204/base/Dockerfile
 # https://www.tensorflow.org/install/gpu
@@ -174,10 +174,9 @@ ENV TZ="Europe/Oslo" \
     PKG_TENSORFLOW_PROBABILITY_VERSION=0.22.0 \
     PKG_PYTORCH_VERSION=2.0.0 \
     PKG_XGBOOST_VERSION=1.7.6 \
-    PKG_XGBOOST_VERSION=1.7.6 \
-    PKG_CATBOOST_VERSION=1.2 \
+    PKG_CATBOOST_VERSION=1.2.2 \
     PKG_LIGHTGBM_VERSION=4.0.0\
-    PKG_FASTAI_VERSION=2.7.12
+    PKG_FASTAI_VERSION=2.7.13
 
 
 RUN groupadd -g "$APP_GID" notebook && \
@@ -212,25 +211,26 @@ RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/lib
 
 
 RUN mamba config --set channel_priority strict && \
-    eatmydata mamba install --quiet --update-all --yes -c conda-forge \
+    eatmydata mamba install --quiet --update-all --yes -c conda-forge -c pytorch -c nvidia\
     hyperopt==0.2.7 \
     feather-format==0.4.1 \
-    plotnine==0.12.2 \
+    plotnine==0.12.3 \
     isoweek==1.3.3 \
     kaggle==1.5.16 \
-    hypothesis==6.82.6 \
-    mlflow==2.6.0 \
+    hypothesis==6.88.0 \
+    mlflow==2.7.1 \
     "lightgbm==$PKG_LIGHTGBM_VERSION" \
-    tensorboardx==2.6.2.2 \
+    tensorboardx==2.6.2 \
     "xgboost==$PKG_XGBOOST_VERSION" \
     "catboost==$PKG_CATBOOST_VERSION" \
     sentencepiece==0.1.99 \
     "fastai==$PKG_FASTAI_VERSION" \
-    #"pytorch==$PKG_PYTORCH_VERSION" \
-    #torchtext==0.15.2 \
-    #torchvision==0.15.2 \
+    pytorch \
+    torchtext \
+    torchvision \
+    pytorch-cuda==11.8  \
     pycuda==2022.2.2 \
-    nvidia-ml-py==12.535.77 \
+    nvidia-ml-py==12.535.108 \
     && mamba clean --all -f -y
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
