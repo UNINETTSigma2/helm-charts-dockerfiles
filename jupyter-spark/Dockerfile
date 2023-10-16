@@ -6,7 +6,7 @@
 # SciPy: https://github.com/jupyter/docker-stacks/blob/main/scipy-notebook/Dockerfile
 # Minimal: https://github.com/jupyter/docker-stacks/blob/main/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
-FROM jupyter/all-spark-notebook:7e1a19a8427f  as miniconda
+FROM jupyter/all-spark-notebook:4c0c0aa1715f  as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -19,8 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
     'jupyterlab-github==4.0.0' \
     'jupyter-server-proxy==4.0.0' \
     'ipyparallel==6.3.0' \
-    'plotly==5.16.0' \
-    'xarray==2023.7.0' \
+    'plotly==5.17.0' \
+    'xarray==2023.9.0' \
     'yapf==0.40.1' \
     && mamba clean --all -f -y
 
@@ -28,14 +28,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 USER notebook
 
-FROM jupyter/all-spark-notebook:7e1a19a8427f
+FROM jupyter/all-spark-notebook:4c0c0aa1715f
 LABEL maintainer = "contact@sigma2.no"
 USER root
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.4 \
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.5 \
 	PKG_CUDA_VERSION=11.8.0
 
 # Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.8.0/ubuntu2204/base/Dockerfile
@@ -44,6 +44,41 @@ ENV APP_UID=999 \
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
 # might also be useful for CUDA packages
 
+ENV NV_CUDA_LIB_VERSION=11.8.0-1  \
+    NV_CUDNN_VERSION=8.9.0.131 \
+    NV_CUDNN_PACKAGE_NAME="libcudnn8" \
+    NV_CUDA_CUDART_VERSION=11.8.89-1 \
+    NV_CUDA_COMPAT_PACKAGE=cuda-compat-11-8 \
+    CUDA_VERSION=11.8.0  \
+    NV_NVTX_VERSION=11.8.86-1 \
+    NV_LIBNPP_VERSION=11.8.0.86-1 \
+    NV_LIBCUSPARSE_VERSION=11.7.5.86-1 \
+    NV_LIBCUBLAS_PACKAGE_NAME=libcublas-11-8 \
+    NV_LIBCUBLAS_VERSION=11.11.3.6-1 \
+    NV_LIBNCCL_PACKAGE_NAME=libnccl2 \
+    NV_LIBNCCL_PACKAGE_VERSION=2.15.5-1 \
+    NV_CUDA_CUDART_DEV_VERSION=11.8.89-1 \
+    NV_NVML_DEV_VERSION=11.8.86-1 \
+    NV_NVPROF_VERSION=11.8.87-1 \
+    NCCL_VERSION=2.15.5-1 \
+    NV_LIBNPP_DEV_VERSION=11.8.0.86-1 \
+    NV_LIBCUSPARSE_DEV_VERSION=11.7.5.86-1 \
+    NV_LIBCUBLAS_DEV_VERSION=11.11.3.6-1 \
+    NV_LIBCUBLAS_DEV_PACKAGE_NAME=libcublas-dev-11-8 \
+    NV_LIBNCCL_DEV_PACKAGE_NAME=libnccl-dev \
+    NV_LIBNCCL_DEV_PACKAGE_VERSION=2.15.5-1 \
+    NV_CUDA_NSIGHT_COMPUTE_VERSION=11.8.0-1
+
+ENV NV_CUDNN_PACKAGE="libcudnn8=$NV_CUDNN_VERSION-1+cuda11.8" \
+    PKG_CUDNN_VERSION="$NV_CUDNN_VERSION-1+cuda11.8" \
+    NV_LIBNPP_PACKAGE="libnpp-11-8=${NV_LIBNPP_VERSION}"\
+    NV_LIBCUBLAS_PACKAGE="${NV_LIBCUBLAS_PACKAGE_NAME}=${NV_LIBCUBLAS_VERSION}" \
+    NV_NVPROF_DEV_PACKAGE="cuda-nvprof-11-8=${NV_NVPROF_VERSION}" \
+    NV_LIBNCCL_PACKAGE="${NV_LIBNCCL_PACKAGE_NAME}=${NV_LIBNCCL_PACKAGE_VERSION}+cuda11.8" \
+    NV_LIBNPP_DEV_PACKAGE="libnpp-dev-11-8=${NV_LIBNPP_DEV_VERSION}" \
+    NV_LIBCUBLAS_DEV_PACKAGE="${NV_LIBCUBLAS_DEV_PACKAGE_NAME}=${NV_LIBCUBLAS_DEV_VERSION}"  \
+    NV_LIBNCCL_DEV_PACKAGE="${NV_LIBNCCL_DEV_PACKAGE_NAME}=${NV_LIBNCCL_DEV_PACKAGE_VERSION}+cuda11.8" \
+    NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE="cuda-nsight-compute-11-8=${NV_CUDA_NSIGHT_COMPUTE_VERSION}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends \

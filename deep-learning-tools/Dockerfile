@@ -38,7 +38,7 @@ ENV APP_UID=999 \
 	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.5 \
 	PKG_CUDA_VERSION=11.8.0
 
-# Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.7.1/ubuntu2204/base/Dockerfile
+# Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.8.0/ubuntu2204/base/Dockerfile
 # https://www.tensorflow.org/install/gpu
 # and
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
@@ -225,9 +225,9 @@ RUN mamba config --set channel_priority strict && \
     "catboost==$PKG_CATBOOST_VERSION" \
     sentencepiece==0.1.99 \
     "fastai==$PKG_FASTAI_VERSION" \
-    pytorch \
-    torchtext \
-    torchvision \
+    "pytorch==$PKG_PYTORCH_VERSION" \
+    torchtext==0.15.0 \
+    torchvision==0.15.0 \
     pytorch-cuda==11.8  \
     pycuda==2022.2.2 \
     nvidia-ml-py==12.535.108 \

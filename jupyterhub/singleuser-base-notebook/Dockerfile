@@ -25,7 +25,7 @@ USER root
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=6.4.x
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.5
 RUN groupadd -g "$APP_GID" notebook && \
     useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
     usermod -G users notebook && chmod go+rwx -R "$CONDA_DIR/bin"
