@@ -7,7 +7,6 @@
 
 
 FROM jupyter/base-notebook:4c0c0aa1715f as miniconda
-
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
     'ipyparallel==6.3.0' \
@@ -17,7 +16,7 @@ RUN mamba config --set channel_priority strict && \
     jupyter server extension enable jupyter_server_proxy --sys-prefix && \
     mamba clean --all -f -y
 
-FROM jupyter/base-notebook:4c0c0aa1715fg
+FROM jupyter/base-notebook:4c0c0aa1715f
 
 LABEL maintainer = "contact@sigma2.no"
 USER root
