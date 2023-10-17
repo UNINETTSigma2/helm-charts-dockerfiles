@@ -225,9 +225,9 @@ RUN mamba config --set channel_priority strict && \
     "catboost==$PKG_CATBOOST_VERSION" \
     sentencepiece==0.1.99 \
     "fastai==$PKG_FASTAI_VERSION" \
-    "pytorch==$PKG_PYTORCH_VERSION" \
-    torchtext==0.15.0 \
-    torchvision==0.15.0 \
+    pytorch \
+    torchtext \
+    torchvision \
     pytorch-cuda==11.8  \
     pycuda==2022.2.2 \
     nvidia-ml-py==12.535.108 \
@@ -241,7 +241,7 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     "tensorflow==$PKG_TENSORFLOW_VERSION" \
     "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
     "tensorboard-plugin-profile==$PKG_TENSORFLOW_VERSION" \
-    && mamba clean -y --all && \
+    && mamba clean -y -f --all && \
     jupyter lab build
 
 

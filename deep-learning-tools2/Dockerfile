@@ -1,4 +1,4 @@
-FROM sigma2as/jupyter-spark:20231011-603e878
+FROM sigma2as/jupyter-spark:20231016-e077f7c
 LABEL maintainer = "contact@sigma2.no"
 
 USER root
@@ -23,24 +23,24 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     PKG_KERAS_VERSION=2.14.0 \
     PKG_TENSORFLOW_VERSION=2.14.0 \
     PKG_TENSORFLOW_PROBABILITY_VERSION=0.22.0 \
-    PKG_PYTORCH_VERSION=2.0.1 \
+    PKG_PYTORCH_VERSION=2.0.0 \
     PKG_XGBOOST_VERSION=1.7.6 \
-    PKG_CATBOOST_VERSION=1.2 \
+    PKG_CATBOOST_VERSION=1.2.2 \
     PKG_LIGHTGBM_VERSION=4.0.0\
-    PKG_FASTAI_VERSION=2.7.12
+    PKG_FASTAI_VERSION=2.7.13
 
 
 RUN mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge -c pytorch -c nvidia\
     hyperopt==0.2.7 \
     feather-format==0.4.1 \
-    plotnine==0.12.2 \
+    plotnine==0.12.3 \
     isoweek==1.3.3 \
     kaggle==1.5.16 \
-    hypothesis==6.82.6 \
-    mlflow==2.6.0 \
+    hypothesis==6.88.0 \
+    mlflow==2.7.1 \
     "lightgbm==$PKG_LIGHTGBM_VERSION" \
-    tensorboardx \
+    tensorboardx==2.6.2 \
     "xgboost==$PKG_XGBOOST_VERSION" \
     "catboost==$PKG_CATBOOST_VERSION" \
     sentencepiece==0.1.99 \
@@ -50,7 +50,7 @@ RUN mamba config --set channel_priority strict && \
     torchvision \
     pytorch-cuda==11.8  \
     pycuda==2022.2.2 \
-    nvidia-ml-py==12.535.77 \
+    nvidia-ml-py==12.535.108 \
     && mamba clean --all -f -y
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
