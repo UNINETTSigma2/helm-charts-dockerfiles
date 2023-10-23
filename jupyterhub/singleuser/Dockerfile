@@ -10,7 +10,7 @@ RUN mamba config --set channel_priority strict && \
     'jupyterlab-github==4.0.0' \
     'jupyter-server-proxy==4.1.0' \
     'ipyparallel==6.3.0' \
-    'yapf==0.40.2' && \
+    'yapf==0.40.1' && \
     mamba clean --all -f -y
 
 FROM jupyter/datascience-notebook:b72e40b2e3b1
