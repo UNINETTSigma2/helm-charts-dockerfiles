@@ -3,7 +3,7 @@
 
 # Minimal: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/base-notebook/Dockerfile
-FROM jupyter/datascience-notebook:b72e40b2e3b1 as miniconda
+FROM quay.io/jupyter/datascience-notebook:b33174154062 as miniconda
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
     'escapism==1.0.1' \
@@ -13,7 +13,7 @@ RUN mamba config --set channel_priority strict && \
     'yapf==0.40.1' && \
     mamba clean --all -f -y
 
-FROM jupyter/datascience-notebook:b72e40b2e3b1
+FROM quay.io/jupyter/datascience-notebook:b33174154062
 
 LABEL maintainer = "contact@sigma2.no"
 USER root
@@ -21,7 +21,7 @@ USER root
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.3 \
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.6 \
 	PKG_CUDA_VERSION=11.8.0
 
 RUN groupadd -g "$APP_GID" notebook && \
