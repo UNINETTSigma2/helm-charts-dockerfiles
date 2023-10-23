@@ -1,5 +1,6 @@
 """
 Utility methods for use in jupyterhub_config.py and dynamic subconfigs.
+
 Methods here can be imported by extraConfig in values.yaml
 """
 import os
@@ -73,6 +74,7 @@ def get_name_env(name, suffix=""):
 
 def _merge_dictionaries(a, b):
     """Merge two dictionaries recursively.
+
     Simplified From https://stackoverflow.com/a/7205107
     """
     merged = a.copy()
@@ -90,7 +92,9 @@ def _merge_dictionaries(a, b):
 def get_config(key, default=None):
     """
     Find a config item of a given name & return it
+
     Parses everything as YAML, so lists and dicts are available too
+
     get_config("a.b.c") returns config['a']['b']['c']
     """
     value = _load_config()
