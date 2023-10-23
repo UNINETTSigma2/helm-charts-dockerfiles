@@ -13,6 +13,9 @@ RUN mamba config --set channel_priority strict && \
     'yapf==0.40.1' && \
     mamba clean --all -f -y
 
+# Pluto doesn't wok as expected, remove related proxy
+RUN mamba uninstall --quiet --yes jupyter-pluto-proxy
+
 FROM jupyter/datascience-notebook:4c0c0aa1715f
 
 LABEL maintainer = "contact@sigma2.no"
