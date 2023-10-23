@@ -3,7 +3,7 @@
 
 # Minimal: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/base-notebook/Dockerfile
-FROM jupyter/datascience-notebook:4c0c0aa1715f as miniconda
+FROM quay.io/jupyter/datascience-notebook:b33174154062 as miniconda
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
     'escapism==1.0.1' \
@@ -13,10 +13,7 @@ RUN mamba config --set channel_priority strict && \
     'yapf==0.40.1' && \
     mamba clean --all -f -y
 
-# Pluto doesn't wok as expected, remove related proxy
-RUN mamba uninstall --quiet --yes jupyter-pluto-proxy
-
-FROM jupyter/datascience-notebook:4c0c0aa1715f
+FROM quay.io/jupyter/datascience-notebook:b33174154062
 
 LABEL maintainer = "contact@sigma2.no"
 USER root
