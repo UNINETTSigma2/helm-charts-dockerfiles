@@ -31,7 +31,7 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 
 
 RUN mamba config --set channel_priority strict && \
-    eatmydata mamba install --quiet --update-all --yes -c conda-forge -c pytorch -c nvidia\
+    eatmydata mamba install --quiet --update-all --yes -c conda-forge\
     hyperopt==0.2.7 \
     feather-format==0.4.1 \
     plotnine==0.12.3 \
@@ -45,10 +45,6 @@ RUN mamba config --set channel_priority strict && \
     "catboost==$PKG_CATBOOST_VERSION" \
     sentencepiece==0.1.99 \
     "fastai==$PKG_FASTAI_VERSION" \
-    pytorch \
-    torchtext \
-    torchvision \
-    pytorch-cuda==11.8  \
     pycuda==2022.2.2 \
     nvidia-ml-py==12.535.108 \
     && mamba clean --all -f -y
@@ -61,6 +57,10 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     "tensorflow==$PKG_TENSORFLOW_VERSION" \
     "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
     "tensorboard-plugin-profile==$PKG_TENSORFLOW_VERSION" \
+    "torch==$PKG_PYTORCH_VERSION"  \
+    torchvision==0.15.1  \
+    torchaudio==2.0.1  \
+    --index-url https://download.pytorch.org/whl/cu118 \
     && mamba clean -y -f --all && \
     jupyter lab build && \
     rm -fr /home/notebook/.cache/yarn && \
