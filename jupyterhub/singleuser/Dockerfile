@@ -3,7 +3,7 @@
 
 # Minimal: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/base-notebook/Dockerfile
-FROM quay.io/jupyter/datascience-notebook:b33174154062 as miniconda
+FROM quay.io/jupyter/datascience-notebook:af37e9ced2e2 as miniconda
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
     'escapism==1.0.1' \
@@ -13,7 +13,11 @@ RUN mamba config --set channel_priority strict && \
     'yapf==0.40.1' && \
     mamba clean --all -f -y
 
-FROM quay.io/jupyter/datascience-notebook:b33174154062
+RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
+RUN mamba create -n lfortran -y && bash -c 'source activate lfortran && conda install -y ipykernel lfortran  && ipython kernel install --name=lfortran --display-name="LFortran" && conda clean --all -f -y && conda deactivate'
+USER notebook
+
+FROM quay.io/jupyter/datascience-notebook:af37e9ced2e2
 
 LABEL maintainer = "contact@sigma2.no"
 USER root
@@ -28,6 +32,9 @@ RUN groupadd -g "$APP_GID" notebook && \
     useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
     usermod -G users notebook && chmod go+rwx -R "$CONDA_DIR/bin"
 COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
+COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/minimal /usr/local/share/jupyter/kernels/minimal
+COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/lfortran /usr/local/share/jupyter/kernels/lfortran
+
 
 # Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.7.1/ubuntu2204/base/Dockerfile
 # https://www.tensorflow.org/install/gpu
