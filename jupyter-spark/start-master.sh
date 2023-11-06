@@ -5,6 +5,7 @@ set -euo pipefail
 
 echo "spark.deploy.recoveryDirectory ${SPARK_RECOVERY_DIR:-/tmp/spark-master}" >> $SPARK_HOME/conf/spark-defaults.conf
 echo "spark.ui.reverseProxyUrl  https://${SPARK_PUBLIC_DNS}" >> $SPARK_HOME/conf/spark-defaults.conf
+echo "spark.master spark://$${HOSTNAME}.${RELEASE_NAMESPACE}.svc.cluster.local:7077 " >> $SPARK_HOME/conf/spark-defaults.conf
 
 core_limit="${SPARK_DAEMON_CORES:-1}"
 if [[ $core_limit == *m ]]; then
