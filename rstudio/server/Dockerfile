@@ -6,7 +6,7 @@ FROM rocker/r-ver:4.3.2
 LABEL maintainer Uninett AS <system@uninett.no>
 
 ENV S6_VERSION=v2.1.0.2
-ENV RSTUDIO_VERSION=2022.02.3+492
+ENV RSTUDIO_VERSION=2022.02.4+500
 ENV PANDOC_VERSION=default
 
 ENV PATH=/usr/lib/rstudio-server/bin:$PATH
@@ -46,7 +46,7 @@ ENV TZ="Europe/Oslo" \
     APP_UID=999 \
     APP_GID=999 \
     PKG_R_VERSION=4.3.1 \
-    PKG_RSTUDIO_VERSION=2022.02.3+492 \
+    PKG_RSTUDIO_VERSION=2022.02.4+500 \
     PKG_SHINY_VERSION=1.5.20.1002
 
 # Setup Tini, as S6 does not work when run as non-root users
