@@ -8,4 +8,4 @@ COPY nginx.conf /etc/nginx/
 
 USER nobody
 ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx-debug", "-g", "daemon off;"]
