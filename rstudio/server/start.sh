@@ -4,7 +4,7 @@ set -e
 
 echo "Starting RStudio Server"
 
-script -q -c '/usr/lib/rstudio-server/bin/rserver --server-user=$(whoami)' /dev/stdout
+script -q -c "/usr/lib/rstudio-server/bin/rserver" /dev/stdout
 
 if [ -n "$SHINY_APPS_PATH" ]; then
 	if [ ! -d "$SHINY_APPS_PATH" ]; then
