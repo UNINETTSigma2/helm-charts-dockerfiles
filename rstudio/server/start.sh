@@ -4,6 +4,7 @@ set -e
 
 echo "Starting RStudio Server"
 
+# Run rserver via script, since it only outputs error when terminal is attached
 script -q -c "/usr/lib/rstudio-server/bin/rserver" /dev/stdout
 
 if [ -n "$SHINY_APPS_PATH" ]; then
