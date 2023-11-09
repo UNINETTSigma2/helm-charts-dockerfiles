@@ -68,16 +68,14 @@ RUN gdebi -n /tmp/shiny.deb && \
 
 COPY start.sh /usr/local/bin/start.sh
 
+RUN rstudio-server verify-installation
+
 RUN usermod -u 988 rstudio-server && \
     groupmod -g 988 rstudio-server && \
     usermod -u "$APP_UID" rstudio && \
     groupmod -g "$APP_GID" rstudio && \
     chown -R rstudio:rstudio /home/rstudio && \
     chmod -R go+w /home/rstudio /tmp/downloaded_packages /var/lib/rstudio-server /var/log/rstudio
-
-USER root
-
-RUN rstudio-server verify-installation
 
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
