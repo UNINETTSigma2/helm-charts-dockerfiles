@@ -11,7 +11,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dpkg -i cuda-keyring_1.0-1_all.deb && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
-    ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
+    ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime && \
+    wget -O ~/FirefoxSetup.tar.bz2 "https://download.mozilla.org/?product=firefox-latest&os=linux64" && \
+    tar xjf ~/FirefoxSetup.tar.bz2 -C /opt/ && \
+    ln -s /opt/firefox/firefox /usr/lib/firefox/firefox
 
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
@@ -73,7 +76,7 @@ EXPOSE $VNC_PORT $NO_VNC_PORT
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    locales firefox ca-certificates xauth ssh \
+    locales ca-certificates xauth ssh \
     unzip htop gedit\
     x11-xserver-utils adwaita-icon-theme-full \
     chromium-browser chromium-browser-l10n autoconf libtool pkg-config automake \
@@ -113,9 +116,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 #    tar xvf v1.2.0.tar.gz && cd libglvnd-1.2.0 && ./autogen.sh && ./configure && make && cd ..
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
-RUN locale-gen en_US.UTF-8
-
-RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
+RUN locale-gen en_US.UTF-8 && \
+    echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     ln -s /usr/local/cuda/include/* /usr/include/
@@ -123,9 +125,8 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.5
-
-ENV HOME=/home/vncuser \
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.5  \
+    HOME=/home/vncuser \
     TERM=xterm \
     STARTUPDIR=/dockerstartup \
     INST_SCRIPTS=/headless/install \
