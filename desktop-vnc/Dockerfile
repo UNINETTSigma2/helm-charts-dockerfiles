@@ -6,7 +6,7 @@ FROM ubuntu:22.04
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 LABEL maintainer = "contact@sigma2.no"
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gnupg2 curl ca-certificates apt-file && \
+    gnupg2 curl wget ca-certificates apt-file && \
     curl -fsLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb && \
     dpkg -i cuda-keyring_1.0-1_all.deb && \
     apt-get -y autoremove && \
@@ -80,7 +80,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip htop gedit\
     x11-xserver-utils adwaita-icon-theme-full \
     chromium-browser chromium-browser-l10n autoconf libtool pkg-config automake \
-    chromium-codecs-ffmpeg vim emacs wget net-tools libxrender1 mesa-utils  \
+    chromium-codecs-ffmpeg vim emacs net-tools libxrender1 mesa-utils  \
     locales bzip2 python3-numpy ttf-wqy-zenhei libxext-dev libx11-dev x11proto-gl-dev \
     supervisor xfce4 xfce4-terminal xterm dbus-x11 glmark2 \
     libnss-wrapper gettext csh zsh nano gv openssh-client tcsh rsync less ncl-ncarg cdo nco ncview \
