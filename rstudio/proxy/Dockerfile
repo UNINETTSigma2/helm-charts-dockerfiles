@@ -1,8 +1,8 @@
-FROM nginx:1.21.5-alpine
+FROM nginx:1.25.3-alpine
 
 LABEL maintainer Uninett As <system@uninett.no>
 # Add TINI
-RUN apk add --no-cache tini=0.19.0-r0
+RUN apk add --no-cache tini=0.19.0-r1
 
 COPY nginx.conf /etc/nginx/
 
