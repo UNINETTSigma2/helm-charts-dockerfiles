@@ -16,7 +16,6 @@ RUN /rocker_scripts/install_pandoc.sh
 RUN /rocker_scripts/install_tidyverse.sh
 
 
-
 RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
     apt-utils \
     nano \
@@ -75,7 +74,8 @@ RUN usermod -u 988 rstudio-server && \
     usermod -u "$APP_UID" rstudio && \
     groupmod -g "$APP_GID" rstudio && \
     chown -R rstudio:rstudio /home/rstudio && \
-    chmod -R go+rwX /home/rstudio /tmp/downloaded_packages /var/lib/rstudio-server /var/log/rstudio
+    chmod -R go+rwX /home/rstudio /tmp/downloaded_packages /var/lib/rstudio-server /var/log/rstudio && \
+    rm /var/lib/rstudio-server/rstudio-os.sqlite
 
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
