@@ -6,12 +6,14 @@ FROM ubuntu:22.04
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 LABEL maintainer = "contact@sigma2.no"
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gnupg2 curl ca-certificates apt-file && \
+    gnupg2 curl wget bzip2 ca-certificates apt-file && \
     curl -fsLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb && \
     dpkg -i cuda-keyring_1.0-1_all.deb && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
-    ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
+    ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime && \
+    wget -O ~/FirefoxSetup.tar.bz2 "https://download.mozilla.org/?product=firefox-latest&os=linux64" && \
+    tar xjf ~/FirefoxSetup.tar.bz2 -C /opt/ # && \ln -s /opt/firefox/firefox /usr/lib/firefox/firefox
 
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
@@ -73,12 +75,12 @@ EXPOSE $VNC_PORT $NO_VNC_PORT
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    locales firefox ca-certificates xauth ssh \
+    locales ca-certificates xauth ssh \
     unzip htop gedit\
     x11-xserver-utils adwaita-icon-theme-full \
     chromium-browser chromium-browser-l10n autoconf libtool pkg-config automake \
-    chromium-codecs-ffmpeg vim emacs wget net-tools libxrender1 mesa-utils  \
-    locales bzip2 python3-numpy ttf-wqy-zenhei libxext-dev libx11-dev x11proto-gl-dev \
+    chromium-codecs-ffmpeg vim emacs net-tools libxrender1 mesa-utils  \
+    locales  python3-numpy ttf-wqy-zenhei libxext-dev libx11-dev x11proto-gl-dev \
     supervisor xfce4 xfce4-terminal xterm dbus-x11 glmark2 \
     libnss-wrapper gettext csh zsh nano gv openssh-client tcsh rsync less ncl-ncarg cdo nco ncview \
     cuda-cudart-11-8="${NV_CUDA_CUDART_VERSION}" \
@@ -113,9 +115,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 #    tar xvf v1.2.0.tar.gz && cd libglvnd-1.2.0 && ./autogen.sh && ./configure && make && cd ..
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
-RUN locale-gen en_US.UTF-8
-
-RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
+RUN locale-gen en_US.UTF-8 && \
+    echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
     ln -s /usr/local/cuda/include/* /usr/include/
@@ -123,9 +124,8 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.5
-
-ENV HOME=/home/vncuser \
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.5  \
+    HOME=/home/vncuser \
     TERM=xterm \
     STARTUPDIR=/dockerstartup \
     INST_SCRIPTS=/headless/install \
