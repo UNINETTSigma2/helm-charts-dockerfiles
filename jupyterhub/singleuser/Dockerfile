@@ -3,7 +3,7 @@
 
 # Minimal: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/base-notebook/Dockerfile
-FROM quay.io/jupyter/datascience-notebook:ec29faae8d4c as miniconda
+FROM quay.io/jupyter/datascience-notebook:d91bb62be0cb as miniconda
 USER root
 RUN mamba config --set channel_priority strict && \
     mamba install --quiet --yes --update-all -c conda-forge \
@@ -17,7 +17,7 @@ RUN mamba config --set channel_priority strict && \
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 USER notebook
 
-FROM quay.io/jupyter/datascience-notebook:ec29faae8d4c
+FROM quay.io/jupyter/datascience-notebook:d91bb62be0cb
 
 LABEL maintainer = "contact@sigma2.no"
 USER root
