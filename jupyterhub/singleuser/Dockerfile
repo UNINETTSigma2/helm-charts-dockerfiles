@@ -17,7 +17,7 @@ RUN mamba config --set channel_priority strict && \
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 USER notebook
 
-FROM quay.io/jupyter/datascience-notebook:99d306450edf
+FROM quay.io/jupyter/datascience-notebook:dc009c260cff
 
 LABEL maintainer = "contact@sigma2.no"
 USER root
