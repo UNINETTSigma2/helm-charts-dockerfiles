@@ -6,7 +6,7 @@
 # SciPy: https://github.com/jupyter/docker-stacks/blob/main/scipy-notebook/Dockerfile
 # Minimal: https://github.com/jupyter/docker-stacks/blob/main/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
-FROM jupyter/all-spark-notebook:4c0c0aa1715f  as miniconda
+FROM quay.io/jupyter/all-spark-notebook:3692e3a84cd6 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -19,23 +19,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
     'jupyterlab-github==4.0.0' \
     'jupyter-server-proxy==4.0.0' \
     'ipyparallel==6.3.0' \
-    'plotly==5.17.0' \
-    'xarray==2023.9.0' \
-    'yapf==0.40.1' \
+    'plotly' \
+    'xarray' \
+    'yapf' \
     && mamba clean --all -f -y
 
 
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 USER notebook
 
-FROM jupyter/all-spark-notebook:4c0c0aa1715f
+FROM quay.io/jupyter/all-spark-notebook:3692e3a84cd6
 LABEL maintainer = "contact@sigma2.no"
 USER root
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.5 \
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.7 \
 	PKG_CUDA_VERSION=11.8.0
 
 # Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.8.0/ubuntu2204/base/Dockerfile
@@ -162,7 +162,7 @@ ENV TZ="Europe/Oslo" \
 	PKG_SPARK_VERSION=${APACHE_SPARK_VERSION} \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.4.0-incubating \
-	PKG_R_VERSION=4.3.1  \
+	PKG_R_VERSION=4.3.2  \
     PKG_VS_CODE_VERSION=4.16.1 \
 	HOME=/home/notebook \
     PATH=$PATH:$SPARK_HOME/bin \
