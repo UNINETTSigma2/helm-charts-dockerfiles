@@ -1,4 +1,4 @@
-FROM sigma2as/jupyter-spark:20231016-e077f7c
+FROM sigma2as/jupyter-spark:20240201-964601f
 LABEL maintainer = "contact@sigma2.no"
 
 USER root
