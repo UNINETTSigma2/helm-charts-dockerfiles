@@ -32,36 +32,36 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 
 RUN mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge\
-    hyperopt==0.2.7 \
-    feather-format==0.4.1 \
-    plotnine==0.12.3 \
-    isoweek==1.3.3 \
-    kaggle==1.5.16 \
-    hypothesis==6.88.0 \
-    mlflow==2.7.1 \
-    "lightgbm==$PKG_LIGHTGBM_VERSION" \
-    tensorboardx==2.6.2 \
-    "xgboost==$PKG_XGBOOST_VERSION" \
-    "catboost==$PKG_CATBOOST_VERSION" \
-    sentencepiece==0.1.99 \
-    "fastai==$PKG_FASTAI_VERSION" \
-    pycuda==2022.2.2 \
-    nvidia-ml-py==12.535.108 \
+    hyperopt / # ==0.2.7 \
+    feather-format  / #  ==0.4.1 \
+    plotnine  / #  ==0.12.3 \
+    isoweek  / #  ==1.3.3 \
+    kaggle  / #  ==1.5.16 \
+    hypothesis  / # ==6.88.0 \
+    mlflow  / #  ==2.7.1 \
+    "lightgbm"  / # ==$PKG_LIGHTGBM_VERSION" \
+    tensorboardx  / # ==2.6.2 \
+    "xgboost"  / # ==$PKG_XGBOOST_VERSION" \
+    "catboost"  / # ==$PKG_CATBOOST_VERSION" \
+    sentencepiece  / #  ==0.1.99 \
+    "fastai"  / #  ==$PKG_FASTAI_VERSION" \
+    pycuda  / #  ==2022.2.2 \
+    nvidia-ml-py  / #  ==12.535.108 \
     && mamba clean --all -f -y
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir  \
-    "keras==$PKG_KERAS_VERSION" \
+    "keras"  / # ==$PKG_KERAS_VERSION" \
     pandas-summary \
     sklearn_pandas \
     opencv-python \
-    "tensorflow==$PKG_TENSORFLOW_VERSION" \
-    "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
-    "tensorboard-plugin-profile==$PKG_TENSORFLOW_VERSION" \
+    "tensorflow"   / #  ==$PKG_TENSORFLOW_VERSION" \
+    "tensorflow-probability"  / #  ==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
+    "tensorboard-plugin-profile"  / #  ==$PKG_TENSORFLOW_VERSION" \
     && mamba clean -y -f --all
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir \
-    "torch==$PKG_PYTORCH_VERSION"  \
-    torchvision==0.15.1  \
+    "torch"  / # ==$PKG_PYTORCH_VERSION"  \
+    torchvision  / # ==0.15.1  \
     --index-url https://download.pytorch.org/whl/cu118 \
     && mamba clean -y -f --all && \
     jupyter lab build && \
