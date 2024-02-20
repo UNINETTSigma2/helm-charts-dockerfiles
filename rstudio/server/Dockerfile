@@ -24,6 +24,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
     libbz2-dev \
     liblzma-dev \
     librsvg2-dev \
+    libudunits2-dev \
     openssh-client \
     less \
     htop \
@@ -45,7 +46,7 @@ ENV TZ="Europe/Oslo" \
     APP_UID=999 \
     APP_GID=999 \
     PKG_R_VERSION=4.3.1 \
-    PKG_RSTUDIO_VERSION=2023.09.1+494 \
+    PKG_RSTUDIO_VERSION=2023.12.1+402 \
     PKG_SHINY_VERSION=1.5.20.1002
 
 # Setup Tini, as S6 does not work when run as non-root users
