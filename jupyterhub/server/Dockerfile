@@ -1,4 +1,4 @@
-FROM jupyterhub/k8s-hub:3.1.0
+FROM jupyterhub/k8s-hub:3.2.1
 
 USER root
 # paste directory needs to include the python version number used in k8s-hub
