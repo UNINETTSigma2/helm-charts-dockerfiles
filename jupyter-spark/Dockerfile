@@ -6,7 +6,7 @@
 # SciPy: https://github.com/jupyter/docker-stacks/blob/main/scipy-notebook/Dockerfile
 # Minimal: https://github.com/jupyter/docker-stacks/blob/main/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
-FROM quay.io/jupyter/all-spark-notebook:3692e3a84cd6 as miniconda
+FROM quay.io/jupyter/all-spark-notebook:d44add21d53f as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
     mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge \
     'jupyterlab-github==4.0.0' \
-    'jupyter-server-proxy==4.0.0' \
+    'jupyter-server-proxy==4.1.0' \
     'ipyparallel==6.3.0' \
     'plotly' \
     'xarray' \
@@ -28,14 +28,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 USER notebook
 
-FROM quay.io/jupyter/all-spark-notebook:3692e3a84cd6
+FROM quay.io/jupyter/all-spark-notebook:d44add21d53f
 LABEL maintainer = "contact@sigma2.no"
 USER root
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.7 \
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.1.0 \
 	PKG_CUDA_VERSION=11.8.0
 
 # Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.8.0/ubuntu2204/base/Dockerfile
@@ -163,7 +163,7 @@ ENV TZ="Europe/Oslo" \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.4.0-incubating \
 	PKG_R_VERSION=4.3.2  \
-    PKG_VS_CODE_VERSION=4.16.1 \
+    PKG_VS_CODE_VERSION=4.21.2q \
 	HOME=/home/notebook \
     PATH=$PATH:$SPARK_HOME/bin \
     XDG_CACHE_HOME=/home/notebook/.cache/
@@ -181,7 +181,7 @@ COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels
 
 RUN mkdir -p "$CONDA_DIR/.condatmp" && chmod go+rwx "$CONDA_DIR/.condatmp" /usr/local/spark/conf/spark-defaults.conf
 
-RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version=4.16.1
+RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version="$PKG_VS_CODE_VERSION"
 
 RUN chown notebook:notebook "$CONDA_DIR" "$CONDA_DIR/.condatmp"
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
