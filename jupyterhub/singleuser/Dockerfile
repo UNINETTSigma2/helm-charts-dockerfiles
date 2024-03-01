@@ -3,9 +3,10 @@
 
 # Minimal: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/base-notebook/Dockerfile
-FROM quay.io/jupyter/datascience-notebook:8da0523b50e6 as miniconda
+FROM quay.io/jupyter/datascience-notebook:d44add21d53f as miniconda
 USER root
 RUN mamba config --set channel_priority strict && \
+    mamba uninstall 'jupyter-pluto-proxy' && \
     mamba install --quiet --yes --update-all -c conda-forge \
     'escapism==1.0.1' \
     'jupyterlab-github==4.0.0' \
@@ -17,10 +18,13 @@ RUN mamba config --set channel_priority strict && \
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 USER notebook
 
-FROM quay.io/jupyter/datascience-notebook:8da0523b50e6
+FROM quay.io/jupyter/datascience-notebook:d44add21d53f
 
 LABEL maintainer = "contact@sigma2.no"
 USER root
+
+RUN mamba config --set channel_priority strict && \
+    mamba uninstall 'jupyter-pluto-proxy'
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
