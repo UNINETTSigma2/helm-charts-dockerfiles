@@ -1,4 +1,6 @@
-FROM minio/minio:RELEASE.2024-03-03T17-50-39Z
+# RELEASE.2022-10-24T18-35-07Z is the last version with file system mode, see
+# https://min.io/docs/minio/linux/operations/install-deploy-manage/migrate-fs-gateway.html
+FROM minio/minio:RELEASE.2022-10-24T18-35-07Z
 
 # Setup ENV for Appstore to be picked up
-ENV PKG_MINIO=RELEASE.2024-03-03T17-50-39Z
+ENV PKG_MINIO=RELEASE.2022-10-24T18-35-07Z
