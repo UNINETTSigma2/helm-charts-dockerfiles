@@ -2,7 +2,7 @@
 # https://github.com/minio/minio/releases/tag/RELEASE.2022-06-02T02-11-04Z
 # and
 # https://min.io/docs/minio/linux/operations/install-deploy-manage/migrate-fs-gateway.html
-FROM minio/minio:https:RELEASE.2022-06-10T16-59-15Z
+FROM minio/minio:RELEASE.2022-06-10T16-59-15Z
 
 # Setup ENV for Appstore to be picked up
 ENV PKG_MINIO=RELEASE.2022-06-10T16-59-15Z
