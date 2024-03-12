@@ -1,7 +1,6 @@
+# Upstream Dockerfile https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/r-ver_4.3.3.Dockerfile
 
-# Upstream Dockerfile https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/tidyverse_4.1.2.Dockerfile
-
-FROM rocker/r-ver:4.3.2
+FROM rocker/r-ver:4.3.3
 
 LABEL maintainer Uninett AS <system@uninett.no>
 
@@ -45,7 +44,7 @@ ENV TZ="Europe/Oslo" \
     TINI_VERSION=v0.19.0 \
     APP_UID=999 \
     APP_GID=999 \
-    PKG_R_VERSION=4.3.1 \
+    PKG_R_VERSION=4.3.3 \
     PKG_RSTUDIO_VERSION=2023.12.1+402 \
     PKG_SHINY_VERSION=1.5.20.1002
 
