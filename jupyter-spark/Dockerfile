@@ -16,8 +16,8 @@ ENV DEBIAN_FRONTEND noninteractive \
 RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-utils && \
     mamba config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge \
-    'jupyterlab-github==4.0.0' \
-    'jupyter-server-proxy==4.1.0' \
+    'jupyterlab-github' \
+    'jupyter-server-proxy' \
     'ipyparallel==6.3.0' \
     'plotly' \
     'xarray' \
@@ -35,7 +35,7 @@ USER root
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.1.0 \
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.1.2 \
 	PKG_CUDA_VERSION=11.8.0
 
 # Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.8.0/ubuntu2204/base/Dockerfile
@@ -162,8 +162,8 @@ ENV TZ="Europe/Oslo" \
 	PKG_SPARK_VERSION=${APACHE_SPARK_VERSION} \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.4.0-incubating \
-	PKG_R_VERSION=4.3.2  \
-    PKG_VS_CODE_VERSION=4.21.2q \
+	PKG_R_VERSION=4.3.3  \
+    PKG_VS_CODE_VERSION=4.22.1 \
 	HOME=/home/notebook \
     PATH=$PATH:$SPARK_HOME/bin \
     XDG_CACHE_HOME=/home/notebook/.cache/
