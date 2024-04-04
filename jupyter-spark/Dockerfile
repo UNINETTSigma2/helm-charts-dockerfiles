@@ -6,7 +6,7 @@
 # SciPy: https://github.com/jupyter/docker-stacks/blob/main/scipy-notebook/Dockerfile
 # Minimal: https://github.com/jupyter/docker-stacks/blob/main/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
-FROM quay.io/jupyter/all-spark-notebook:d44add21d53f as miniconda
+FROM quay.io/jupyter/all-spark-notebook:b2efa3cd8ce7 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 USER notebook
 
-FROM quay.io/jupyter/all-spark-notebook:d44add21d53f
+FROM quay.io/jupyter/all-spark-notebook:b2efa3cd8ce7
 LABEL maintainer = "contact@sigma2.no"
 USER root
 
