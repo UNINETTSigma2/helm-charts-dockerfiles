@@ -1,4 +1,4 @@
-FROM sigma2as/jupyter-spark:20240201-964601f
+FROM  sigma2as/jupyter-spark:20240411-ee73753
 LABEL maintainer = "contact@sigma2.no"
 
 USER root
@@ -20,10 +20,10 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/mpi/lib:/usr/local/cuda/lib:/usr/local/cuda/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all \
-    PKG_KERAS_VERSION=2.15.0 \
-    PKG_TENSORFLOW_VERSION=2.15.0 \
-    PKG_TENSORFLOW_PROBABILITY_VERSION=0.23.0 \
-    PKG_PYTORCH_VERSION=2.2.1 \
+    PKG_KERAS_VERSION=2.14.0 \
+    PKG_TENSORFLOW_VERSION=2.14.0 \
+    PKG_TENSORFLOW_PROBABILITY_VERSION=0.22.1 \
+    PKG_PYTORCH_VERSION=2.2.0 \
     PKG_XGBOOST_VERSION=2.0.3 \
     PKG_CATBOOST_VERSION=1.2.2 \
     PKG_LIGHTGBM_VERSION=4.3.0\
@@ -55,9 +55,9 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     sentencepiece \
     "fastai==$PKG_FASTAI_VERSION" \
     "torch==$PKG_PYTORCH_VERSION" \
-    torchtext \
-    torchvision \
-    nvidia-ml-py3 --index-url https://download.pytorch.org/whl/cu118 && \
+    torchtext==0.17.0 \
+    torchvision==0.17.0 \
+    nvidia-ml-py3  && \
     jupyter lab build \
     rm -fr /home/notebook/.cache/yarn && \
     dd if=/dev/zero of=testfile bs=1M count=1024
