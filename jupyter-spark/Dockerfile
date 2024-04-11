@@ -13,8 +13,8 @@ ENV DEBIAN_FRONTEND noninteractive \
     NB_UID=999 \
     NB_GID=999
 
-RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-utils && \
-    mamba config --set channel_priority strict && \
+RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-utils
+RUN conda config --set channel_priority strict && \
     eatmydata mamba install --quiet --update-all --yes -c conda-forge \
     'jupyterlab-github' \
     'jupyter-server-proxy' \
