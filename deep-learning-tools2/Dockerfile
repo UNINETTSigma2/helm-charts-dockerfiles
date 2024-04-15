@@ -23,7 +23,7 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     PKG_KERAS_VERSION=2.14.0 \
     PKG_TENSORFLOW_VERSION=2.14.0 \
     PKG_TENSORFLOW_PROBABILITY_VERSION=0.22.1 \
-    PKG_PYTORCH_VERSION=2.2.0 \
+    PKG_PYTORCH_VERSION=2.0.1 \
     PKG_XGBOOST_VERSION=2.0.3 \
     PKG_CATBOOST_VERSION=1.2.2 \
     PKG_LIGHTGBM_VERSION=4.3.0\
@@ -46,7 +46,7 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     mlflow \
     "lightgbm==$PKG_LIGHTGBM_VERSION" \
     opencv-python \
-    "tensorflow==$PKG_TENSORFLOW_VERSION" \
+    "tensorflow[and-cuda]==$PKG_TENSORFLOW_VERSION" \
     "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
     "tensorboard-plugin-profile==$PKG_TENSORFLOW_VERSION" \
     "tensorboardx" \
@@ -55,8 +55,8 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     sentencepiece \
     "fastai==$PKG_FASTAI_VERSION" \
     "torch==$PKG_PYTORCH_VERSION" \
-    torchtext==0.17.0 \
-    torchvision==0.17.0 \
+    torchtext==0.15.2 \
+    torchvision==0.15.2 \
     nvidia-ml-py3  && \
     jupyter lab build \
     rm -fr /home/notebook/.cache/yarn && \
