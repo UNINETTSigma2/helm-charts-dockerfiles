@@ -1,4 +1,4 @@
-FROM  sigma2as/jupyter-spark:20240815-ae1b223
+FROM  sigma2as/jupyter-spark:20240815-f111aa1
 LABEL maintainer = "contact@sigma2.no"
 
 USER root
@@ -56,8 +56,8 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     sentencepiece \
     "fastai==$PKG_FASTAI_VERSION" \
     "torch==$PKG_PYTORCH_VERSION" \
-    torchtext==0.16.1 \
-    torchvision==0.16.1 \
+    torchtext==0.18.0 \
+    torchvision==0.19.0 \
     nvidia-ml-py3  && \
     jupyter lab build \
     rm -fr /home/notebook/.cache/yarn && \
