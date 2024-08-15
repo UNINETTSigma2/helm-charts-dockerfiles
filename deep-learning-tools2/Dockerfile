@@ -49,7 +49,7 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     opencv-python \
     "tensorflow[and-cuda]==$PKG_TENSORFLOW_VERSION" \
     "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
-    "tensorboard-plugin-profile==$PKG_TENSORFLOW_VERSION" \
+    "tensorboard-plugin-profile==2.16.0" \
     "tensorboardx" \
     "xgboost==$PKG_XGBOOST_VERSION" \
     "catboost==$PKG_CATBOOST_VERSION" \
