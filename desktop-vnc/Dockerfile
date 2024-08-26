@@ -11,9 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dpkg -i cuda-keyring_1.1-1_all.deb && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
-    ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime && \
-    wget -O ~/FirefoxSetup.tar.bz2 "https://download.mozilla.org/?product=firefox-latest&os=linux64" && \
-    tar xjf ~/FirefoxSetup.tar.bz2 -C /opt/ # && \ln -s /opt/firefox/firefox /usr/lib/firefox/firefox
+    ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
 
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
@@ -145,7 +143,6 @@ COPY ./src/common/xfce/ $HOME/
 ### Install xvnc-server & noVNC - HTML5 based VNC viewer
 RUN $INST_SCRIPTS/tigervnc.sh &&   \
     $INST_SCRIPTS/no_vnc.sh &&   \
-    $INST_SCRIPTS/chrome.sh &&   \
     $INST_SCRIPTS/libnss_wrapper.sh
 
 # configure startup
