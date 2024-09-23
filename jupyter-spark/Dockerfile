@@ -6,7 +6,7 @@
 # SciPy: https://github.com/jupyter/docker-stacks/blob/main/scipy-notebook/Dockerfile
 # Minimal: https://github.com/jupyter/docker-stacks/blob/main/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
-FROM quay.io/jupyter/all-spark-notebook:4d4ed0e0bf26 as miniconda
+FROM quay.io/jupyter/all-spark-notebook:9e230b3b7d24 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -28,14 +28,14 @@ RUN conda config --set channel_priority strict && \
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 USER notebook
 
-FROM quay.io/jupyter/all-spark-notebook:4d4ed0e0bf26
+FROM quay.io/jupyter/all-spark-notebook:9e230b3b7d24
 LABEL maintainer = "contact@sigma2.no"
 USER root
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.2.1 \
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.2.2 \
 	PKG_CUDA_VERSION=12.4.1
 
 # Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/12.4.1/ubuntu2204/base/Dockerfile
@@ -162,7 +162,7 @@ ENV TZ="Europe/Oslo" \
 	PKG_SPARK_VERSION=${APACHE_SPARK_VERSION} \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.4.0-incubating \
-	PKG_R_VERSION=4.3.3  \
+	PKG_R_VERSION=4.4.1  \
     PKG_VS_CODE_VERSION=4.91.1 \
 	HOME=/home/notebook \
     PATH=$PATH:$SPARK_HOME/bin \
@@ -200,8 +200,7 @@ RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-* && \
     mamba init bash
 
 WORKDIR $HOME
-ENV LANG=en_US.UTF-8 \
-    PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
+ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/cuda/extras/CUPTI/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all  \
