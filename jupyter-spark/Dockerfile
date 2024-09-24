@@ -38,6 +38,10 @@ ENV APP_UID=999 \
 	PKG_JUPYTER_NOTEBOOK_VERSION=7.2.2 \
 	PKG_CUDA_VERSION=12.4.1
 
+RUN groupadd -g "$APP_GID" notebook && \
+	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
+	usermod -G users notebook
+
 # Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/12.4.1/ubuntu2204/base/Dockerfile
 # https://www.tensorflow.org/install/gpu
 # and
@@ -168,9 +172,6 @@ ENV TZ="Europe/Oslo" \
     PATH=$PATH:$SPARK_HOME/bin \
     XDG_CACHE_HOME=/home/notebook/.cache/
 
-RUN groupadd -g "$APP_GID" notebook && \
-	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
-	usermod -G users notebook
 
 COPY start-*.sh /usr/local/bin/
 COPY mem_parser.py /usr/local/bin/
