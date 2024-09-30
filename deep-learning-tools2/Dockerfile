@@ -47,20 +47,20 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     jax \
     "lightgbm==$PKG_LIGHTGBM_VERSION" \
     opencv-python \
-    "tensorflow[and-cuda]==$PKG_TENSORFLOW_VERSION" \
-    "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
-    "tensorboard-plugin-profile==2.17.0" \
+    #"tensorflow[and-cuda]==$PKG_TENSORFLOW_VERSION" \
+    #"tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
+    #"tensorboard-plugin-profile==2.17.0" \
     "tensorboardx" \
     "xgboost==$PKG_XGBOOST_VERSION" \
     "catboost==$PKG_CATBOOST_VERSION" \
     sentencepiece \
     "fastai==$PKG_FASTAI_VERSION" \
-    #"torch==$PKG_PYTORCH_VERSION" \
-    #torchtext==0.18.0 \
-    #torchvision==0.19.1 \
-    #monai \
-    #albumentations \
-    #pillow \
+    "torch==$PKG_PYTORCH_VERSION" \
+    torchtext==0.18.0 \
+    torchvision==0.19.1 \
+    monai \
+    albumentations \
+    pillow \
     nvidia-ml-py3  && \
     jupyter lab build \
     rm -fr /home/notebook/.cache/yarn && \
