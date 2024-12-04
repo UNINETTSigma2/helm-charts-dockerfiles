@@ -1,11 +1,11 @@
 # Upstream Dockerfile https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/r-ver_4.3.3.Dockerfile
 
-FROM rocker/r-ver:4.4.1
+FROM rocker/r-ver:4.4.2
 
 LABEL maintainer Uninett AS <system@uninett.no>
 
 ENV S6_VERSION=v2.1.0.2
-ENV RSTUDIO_VERSION=2024.04.2+764
+ENV RSTUDIO_VERSION=2024.09.1+394
 ENV PANDOC_VERSION=default
 
 ENV PATH=/usr/lib/rstudio-server/bin:$PATH
@@ -19,7 +19,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
     apt-utils \
     nano \
     curl \
-    libnode72 \
+    libnode109 \
     libbz2-dev \
     liblzma-dev \
     librsvg2-dev \
@@ -42,10 +42,10 @@ ENV TZ="Europe/Oslo" \
     USERNAME="rstudio" \
     HOME="/home/rstudio" \
     TINI_VERSION=v0.19.0 \
-    APP_UID=999 \
-    APP_GID=999 \
-    PKG_R_VERSION=4.4.1 \
-    PKG_RSTUDIO_VERSION=2024.04.2+764 \
+    APP_UID=977 \
+    APP_GID=977 \
+    PKG_R_VERSION=4.4.2 \
+    PKG_RSTUDIO_VERSION=2024.09.1+394 \
     PKG_SHINY_VERSION=1.5.22.1017
 
 # Setup Tini, as S6 does not work when run as non-root users
