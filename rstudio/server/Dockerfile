@@ -2,7 +2,7 @@
 
 FROM rocker/r-ver:4.4.2
 
-LABEL maintainer Uninett AS <system@uninett.no>
+LABEL maintainer = "contact@sigma2.no"
 
 ENV S6_VERSION=v2.1.0.2
 ENV RSTUDIO_VERSION=2024.09.1+394
@@ -14,36 +14,13 @@ RUN /rocker_scripts/install_rstudio.sh
 RUN /rocker_scripts/install_pandoc.sh
 RUN /rocker_scripts/install_tidyverse.sh
 
-
-RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
-    apt-utils \
-    nano \
-    curl \
-    libnode109 \
-    libbz2-dev \
-    liblzma-dev \
-    librsvg2-dev \
-    libudunits2-dev \
-    openssh-client \
-    less \
-    htop \
-    procps \
-    net-tools \
-    rsync \
-    gdebi-core \
-    libxt-dev \
-    man-db \
-    strace \
-    libglpk-dev && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
 # Setup various variables
 ENV TZ="Europe/Oslo" \
     USERNAME="rstudio" \
     HOME="/home/rstudio" \
     TINI_VERSION=v0.19.0 \
-    APP_UID=977 \
-    APP_GID=977 \
+    APP_UID=999 \
+    APP_GID=999 \
     PKG_R_VERSION=4.4.2 \
     PKG_RSTUDIO_VERSION=2024.09.1+394 \
     PKG_SHINY_VERSION=1.5.22.1017
@@ -76,6 +53,30 @@ RUN usermod -u 988 rstudio-server && \
     chown -R rstudio:rstudio /home/rstudio && \
     chmod -R go+rwX /home/rstudio /tmp/downloaded_packages /var/lib/rstudio-server /var/log/rstudio && \
     rm /var/lib/rstudio-server/rstudio-os.sqlite
+
+
+RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
+    apt-utils \
+    nano \
+    curl \
+    libnode109 \
+    libbz2-dev \
+    liblzma-dev \
+    librsvg2-dev \
+    libudunits2-dev \
+    openssh-client \
+    less \
+    htop \
+    procps \
+    net-tools \
+    rsync \
+    gdebi-core \
+    libxt-dev \
+    man-db \
+    strace \
+    libglpk-dev && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
 
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
