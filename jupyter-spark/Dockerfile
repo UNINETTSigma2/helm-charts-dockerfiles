@@ -6,7 +6,7 @@
 # SciPy: https://github.com/jupyter/docker-stacks/blob/main/scipy-notebook/Dockerfile
 # Minimal: https://github.com/jupyter/docker-stacks/blob/main/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
-FROM quay.io/jupyter/all-spark-notebook:00987883e58d as miniconda
+FROM quay.io/jupyter/all-spark-notebook:a6ef176ff3a7 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -28,15 +28,15 @@ RUN conda config --set channel_priority strict && \
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 USER notebook
 
-FROM quay.io/jupyter/all-spark-notebook:00987883e58d
+FROM quay.io/jupyter/all-spark-notebook:a6ef176ff3a7
 LABEL maintainer = "contact@sigma2.no"
 USER root
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.2.1 \
-	PKG_CUDA_VERSION=12.4.1
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.3.2 \
+	PKG_CUDA_VERSION=12.6.3
 
 RUN groupadd -g "$APP_GID" notebook && \
 	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
@@ -48,69 +48,69 @@ RUN groupadd -g "$APP_GID" notebook && \
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
 # might also be useful for CUDA packages
 
-ENV NV_CUDA_LIB_VERSION=12.4.1-1  \
-    NV_CUDNN_VERSION=9.1.0.70-1 \
+ENV NV_CUDA_LIB_VERSION=12.6.3-1 \
+    NV_CUDNN_VERSION=9.5.1.17-1 \
     NV_CUDNN_PACKAGE_NAME="libcudnn9-cuda-12" \
-    NV_CUDA_CUDART_VERSION=12.4.127-1 \
-    NV_CUDA_COMPAT_PACKAGE=cuda-compat-12-4 \
-    CUDA_VERSION=12.4.1 \
-    NV_NVTX_VERSION=12.4.127-1 \
-    NV_LIBNPP_VERSION=12.2.5.30-1 \
-    NV_LIBCUSPARSE_VERSION=12.3.1.170-1 \
-    NV_LIBCUBLAS_PACKAGE_NAME=libcublas-12-4 \
-    NV_LIBCUBLAS_VERSION=12.4.5.8-1 \
+    NV_CUDA_CUDART_VERSION=12.6.77-1 \
+    NV_CUDA_COMPAT_PACKAGE=cuda-compat-12-6 \
+    CUDA_VERSION=12.6.3 \
+    NV_NVTX_VERSION=12.6.77-1\
+    NV_LIBNPP_VERSION=12.3.1.54-1 \
+    NV_LIBCUSPARSE_VERSION=12.5.4.2-1 \
+    NV_LIBCUBLAS_PACKAGE_NAME=libcublas-12-6 \
+    NV_LIBCUBLAS_VERSION=12.6.4.1-1 \
     NV_LIBNCCL_PACKAGE_NAME=libnccl2 \
-    NV_LIBNCCL_PACKAGE_VERSION=2.21.5-1 \
-    NV_CUDA_CUDART_DEV_VERSION=12.4.127-1 \
-    NV_NVML_DEV_VERSION=12.4.127-1 \
-    NV_NVPROF_VERSION=12.4.127-1\
-    NCCL_VERSION=2.21.5-1 \
-    NV_LIBNPP_DEV_VERSION=12.2.5.30-1 \
-    NV_LIBCUSPARSE_DEV_VERSION=12.3.1.170-1 \
-    NV_LIBCUBLAS_DEV_VERSION=12.4.5.8-1 \
-    NV_LIBCUBLAS_DEV_PACKAGE_NAME=libcublas-dev-12-4 \
+    NV_LIBNCCL_PACKAGE_VERSION=2.23.4-1\
+    NV_CUDA_CUDART_DEV_VERSION=12.6.77-1 \
+    NV_NVML_DEV_VERSION=12.6.77-1 \
+    NV_NVPROF_VERSION=12.6.80-1\
+    NCCL_VERSION=2.23.4-1 \
+    NV_LIBNPP_DEV_VERSION=12.3.1.54-1 \
+    NV_LIBCUSPARSE_DEV_VERSION=12.5.4.2-1 \
+    NV_LIBCUBLAS_DEV_VERSION=12.6.4.1-1 \
+    NV_LIBCUBLAS_DEV_PACKAGE_NAME=libcublas-dev-12-6 \
     NV_LIBNCCL_DEV_PACKAGE_NAME=libnccl-dev \
-    NV_LIBNCCL_DEV_PACKAGE_VERSION=2.21.5-1 \
-    NV_CUDA_NSIGHT_COMPUTE_VERSION=12.4.1-1
+    NV_LIBNCCL_DEV_PACKAGE_VERSION=2.23.4-1 \
+    NV_CUDA_NSIGHT_COMPUTE_VERSION=12.6.3-1
 
 ENV NV_CUDNN_PACKAGE="libcudnn9-cuda-12=${NV_CUDNN_VERSION}" \
     PKG_CUDNN_VERSION="$NV_CUDNN_VERSION" \
-    NV_LIBNPP_PACKAGE="libnpp-12-4=${NV_LIBNPP_VERSION}"\
+    NV_LIBNPP_PACKAGE="libnpp-12-6=${NV_LIBNPP_VERSION}"\
     NV_LIBCUBLAS_PACKAGE="${NV_LIBCUBLAS_PACKAGE_NAME}=${NV_LIBCUBLAS_VERSION}" \
-    NV_NVPROF_DEV_PACKAGE="cuda-nvprof-12-4=${NV_NVPROF_VERSION}" \
-    NV_LIBNCCL_PACKAGE="${NV_LIBNCCL_PACKAGE_NAME}=${NV_LIBNCCL_PACKAGE_VERSION}+cuda12.4" \
-    NV_LIBNPP_DEV_PACKAGE="libnpp-dev-12-4=${NV_LIBNPP_DEV_VERSION}" \
+    NV_NVPROF_DEV_PACKAGE="cuda-nvprof-12-6=${NV_NVPROF_VERSION}" \
+    NV_LIBNCCL_PACKAGE="${NV_LIBNCCL_PACKAGE_NAME}=${NV_LIBNCCL_PACKAGE_VERSION}+cuda12.6" \
+    NV_LIBNPP_DEV_PACKAGE="libnpp-dev-12-6=${NV_LIBNPP_DEV_VERSION}" \
     NV_LIBCUBLAS_DEV_PACKAGE="${NV_LIBCUBLAS_DEV_PACKAGE_NAME}=${NV_LIBCUBLAS_DEV_VERSION}"  \
-    NV_LIBNCCL_DEV_PACKAGE="${NV_LIBNCCL_DEV_PACKAGE_NAME}=${NV_LIBNCCL_DEV_PACKAGE_VERSION}+cuda12.4" \
-    NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE="cuda-nsight-compute-12-4=${NV_CUDA_NSIGHT_COMPUTE_VERSION}"
+    NV_LIBNCCL_DEV_PACKAGE="${NV_LIBNCCL_DEV_PACKAGE_NAME}=${NV_LIBNCCL_DEV_PACKAGE_VERSION}+cuda12.6" \
+    NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE="cuda-nsight-compute-12-6=${NV_CUDA_NSIGHT_COMPUTE_VERSION}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 curl ca-certificates && \
-    curl -fsSLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
-    dpkg -i cuda-keyring_1.1-1_all.deb && \
+    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/3bf863cc.pub | apt-key add - && \
+    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64 /" > /etc/apt/sources.list.d/cuda.list && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
        build-essential \
-       cuda-cudart-12-4=${NV_CUDA_CUDART_VERSION} \
+       cuda-cudart-12-6=${NV_CUDA_CUDART_VERSION} \
        "${NV_CUDA_COMPAT_PACKAGE}" \
-       cuda-libraries-12-4="${NV_CUDA_LIB_VERSION}" \
+       cuda-libraries-12-6="${NV_CUDA_LIB_VERSION}" \
        "${NV_LIBNPP_PACKAGE}" \
-       cuda-nvtx-12-4="${NV_NVTX_VERSION}" \
-       libcusparse-12-4="${NV_LIBCUSPARSE_VERSION}" \
+       cuda-nvtx-12-6="${NV_NVTX_VERSION}" \
+       libcusparse-12-6="${NV_LIBCUSPARSE_VERSION}" \
        "${NV_LIBCUBLAS_PACKAGE}" \
        "${NV_LIBNCCL_PACKAGE}" \
        "${NV_CUDNN_PACKAGE}" \
-        cuda-cudart-dev-12-4="${NV_CUDA_CUDART_DEV_VERSION}" \
-        cuda-command-line-tools-12-4="${NV_CUDA_LIB_VERSION}" \
-        cuda-minimal-build-12-4="${NV_CUDA_LIB_VERSION}" \
-        cuda-libraries-dev-12-4="${NV_CUDA_LIB_VERSION}" \
-        cuda-nvml-dev-12-4="${NV_NVML_DEV_VERSION}" \
+        cuda-cudart-dev-12-6="${NV_CUDA_CUDART_DEV_VERSION}" \
+        cuda-command-line-tools-12-6="${NV_CUDA_LIB_VERSION}" \
+        cuda-minimal-build-12-6="${NV_CUDA_LIB_VERSION}" \
+        cuda-libraries-dev-12-6="${NV_CUDA_LIB_VERSION}" \
+        cuda-nvml-dev-12-6="${NV_NVML_DEV_VERSION}" \
         "${NV_NVPROF_DEV_PACKAGE}" \
         "${NV_LIBNPP_DEV_PACKAGE}" \
-        libcusparse-dev-12-4="${NV_LIBCUSPARSE_DEV_VERSION}" \
+        libcusparse-dev-12-6="${NV_LIBCUSPARSE_DEV_VERSION}" \
         "${NV_LIBCUBLAS_DEV_PACKAGE}" \
         "${NV_LIBNCCL_DEV_PACKAGE}" \
         "${NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE}" \
@@ -165,9 +165,9 @@ ENV TZ="Europe/Oslo" \
 	NB_GID=999 \
 	PKG_SPARK_VERSION=${APACHE_SPARK_VERSION} \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
-	PKG_TOREE_VERSION=0.4.0-incubating \
-	PKG_R_VERSION=4.3.3  \
-    PKG_VS_CODE_VERSION=4.91.1 \
+	PKG_TOREE_VERSION=0.5.0-incubating \
+	PKG_R_VERSION=4.4.2  \
+    PKG_VS_CODE_VERSION=4.96.2 \
 	HOME=/home/notebook \
     PATH=$PATH:$SPARK_HOME/bin \
     XDG_CACHE_HOME=/home/notebook/.cache/
