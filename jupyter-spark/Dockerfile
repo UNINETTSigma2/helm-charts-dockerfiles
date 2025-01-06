@@ -197,8 +197,7 @@ RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/lib
 RUN fix-permissions "$CONDA_DIR"
 
 USER notebook
-RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-* && \
-    mamba init bash
+RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-* 
 
 WORKDIR $HOME
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
