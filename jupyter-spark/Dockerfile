@@ -15,7 +15,7 @@ ENV DEBIAN_FRONTEND noninteractive \
 
 RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-utils
 RUN conda config --set channel_priority strict && \
-    eatmydata mamba install --quiet --update-all --yes -c conda-forge \
+    eatmydata mamba install --quiet  --yes -c conda-forge \
     'jupyterlab-github' \
     'jupyter-server-proxy' \
     'ipyparallel' \
@@ -42,7 +42,7 @@ RUN groupadd -g "$APP_GID" notebook && \
 	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
 	usermod -G users notebook
 
-# Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/12.4.1/ubuntu2204/base/Dockerfile
+# Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/12.6.3/ubuntu2404/base/Dockerfile
 # https://www.tensorflow.org/install/gpu
 # and
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
