@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
 
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 
-RUN mamba create -n nanogpt python=3.11.5 -y && bash -c 'source activate nanogpt && conda install -y ipykernel=6.25.2 && pip install numpy==1.24.4 transformers==4.27.4 datasets==2.11.0 tiktoken==0.3.3 wandb==0.14.0 tqdm==4.66.1 torch==2.0.0+cu117 --extra-index-url https://download.pytorch.org/whl/cu117 && ipython kernel install --name=nanogpt --display-name="Python 3 (nanogpt conda)" && conda clean --all -f -y && conda deactivate'
+RUN mamba create -n nanogpt python=3.10 -y && bash -c 'source activate nanogpt && conda install -y ipykernel=6.25.2 && pip install numpy==1.24.4 transformers==4.27.4 datasets==2.11.0 tiktoken==0.3.3 wandb==0.14.0 tqdm==4.66.1 torch==2.0.0+cu117 --extra-index-url https://download.pytorch.org/whl/cu117 && ipython kernel install --name=nanogpt --display-name="Python 3 (nanogpt conda)" && conda clean --all -f -y && conda deactivate'
 
 
 
