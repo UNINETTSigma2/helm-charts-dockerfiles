@@ -22,7 +22,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
     'plotly==5.16.0' \
     'xarray==2023.7.0' \
     'yapf==0.40.1' \
-    'mlflow==2.2.2' \
     && mamba clean --all -f -y
 
 
