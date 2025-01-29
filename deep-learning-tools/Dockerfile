@@ -23,7 +23,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends eatmydata apt-u
     'xarray==2023.7.0' \
     'yapf==0.40.1' \
     'mlflow==2.2.2' \
-    'tensorboardX==2.6' \
     && mamba clean --all -f -y
 
 
