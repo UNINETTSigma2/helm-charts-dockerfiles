@@ -6,7 +6,7 @@
 # SciPy: https://github.com/jupyter/docker-stacks/blob/main/scipy-notebook/Dockerfile
 # Minimal: https://github.com/jupyter/docker-stacks/blob/main/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
-FROM quay.io/jupyter/all-spark-notebook:a6ef176ff3a7 as miniconda
+FROM quay.io/jupyter/all-spark-notebook:52f7f3b5d565 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -28,7 +28,7 @@ RUN conda config --set channel_priority strict && \
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 USER notebook
 
-FROM quay.io/jupyter/all-spark-notebook:a6ef176ff3a7
+FROM quay.io/jupyter/all-spark-notebook:52f7f3b5d565
 LABEL maintainer = "contact@sigma2.no"
 USER root
 
@@ -167,7 +167,7 @@ ENV TZ="Europe/Oslo" \
 	PKG_HADOOP_VERSION=${HADOOP_VERSION} \
 	PKG_TOREE_VERSION=0.5.0-incubating \
 	PKG_R_VERSION=4.4.2  \
-    PKG_VS_CODE_VERSION=4.96.2 \
+    PKG_VS_CODE_VERSION=4.96.4 \
 	HOME=/home/notebook \
     PATH=$PATH:$SPARK_HOME/bin \
     XDG_CACHE_HOME=/home/notebook/.cache/
