@@ -1,4 +1,4 @@
-FROM  sigma2as/jupyter-spark:20241015-5235517
+FROM  sigma2as/jupyter-spark:20250205-7de094b
 LABEL maintainer = "contact@sigma2.no"
 
 USER root
@@ -20,48 +20,45 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/mpi/lib:/usr/local/cuda/lib:/usr/local/cuda/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all \
-    PKG_KERAS_VERSION=3.5.0\
-    PKG_TENSORFLOW_VERSION=2.17.0 \
-    PKG_TENSORFLOW_PROBABILITY_VERSION=0.24.0 \
-    PKG_PYTORCH_VERSION=2.4.1  \
-    PKG_XGBOOST_VERSION=2.1.1 \
+    PKG_KERAS_VERSION=3.8.0\
+    PKG_TENSORFLOW_VERSION=2.18.0 \
+    PKG_TENSORFLOW_PROBABILITY_VERSION=0.25.0 \
+    PKG_PYTORCH_VERSION=2.6.0  \
+    PKG_XGBOOST_VERSION=2.1.4 \
     PKG_CATBOOST_VERSION=1.2.7 \
     PKG_LIGHTGBM_VERSION=4.5.0\
-    PKG_FASTAI_VERSION=2.7.17
+    PKG_FASTAI_VERSION=2.7.18
 
 
 
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
-    hyperopt \
     pycuda \
     "keras==$PKG_KERAS_VERSION" \
-    pandas-summary \
-    sklearn_pandas \
-    feather-format \
     plotnine \
-    isoweek \
     kaggle \
     hypothesis \
     mlflow \
     jax \
+    transformers \
+    datasets  \
+    tiktoken  \
     "lightgbm==$PKG_LIGHTGBM_VERSION" \
     opencv-python \
-    "tensorflow[and-cuda]==$PKG_TENSORFLOW_VERSION" \
-    "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
-    "tensorboard-plugin-profile==2.17.0" \
-    "tensorboardx" \
+    #"tensorflow[and-cuda]==$PKG_TENSORFLOW_VERSION" \
+    #"tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
+    "tensorboard-plugin-profile==2.19.0" \
     "xgboost==$PKG_XGBOOST_VERSION" \
     "catboost==$PKG_CATBOOST_VERSION" \
     sentencepiece \
     "fastai==$PKG_FASTAI_VERSION" \
-    #"torch==$PKG_PYTORCH_VERSION" \
-    #torchtext==0.18.0 \
-    #torchvision==0.19.1 \
-    #monai \
-    #albumentations \
-    #pillow \
-    nvidia-ml-py3  && \
+    "torch==$PKG_PYTORCH_VERSION" \
+    torchvision==0.21.0 \
+    torchaudio \
+    monai \
+    albumentations \
+    pillow \
+    nvidia-ml-py  --index-url https://download.pytorch.org/whl/cu126 && \
     jupyter lab build \
     rm -fr /home/notebook/.cache/yarn && \
     dd if=/dev/zero of=testfile bs=1M count=1024
