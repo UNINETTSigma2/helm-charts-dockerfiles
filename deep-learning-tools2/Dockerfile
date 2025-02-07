@@ -30,35 +30,38 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     PKG_FASTAI_VERSION=2.7.18
 
 
+RUN mamba config --set channel_priority strict && \
+    eatmydata mamba install --quiet --update-all --yes -c conda-forge \
+    pycuda \
+        "keras==$PKG_KERAS_VERSION" \
+        plotnine \
+        kaggle \
+        hypothesis \
+        mlflow \
+        jax \
+        transformers \
+        datasets  \
+        tiktoken  \
+        "lightgbm==$PKG_LIGHTGBM_VERSION" \
+        opencv-python \
+        #"tensorflow[and-cuda]==$PKG_TENSORFLOW_VERSION" \
+        #"tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
+        "tensorboard-plugin-profile==2.19.0" \
+        "xgboost==$PKG_XGBOOST_VERSION" \
+        "catboost==$PKG_CATBOOST_VERSION" \
+        sentencepiece \
+        "fastai==$PKG_FASTAI_VERSION" \
+        monai \
+        albumentations \
+    nvidia-ml-py \
+    && mamba clean --all -f -y
 
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
-    pycuda \
-    "keras==$PKG_KERAS_VERSION" \
-    plotnine \
-    kaggle \
-    hypothesis \
-    mlflow \
-    jax \
-    transformers \
-    datasets  \
-    tiktoken  \
-    "lightgbm==$PKG_LIGHTGBM_VERSION" \
-    opencv-python \
-    #"tensorflow[and-cuda]==$PKG_TENSORFLOW_VERSION" \
-    #"tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
-    "tensorboard-plugin-profile==2.19.0" \
-    "xgboost==$PKG_XGBOOST_VERSION" \
-    "catboost==$PKG_CATBOOST_VERSION" \
-    sentencepiece \
-    "fastai==$PKG_FASTAI_VERSION" \
     "torch==$PKG_PYTORCH_VERSION" \
     torchvision==0.21.0 \
     torchaudio \
-    monai \
-    albumentations \
-    pillow \
-    nvidia-ml-py  --index-url https://download.pytorch.org/whl/cu126 && \
+    pillow   --index-url https://download.pytorch.org/whl/cu126 && \
     jupyter lab build \
     rm -fr /home/notebook/.cache/yarn && \
     dd if=/dev/zero of=testfile bs=1M count=1024
