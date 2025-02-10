@@ -30,7 +30,7 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     PKG_FASTAI_VERSION=2.7.18
 
 
-RUN    eatmydata mamba install --quiet --update-all --yes -c conda-forge \
+RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
        pycuda \
         "keras==$PKG_KERAS_VERSION" \
         plotnine \
@@ -47,8 +47,6 @@ RUN    eatmydata mamba install --quiet --update-all --yes -c conda-forge \
         "xgboost==$PKG_XGBOOST_VERSION" \
         "catboost==$PKG_CATBOOST_VERSION" \
         sentencepiece \
-        "fastai==$PKG_FASTAI_VERSION" \
-        monai \
         albumentations \
     nvidia-ml-py \
     && mamba clean --all -f -y
@@ -58,14 +56,15 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     "torch==$PKG_PYTORCH_VERSION" \
     torchvision==0.21.0 \
     torchaudio \
-    opencv-python \
-    "tensorboard-plugin-profile==2.19.0" \
     pillow   --index-url https://download.pytorch.org/whl/cu126 && \
     jupyter lab build \
+    rm -fr /home/notebook/.cache/yarn
+
+RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
+    "fastai==$PKG_FASTAI_VERSION" \
+    monai \ && \
+    jupyter lab build \
     rm -fr /home/notebook/.cache/yarn && \
-    dd if=/dev/zero of=testfile bs=1M count=1024
-
-
 
 
 COPY start-notebook.sh /usr/local/bin/
