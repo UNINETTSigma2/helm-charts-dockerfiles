@@ -45,11 +45,12 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
         #"tensorflow[and-cuda]==$PKG_TENSORFLOW_VERSION" \
         #"tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
         "xgboost==$PKG_XGBOOST_VERSION" \
-        "catboost==$PKG_CATBOOST_VERSION" \
+        #"catboost==$PKG_CATBOOST_VERSION" \
         sentencepiece \
         albumentations \
     nvidia-ml-py \
-    && mamba clean --all -f -y
+    && mamba clean --all -f -y \ && \
+    rm -fr /home/notebook/.cache/yarn
 
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
@@ -57,7 +58,6 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     torchvision==0.21.0 \
     torchaudio \
     pillow   --index-url https://download.pytorch.org/whl/cu126 && \
-    jupyter lab build \
     rm -fr /home/notebook/.cache/yarn
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
