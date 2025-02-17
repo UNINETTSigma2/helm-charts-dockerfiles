@@ -6,7 +6,7 @@
 # SciPy: https://github.com/jupyter/docker-stacks/blob/main/scipy-notebook/Dockerfile
 # Minimal: https://github.com/jupyter/docker-stacks/blob/main/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
-FROM quay.io/jupyter/all-spark-notebook:52f7f3b5d565 as miniconda
+FROM quay.io/jupyter/all-spark-notebook:ae572aa64fa8 as miniconda
 USER root
 ENV DEBIAN_FRONTEND noninteractive \
     NODE_OPTIONS --max-old-space-size=4096 \
@@ -18,7 +18,7 @@ RUN conda config --set channel_priority strict && \
     eatmydata mamba install --quiet  --yes -c conda-forge \
     'jupyterlab-github' \
     'jupyter-server-proxy' \
-    'ipyparallel' \
+    # 'ipyparallel' \
     'plotly' \
     'xarray' \
     'yapf' \
@@ -28,7 +28,7 @@ RUN conda config --set channel_priority strict && \
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 USER notebook
 
-FROM quay.io/jupyter/all-spark-notebook:52f7f3b5d565
+FROM quay.io/jupyter/all-spark-notebook:ae572aa64fa8
 LABEL maintainer = "contact@sigma2.no"
 USER root
 
