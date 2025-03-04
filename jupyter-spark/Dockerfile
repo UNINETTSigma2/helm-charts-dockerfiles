@@ -188,16 +188,30 @@ RUN chown notebook:notebook "$CONDA_DIR" "$CONDA_DIR/.condatmp"
 COPY --chown=notebook:notebook .jupyter/ $HOME/.jupyter/
 
 COPY --chown=notebook:notebook .jupyter/ /etc/default/jupyter
-RUN chmod go+w -R "$HOME"
+RUN chmod go+w -R "$HOME" && chmod g+w -R /usr/local/share/jupyter/kernels
+
 
 RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \
     && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
     && ldconfig
 
+# Julia dependencies
+# install Julia packages in /opt/julia instead of ${HOME}
+ENV JULIA_DEPOT_PATH=/opt/julia \
+    JULIA_PKGDIR=/opt/julia
+
+# Setup Julia
+RUN /opt/setup-scripts/setup_julia.py
+
+
+
 RUN fix-permissions "$CONDA_DIR"
 
 USER notebook
-RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-* 
+RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*
+
+# Setup IJulia kernel & other packages
+RUN /opt/setup-scripts/setup-julia-packages.bash
 
 WORKDIR $HOME
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
