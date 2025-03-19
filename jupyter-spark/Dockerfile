@@ -169,6 +169,7 @@ ENV TZ="Europe/Oslo" \
 	PKG_R_VERSION=4.4.2  \
     PKG_VS_CODE_VERSION=4.96.4 \
 	HOME=/home/notebook \
+	NB_USER=notebook
     PATH=$PATH:$SPARK_HOME/bin \
     XDG_CACHE_HOME=/home/notebook/.cache/
 
@@ -206,6 +207,7 @@ RUN /opt/setup-scripts/setup_julia.py
 
 
 RUN fix-permissions "$CONDA_DIR"
+
 
 USER notebook
 RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*
