@@ -203,7 +203,8 @@ ENV JULIA_DEPOT_PATH=/opt/julia \
 
 # Setup Julia
 RUN /opt/setup-scripts/setup_julia.py
-
+# Setup IJulia kernel & other packages
+RUN /opt/setup-scripts/setup-julia-packages.bash
 
 
 RUN fix-permissions "$CONDA_DIR"
@@ -212,8 +213,6 @@ RUN fix-permissions "$CONDA_DIR"
 USER notebook
 RUN mkdir /tmp/spark-master /tmp/spark-worker && chmod go+w /tmp/spark-*
 
-# Setup IJulia kernel & other packages
-RUN /opt/setup-scripts/setup-julia-packages.bash
 
 WORKDIR $HOME
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
