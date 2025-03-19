@@ -205,7 +205,7 @@ ENV JULIA_DEPOT_PATH=/opt/julia \
 RUN /opt/setup-scripts/setup_julia.py
 # Setup IJulia kernel & other packages
 RUN /opt/setup-scripts/setup-julia-packages.bash
-
+RUN mamba uninstall 'jupyter-pluto-proxy'
 
 RUN fix-permissions "$CONDA_DIR"
 
