@@ -169,7 +169,7 @@ ENV TZ="Europe/Oslo" \
 	PKG_R_VERSION=4.4.2  \
     PKG_VS_CODE_VERSION=4.96.4 \
 	HOME=/home/notebook \
-	NB_USER=notebook
+	NB_USER=notebook \
     PATH=$PATH:$SPARK_HOME/bin \
     XDG_CACHE_HOME=/home/notebook/.cache/
 
