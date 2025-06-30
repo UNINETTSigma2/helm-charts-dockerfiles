@@ -1,10 +1,10 @@
 # This Dockerfile is used to build an headles vnc image based on Ubuntu
 
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-LABEL maintainer = "contact@sigma2.no"
+LABEL maintainer="contact@sigma2.no"
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 curl wget bzip2 ca-certificates apt-file && \
     curl -fsLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
@@ -26,42 +26,42 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
 # might also be useful for CUDA packages
 #
-ENV PKG_CUDA_VERSION=12.4.1 \
-    NV_CUDA_LIB_VERSION=12.4.1-1  \
-    NV_CUDNN_VERSION=9.1.0.70-1 \
+ENV PKG_CUDA_VERSION=12.6.3 \
+    NV_CUDA_LIB_VERSION=12.6.3-1  \
+    NV_CUDNN_VERSION=9.5.1.17-1 \
     NV_CUDNN_PACKAGE_NAME="libcudnn9-cuda-12" \
-    NV_CUDA_CUDART_VERSION=12.4.127-1 \
-    NV_CUDA_COMPAT_PACKAGE=cuda-compat-12-4 \
-    CUDA_VERSION=12.4.1  \
-    NV_NVTX_VERSION=12.4.127-1 \
-    NV_LIBNPP_VERSION=12.2.5.30-1 \
-    NV_LIBCUSPARSE_VERSION=12.3.1.170-1\
-    NV_LIBCUBLAS_PACKAGE_NAME=libcublas-12-4 \
-    NV_LIBCUBLAS_VERSION=12.4.5.8-1 \
+    NV_CUDA_CUDART_VERSION=12.6.77-1 \
+    NV_CUDA_COMPAT_PACKAGE=cuda-compat-12-6 \
+    CUDA_VERSION=12.6.3  \
+    NV_NVTX_VERSION=12.6.77-1 \
+    NV_LIBNPP_VERSION=12.3.1.54-1 \
+    NV_LIBCUSPARSE_VERSION=12.5.4.2-1\
+    NV_LIBCUBLAS_PACKAGE_NAME=libcublas-12-6 \
+    NV_LIBCUBLAS_VERSION=12.6.4.1-1 \
     NV_LIBNCCL_PACKAGE_NAME=libnccl2 \
-    NV_LIBNCCL_PACKAGE_VERSION=2.21.5-1 \
-    NV_CUDA_CUDART_DEV_VERSION=12.4.127-1 \
-    NV_NVML_DEV_VERSION=12.4.127-1 \
-    NV_NVPROF_VERSION=12.4.127-1 \
-    NCCL_VERSION=2.21.5-1 \
-    NV_LIBNPP_DEV_VERSION=12.2.5.30-1 \
-    NV_LIBCUSPARSE_DEV_VERSION=12.3.1.170-1 \
-    NV_LIBCUBLAS_DEV_VERSION=12.4.5.8-1 \
-    NV_LIBCUBLAS_DEV_PACKAGE_NAME=libcublas-dev-12-4 \
+    NV_LIBNCCL_PACKAGE_VERSION=2.23.4-1 \
+    NV_CUDA_CUDART_DEV_VERSION=12.6.77-1 \
+    NV_NVML_DEV_VERSION=12.6.77-1 \
+    NV_NVPROF_VERSION=12.6.80-1 \
+    NCCL_VERSION=2.23.4-1 \
+    NV_LIBNPP_DEV_VERSION=12.3.1.54-1 \
+    NV_LIBCUSPARSE_DEV_VERSION=12.5.4.2-1 \
+    NV_LIBCUBLAS_DEV_VERSION=12.6.4.1-1 \
+    NV_LIBCUBLAS_DEV_PACKAGE_NAME=libcublas-dev-12-6 \
     NV_LIBNCCL_DEV_PACKAGE_NAME=libnccl-dev \
-    NV_LIBNCCL_DEV_PACKAGE_VERSION=2.21.5-1 \
-    NV_CUDA_NSIGHT_COMPUTE_VERSION=12.4.1-1
+    NV_LIBNCCL_DEV_PACKAGE_VERSION=2.23.4-1 \
+    NV_CUDA_NSIGHT_COMPUTE_VERSION=12.6.3-1
 
 ENV NV_CUDNN_PACKAGE="libcudnn9-cuda-12=${NV_CUDNN_VERSION}" \
     PKG_CUDNN_VERSION="$NV_CUDNN_VERSION" \
-    NV_LIBNPP_PACKAGE="libnpp-12-4=${NV_LIBNPP_VERSION}"\
+    NV_LIBNPP_PACKAGE="libnpp-12-6=${NV_LIBNPP_VERSION}"\
     NV_LIBCUBLAS_PACKAGE="${NV_LIBCUBLAS_PACKAGE_NAME}=${NV_LIBCUBLAS_VERSION}" \
-    NV_NVPROF_DEV_PACKAGE="cuda-nvprof-12-4=${NV_NVPROF_VERSION}" \
-    NV_LIBNCCL_PACKAGE="${NV_LIBNCCL_PACKAGE_NAME}=${NV_LIBNCCL_PACKAGE_VERSION}+cuda12.4" \
-    NV_LIBNPP_DEV_PACKAGE="libnpp-dev-12-4=${NV_LIBNPP_DEV_VERSION}" \
+    NV_NVPROF_DEV_PACKAGE="cuda-nvprof-12-6=${NV_NVPROF_VERSION}" \
+    NV_LIBNCCL_PACKAGE="${NV_LIBNCCL_PACKAGE_NAME}=${NV_LIBNCCL_PACKAGE_VERSION}+cuda12.6" \
+    NV_LIBNPP_DEV_PACKAGE="libnpp-dev-12-6=${NV_LIBNPP_DEV_VERSION}" \
     NV_LIBCUBLAS_DEV_PACKAGE="${NV_LIBCUBLAS_DEV_PACKAGE_NAME}=${NV_LIBCUBLAS_DEV_VERSION}"  \
-    NV_LIBNCCL_DEV_PACKAGE="${NV_LIBNCCL_DEV_PACKAGE_NAME}=${NV_LIBNCCL_DEV_PACKAGE_VERSION}+cuda12.4" \
-    NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE="cuda-nsight-compute-12-4=${NV_CUDA_NSIGHT_COMPUTE_VERSION}"
+    NV_LIBNCCL_DEV_PACKAGE="${NV_LIBNCCL_DEV_PACKAGE_NAME}=${NV_LIBNCCL_DEV_PACKAGE_VERSION}+cuda12.6" \
+    NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE="cuda-nsight-compute-12-6=${NV_CUDA_NSIGHT_COMPUTE_VERSION}"
 
 ## Connection ports for controlling the UI:
 # VNC port:5901
@@ -71,6 +71,8 @@ ENV DISPLAY=:1 \
     NO_VNC_PORT=6901
 EXPOSE $VNC_PORT $NO_VNC_PORT
 
+## Repo for ncl-ncarg
+# RUN echo "deb http://archive.ubuntu.com/ubuntu/ noble-proposed universe" >> /etc/apt/sources.list
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     locales ca-certificates xauth ssh \
@@ -80,24 +82,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     chromium-codecs-ffmpeg vim emacs net-tools libxrender1 mesa-utils  \
     locales  python3-numpy ttf-wqy-zenhei libxext-dev libx11-dev x11proto-gl-dev \
     supervisor xfce4 xfce4-terminal xterm dbus-x11 glmark2 \
-    libnss-wrapper gettext csh zsh nano gv openssh-client tcsh rsync less ncl-ncarg cdo nco ncview \
-    cuda-cudart-12-4="${NV_CUDA_CUDART_VERSION}" \
+    libnss-wrapper gettext csh zsh nano gv openssh-client tcsh rsync less cdo nco ncview \
+    # ncl-ncarg \
+    # Problems getting dependencies. Cant find libcarg0t64 or libsphere0d
+    cuda-cudart-12-6="${NV_CUDA_CUDART_VERSION}" \
     "${NV_CUDA_COMPAT_PACKAGE}" \
-    cuda-libraries-12-4="${NV_CUDA_LIB_VERSION}" \
+    cuda-libraries-12-6="${NV_CUDA_LIB_VERSION}" \
     "${NV_LIBNPP_PACKAGE}" \
-    cuda-nvtx-12-4="${NV_NVTX_VERSION}" \
-    libcusparse-12-4="${NV_LIBCUSPARSE_VERSION}" \
+    cuda-nvtx-12-6="${NV_NVTX_VERSION}" \
+    libcusparse-12-6="${NV_LIBCUSPARSE_VERSION}" \
     "${NV_LIBCUBLAS_PACKAGE}" \
     "${NV_LIBNCCL_PACKAGE}" \
     "${NV_CUDNN_PACKAGE}" \
-    cuda-cudart-dev-12-4="${NV_CUDA_CUDART_DEV_VERSION}" \
-    cuda-command-line-tools-12-4="${NV_CUDA_LIB_VERSION}" \
-    cuda-minimal-build-12-4="${NV_CUDA_LIB_VERSION}" \
-    cuda-libraries-dev-12-4="${NV_CUDA_LIB_VERSION}" \
-    cuda-nvml-dev-12-4="${NV_NVML_DEV_VERSION}" \
+    cuda-cudart-dev-12-6="${NV_CUDA_CUDART_DEV_VERSION}" \
+    cuda-command-line-tools-12-6="${NV_CUDA_LIB_VERSION}" \
+    cuda-minimal-build-12-6="${NV_CUDA_LIB_VERSION}" \
+    cuda-libraries-dev-12-6="${NV_CUDA_LIB_VERSION}" \
+    cuda-nvml-dev-12-6="${NV_NVML_DEV_VERSION}" \
     "${NV_NVPROF_DEV_PACKAGE}" \
     "${NV_LIBNPP_DEV_PACKAGE}" \
-    libcusparse-dev-12-4="${NV_LIBCUSPARSE_DEV_VERSION}" \
+    libcusparse-dev-12-6="${NV_LIBCUSPARSE_DEV_VERSION}" \
     "${NV_LIBCUBLAS_DEV_PACKAGE}" \
     "${NV_LIBNCCL_DEV_PACKAGE}" \
     "${NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE}" \
