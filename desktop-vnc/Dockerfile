@@ -76,7 +76,7 @@ EXPOSE $VNC_PORT $NO_VNC_PORT
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     locales ca-certificates xauth ssh \
-    unzip htop gedit\
+    unzip htop gedit git \
     x11-xserver-utils adwaita-icon-theme-full \
     chromium-browser chromium-browser-l10n autoconf libtool pkg-config automake \
     chromium-codecs-ffmpeg vim emacs net-tools libxrender1 mesa-utils  \
