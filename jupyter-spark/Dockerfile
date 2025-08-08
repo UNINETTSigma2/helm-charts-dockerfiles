@@ -6,10 +6,10 @@
 # SciPy: https://github.com/jupyter/docker-stacks/blob/main/scipy-notebook/Dockerfile
 # Minimal: https://github.com/jupyter/docker-stacks/blob/main/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
-FROM quay.io/jupyter/all-spark-notebook:dbcf753aab2c as miniconda
+FROM quay.io/jupyter/all-spark-notebook:bcabde41500c AS miniconda
 USER root
-ENV DEBIAN_FRONTEND noninteractive \
-    NODE_OPTIONS --max-old-space-size=4096 \
+ENV DEBIAN_FRONTEND=noninteractive \
+    NODE_OPTIONS="--max-old-space-size=4096" \
     NB_UID=999 \
     NB_GID=999
 
@@ -28,14 +28,14 @@ RUN conda config --set channel_priority strict && \
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 USER notebook
 
-FROM quay.io/jupyter/all-spark-notebook:dbcf753aab2c
-LABEL maintainer = "contact@sigma2.no"
+FROM quay.io/jupyter/all-spark-notebook:bcabde41500c
+LABEL maintainer="contact@sigma2.no"
 USER root
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.4.3 \
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.4.4 \
 	PKG_CUDA_VERSION=12.6.3
 
 RUN groupadd -g "$APP_GID" notebook && \
@@ -176,6 +176,7 @@ ENV TZ="Europe/Oslo" \
 
 COPY start-*.sh /usr/local/bin/
 COPY mem_parser.py /usr/local/bin/
+COPY setup-julia-packages.bash /opt/setup-scripts/setup-julia-packages.bash
 COPY --chown=notebook:notebook spark-defaults.conf /usr/local/spark/conf/
 COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
 COPY --chown=notebook:notebook --from=miniconda /usr/local/share/jupyter/kernels/minimal /usr/local/share/jupyter/kernels/minimal
@@ -205,7 +206,7 @@ ENV JULIA_DEPOT_PATH=/opt/julia \
 RUN /opt/setup-scripts/setup_julia.py
 # Setup IJulia kernel & other packages
 RUN /opt/setup-scripts/setup-julia-packages.bash
-RUN mamba uninstall 'jupyter-pluto-proxy'
+
 
 RUN fix-permissions "$CONDA_DIR"
 
