@@ -2,7 +2,7 @@
 
 FROM rocker/r-ver:4.5.1
 
-LABEL maintainer="Sigma2 AS <system@sigma2.no>"
+LABEL maintainer = "contact@sigma2.no"
 
 ENV S6_VERSION=v2.1.0.2
 ENV RSTUDIO_VERSION=2025.05.1+513
@@ -13,29 +13,6 @@ ENV PATH=/usr/lib/rstudio-server/bin:$PATH
 RUN /rocker_scripts/install_rstudio.sh
 RUN /rocker_scripts/install_pandoc.sh
 RUN /rocker_scripts/install_tidyverse.sh
-
-
-RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
-    apt-utils \
-    nano \
-    curl \
-    libnode109 \
-    libbz2-dev \
-    liblzma-dev \
-    librsvg2-dev \
-    libudunits2-dev \
-    openssh-client \
-    less \
-    htop \
-    procps \
-    net-tools \
-    rsync \
-    gdebi-core \
-    libxt-dev \
-    man-db \
-    strace \
-    libglpk-dev && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Setup various variables
 ENV TZ="Europe/Oslo" \
@@ -76,6 +53,30 @@ RUN usermod -u 988 rstudio-server && \
     chown -R rstudio:rstudio /home/rstudio && \
     chmod -R go+rwX /home/rstudio /tmp/downloaded_packages /var/lib/rstudio-server /var/log/rstudio && \
     rm /var/lib/rstudio-server/rstudio-os.sqlite
+
+
+RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
+    apt-utils \
+    nano \
+    curl \
+    libnode109 \
+    libbz2-dev \
+    liblzma-dev \
+    librsvg2-dev \
+    libudunits2-dev \
+    openssh-client \
+    less \
+    htop \
+    procps \
+    net-tools \
+    rsync \
+    gdebi-core \
+    libxt-dev \
+    man-db \
+    strace \
+    libglpk-dev && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
 
 USER $APP_UID:$APP_GID
 WORKDIR $HOME
