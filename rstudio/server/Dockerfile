@@ -1,11 +1,11 @@
 # Upstream Dockerfile https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/r-ver_4.3.3.Dockerfile
 
-FROM rocker/r-ver:4.4.2
+FROM rocker/r-ver:4.5.1
 
-LABEL maintainer Uninett AS <system@uninett.no>
+LABEL maintainer="Sigma2 AS <system@sigma2.no>"
 
 ENV S6_VERSION=v2.1.0.2
-ENV RSTUDIO_VERSION=2024.09.1+394
+ENV RSTUDIO_VERSION=2025.05.1+513
 ENV PANDOC_VERSION=default
 
 ENV PATH=/usr/lib/rstudio-server/bin:$PATH
@@ -44,16 +44,16 @@ ENV TZ="Europe/Oslo" \
     TINI_VERSION=v0.19.0 \
     APP_UID=977 \
     APP_GID=977 \
-    PKG_R_VERSION=4.4.2 \
-    PKG_RSTUDIO_VERSION=2024.09.1+394 \
-    PKG_SHINY_VERSION=1.5.22.1017
+    PKG_R_VERSION=4.5.1 \
+    PKG_RSTUDIO_VERSION=2025.05.1+513 \
+    PKG_SHINY_VERSION=1.5.23.1030
 
 # Setup Tini, as S6 does not work when run as non-root users
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
 RUN chmod +x /sbin/tini
 
 # Setup Shiny
-ADD https://download3.rstudio.org/ubuntu-18.04/x86_64/shiny-server-${PKG_SHINY_VERSION}-amd64.deb /tmp/shiny.deb
+ADD https://download3.rstudio.org/ubuntu-20.04/x86_64/shiny-server-${PKG_SHINY_VERSION}-amd64.deb /tmp/shiny.deb
 
 COPY shiny-server.conf /etc/init/shiny-server.conf
 RUN gdebi -n /tmp/shiny.deb && \

@@ -1,6 +1,6 @@
-FROM nginx:1.27.3-alpine
+FROM nginx:1.29.0-alpine
 
-LABEL maintainer Sigma2 As <system@sigma2.no>
+LABEL maintainer="Sigma2 As <system@sigma2.no>"
 # Add TINI
 RUN apk add --no-cache tini=0.19.0-r3
 
