@@ -1,4 +1,4 @@
-FROM quay.io/jupyterhub/k8s-hub:4.2.0
+FROM quay.io/jupyterhub/k8s-hub:3.3.8
 
 USER root
 # paste directory needs to include the python version number used in k8s-hub
