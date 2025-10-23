@@ -1,4 +1,4 @@
-FROM  sigma2as/jupyter-spark:20250205-7de094b
+FROM  sigma2as/jupyter-spark:20251023-fa62e85
 LABEL maintainer = "contact@sigma2.no"
 
 USER root
@@ -20,14 +20,14 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/mpi/lib:/usr/local/cuda/lib:/usr/local/cuda/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all \
-    PKG_KERAS_VERSION=3.8.0\
-    PKG_TENSORFLOW_VERSION=2.18.0 \
+    PKG_KERAS_VERSION=3.11.3\
+    PKG_TENSORFLOW_VERSION=2.20.0 \
     PKG_TENSORFLOW_PROBABILITY_VERSION=0.25.0 \
-    PKG_PYTORCH_VERSION=2.6.0  \
-    PKG_XGBOOST_VERSION=2.1.4 \
-    PKG_CATBOOST_VERSION=1.2.7 \
-    PKG_LIGHTGBM_VERSION=4.5.0\
-    PKG_FASTAI_VERSION=2.7.18
+    PKG_PYTORCH_VERSION=2.9.0  \
+    PKG_XGBOOST_VERSION=3.1.1 \
+    PKG_CATBOOST_VERSION=1.2.8 \
+    PKG_LIGHTGBM_VERSION=4.6.0\
+    PKG_FASTAI_VERSION=2.8.4
 
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
@@ -55,7 +55,7 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
     "torch==$PKG_PYTORCH_VERSION" \
-    torchvision==0.21.0 \
+    torchvision \
     torchaudio \
     pillow   --index-url https://download.pytorch.org/whl/cu126 && \
     rm -fr /home/notebook/.cache/yarn
@@ -63,7 +63,6 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
     "fastai==$PKG_FASTAI_VERSION" \
     monai && \
-    jupyter lab build && \
     rm -fr /home/notebook/.cache/yarn && \
 
 

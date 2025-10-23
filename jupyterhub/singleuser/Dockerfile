@@ -23,7 +23,7 @@ FROM quay.io/jupyter/datascience-notebook:47423b6d549e
 LABEL maintainer="contact@sigma2.no"
 USER root
 
-RUN mamba config --set channel_priority strict && \
+RUN conda config --set channel_priority strict && \
     mamba uninstall 'jupyter-pluto-proxy'
 
 # Setup ENV for Appstore to be picked up
