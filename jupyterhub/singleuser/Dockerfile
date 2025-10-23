@@ -7,7 +7,7 @@ FROM quay.io/jupyter/datascience-notebook:47423b6d549e as miniconda
 USER root
 RUN conda config --set channel_priority strict && \
     # mamba uninstall 'jupyter-pluto-proxy' && \
-    mamba install --quiet --yes --update-all -c conda-forge \
+    mamba install --quiet --yes  -c conda-forge \
     'escapism==1.0.1' \
     'jupyterlab-github==4.0.0' \
     'jupyter-server-proxy==4.4.0' \
