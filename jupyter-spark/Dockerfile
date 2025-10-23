@@ -36,7 +36,7 @@ USER root
 ENV APP_UID=999 \
 	APP_GID=999 \
 	PKG_JUPYTER_NOTEBOOK_VERSION=7.4.4 \
-	PKG_CUDA_VERSION=12.6.3
+	PKG_CUDA_VERSION=12.8.1
 
 RUN groupadd -g "$APP_GID" notebook && \
 	useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
