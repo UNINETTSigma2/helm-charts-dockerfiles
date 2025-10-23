@@ -6,12 +6,10 @@
 FROM quay.io/jupyter/datascience-notebook:47423b6d549e as miniconda
 USER root
 RUN conda config --set channel_priority strict && \
-    # mamba uninstall 'jupyter-pluto-proxy' && \
     mamba install --quiet --yes  -c conda-forge \
     'escapism==1.0.1' \
     'jupyterlab-github==4.0.0' \
     'jupyter-server-proxy==4.4.0' \
-    # 'ipyparallel==6.3.0' \
     'yapf==0.43.0' && \
     mamba clean --all -f -y
 
@@ -23,8 +21,8 @@ FROM quay.io/jupyter/datascience-notebook:47423b6d549e
 LABEL maintainer="contact@sigma2.no"
 USER root
 
-RUN conda config --set channel_priority strict && \
-    mamba uninstall 'jupyter-pluto-proxy'
+#RUN conda config --set channel_priority strict && \
+#    mamba uninstall 'jupyter-pluto-proxy'
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
