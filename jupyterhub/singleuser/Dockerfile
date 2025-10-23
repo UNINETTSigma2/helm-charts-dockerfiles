@@ -6,13 +6,13 @@
 FROM quay.io/jupyter/datascience-notebook:47423b6d549e as miniconda
 USER root
 RUN mamba config --set channel_priority strict && \
-    mamba uninstall 'jupyter-pluto-proxy' && \
+    # mamba uninstall 'jupyter-pluto-proxy' && \
     mamba install --quiet --yes --update-all -c conda-forge \
     'escapism==1.0.1' \
     'jupyterlab-github==4.0.0' \
-    'jupyter-server-proxy==4.1.0' \
-    'ipyparallel==6.3.0' \
-    'yapf==0.40.1' && \
+    'jupyter-server-proxy==4.4.0' \
+    # 'ipyparallel==6.3.0' \
+    'yapf==0.43.0' && \
     mamba clean --all -f -y
 
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
