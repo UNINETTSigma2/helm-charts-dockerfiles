@@ -5,7 +5,7 @@
 # Base: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/base-notebook/Dockerfile
 FROM quay.io/jupyter/datascience-notebook:47423b6d549e as miniconda
 USER root
-RUN mamba config --set channel_priority strict && \
+RUN conda config --set channel_priority strict && \
     # mamba uninstall 'jupyter-pluto-proxy' && \
     mamba install --quiet --yes --update-all -c conda-forge \
     'escapism==1.0.1' \
@@ -20,7 +20,7 @@ USER notebook
 
 FROM quay.io/jupyter/datascience-notebook:47423b6d549e
 
-LABEL maintainer = "contact@sigma2.no"
+LABEL maintainer="contact@sigma2.no"
 USER root
 
 RUN mamba config --set channel_priority strict && \
