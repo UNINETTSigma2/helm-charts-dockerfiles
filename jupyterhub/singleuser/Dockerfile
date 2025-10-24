@@ -11,7 +11,8 @@ RUN conda config --set channel_priority strict && \
     'jupyterlab-github==4.0.0' \
     'jupyter-server-proxy==4.4.0' \
     'yapf==0.43.0' && \
-    mamba clean --all -f -y
+    mamba clean --all -f -y \
+RUN pip uninstall 'jupyter-pluto-proxy'
 
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 USER notebook
@@ -23,6 +24,7 @@ USER root
 
 #RUN conda config --set channel_priority strict && \
 #    mamba uninstall 'jupyter-pluto-proxy'
+RUN pip uninstall 'jupyter-pluto-proxy'
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
