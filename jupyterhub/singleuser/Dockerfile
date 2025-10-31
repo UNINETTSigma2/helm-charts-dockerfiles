@@ -10,7 +10,7 @@ RUN conda config --set channel_priority strict && \
     'escapism==1.0.1' \
     'jupyterlab-github==4.0.0' \
     'jupyter-server-proxy==4.4.0' \
-    'ipyparallel==6.3.0' \
+    'ipyparallel==9.0.2' \
     'yapf==0.43.0' && \
     mamba clean --all -f -y
 RUN pip uninstall -y 'jupyter-pluto-proxy'
