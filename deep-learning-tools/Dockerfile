@@ -1,5 +1,5 @@
 FROM  sigma2as/jupyter-spark:20251023-fa62e85
-LABEL maintainer = "contact@sigma2.no"
+LABEL maintainer="contact@sigma2.no"
 
 USER root
 
@@ -20,7 +20,7 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/mpi/lib:/usr/local/cuda/lib:/usr/local/cuda/lib64:${LD_LIBRARY_PATH} \
     NVIDIA_VISIBLE_DEVICES="" \
     NVIDIA_DRIVER_CAPABILITIES=all \
-    PKG_KERAS_VERSION=3.11.3\
+    PKG_KERAS_VERSION=3.12.0\
     PKG_TENSORFLOW_VERSION=2.20.0 \
     PKG_TENSORFLOW_PROBABILITY_VERSION=0.25.0 \
     PKG_PYTORCH_VERSION=2.9.0  \
@@ -32,38 +32,26 @@ ENV PATH=/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
        pycuda \
-        "keras==$PKG_KERAS_VERSION" \
+        keras \
         plotnine \
         kaggle \
         hypothesis \
         mlflow \
         jax \
         transformers \
-        datasets  \
         tiktoken  \
-        "lightgbm==$PKG_LIGHTGBM_VERSION" \
-        "tensorflow==$PKG_TENSORFLOW_VERSION" \
-        "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
-        "xgboost==$PKG_XGBOOST_VERSION" \
-        #"catboost==$PKG_CATBOOST_VERSION" \
+        lightgbm \
+        tensorflow \
+        tensorflow-probability \
+        xgboost \
         sentencepiece \
         albumentations \
+        torch \
+        torchvision \
+        fastai \
+        pillow \
     nvidia-ml-py \
     && mamba clean --all -f -y && \
     rm -fr /home/notebook/.cache/yarn
-
-
-RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
-    "torch==$PKG_PYTORCH_VERSION" \
-    torchvision \
-    torchaudio \
-    pillow    && \
-    rm -fr /home/notebook/.cache/yarn
-
-RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
-    "fastai==$PKG_FASTAI_VERSION" \
-    monai && \
-    rm -fr /home/notebook/.cache/yarn && \
-
 
 COPY start-notebook.sh /usr/local/bin/
