@@ -6,25 +6,25 @@
 
 
 
-FROM jupyter/base-notebook:4c0c0aa1715f as miniconda
-RUN mamba config --set channel_priority strict && \
-    mamba install --quiet --yes --update-all -c conda-forge \
-    'ipyparallel==6.3.0' \
-    'jupyter-server-proxy==4.0.0' \
+FROM quay.io/jupyter/base-notebook:47423b6d549e as miniconda
+USER root
+RUN conda config --set channel_priority strict && \
+    mamba install --quiet --yes -c conda-forge \
+    'jupyter-server-proxy==4.4.0' \
     'escapism==1.0.1' \
     'jupyterlab-github==4.0.0' && \
-    jupyter server extension enable jupyter_server_proxy --sys-prefix && \
     mamba clean --all -f -y
+USER notebook
 
-FROM jupyter/base-notebook:4c0c0aa1715f
+FROM quay.io/jupyter/base-notebook:47423b6d549e
 
-LABEL maintainer = "contact@sigma2.no"
+LABEL maintainer="contact@sigma2.no"
 USER root
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.5
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.4.7
 RUN groupadd -g "$APP_GID" notebook && \
     useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
     usermod -G users notebook && chmod go+rwx -R "$CONDA_DIR/bin"
@@ -59,10 +59,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
 
 
-ENV TZ="Europe/Oslo"
-
-ENV HOME=/home/notebook \
+ENV TZ="Europe/Oslo" \
+    HOME=/home/notebook \
     XDG_CACHE_HOME=/home/notebook/.cache/
+
 COPY normalize-username.py start-notebook.sh /usr/local/bin/
 COPY --chown=notebook:notebook .jupyter/ /opt/.jupyter/
 RUN mkdir -p /home/notebook/.ipython/profile_default/security/ && chmod go+rwx -R "$CONDA_DIR/bin" && chown notebook:notebook -R "$CONDA_DIR/bin" "$HOME" && \
