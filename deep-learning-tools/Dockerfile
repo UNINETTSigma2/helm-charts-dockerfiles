@@ -42,8 +42,8 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
         datasets  \
         tiktoken  \
         "lightgbm==$PKG_LIGHTGBM_VERSION" \
-        #"tensorflow[and-cuda]==$PKG_TENSORFLOW_VERSION" \
-        #"tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
+        "tensorflow==$PKG_TENSORFLOW_VERSION" \
+        "tensorflow-probability==$PKG_TENSORFLOW_PROBABILITY_VERSION" \
         "xgboost==$PKG_XGBOOST_VERSION" \
         #"catboost==$PKG_CATBOOST_VERSION" \
         sentencepiece \
@@ -57,7 +57,7 @@ RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall 
     "torch==$PKG_PYTORCH_VERSION" \
     torchvision \
     torchaudio \
-    pillow   --index-url https://download.pytorch.org/whl/cu126 && \
+    pillow    && \
     rm -fr /home/notebook/.cache/yarn
 
 RUN CC="cc -mavx2" eatmydata pip install --no-cache-dir -I -U --force-reinstall \
