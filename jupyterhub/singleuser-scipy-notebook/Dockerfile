@@ -3,31 +3,36 @@
 
 # Minimal: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/tree/d400e383cc1d/base-notebook/Dockerfile
-FROM jupyter/scipy-notebook:4c0c0aa1715f as miniconda
-RUN mamba config --set channel_priority strict && \
-    mamba install --quiet --yes --update-all -c conda-forge \
+FROM quay.io/jupyter/scipy-notebook:47423b6d549e as miniconda
+USER root
+RUN conda config --set channel_priority strict && \
+    mamba install --quiet --yes  -c conda-forge \
     'escapism==1.0.1' \
     'jupyterlab-github==4.0.0' \
-    'jupyter-server-proxy==4.0.0' \
-    'ipyparallel==6.3.0' \
-    'yapf==0.40.1' && \
+    'jupyter-server-proxy==4.4.0' \
+    'ipyparallel==9.0.2' \
+    'yapf==0.43.0' && \
     mamba clean --all -f -y
 
-FROM jupyter/scipy-notebook:4c0c0aa1715f
+USER notebook
 
-LABEL maintainer = "contact@sigma2.no"
+FROM quay.io/jupyter/scipy-notebook:47423b6d549e
+
+LABEL maintainer="contact@sigma2.no"
 USER root
+
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.0.5 \
-	PKG_CUDA_VERSION=11.8.0
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.4.7 \
+	PKG_CUDA_VERSION=12.8.1
 
 RUN groupadd -g "$APP_GID" notebook && \
     useradd -m -s /bin/bash -N -u "$APP_UID" -g notebook notebook && \
     usermod -G users notebook && chmod go+rwx -R "$CONDA_DIR/bin"
 COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
+
 
 # Refer here for versions https://gitlab.com/nvidia/container-images/cuda/-/blob/master/dist/11.7.1/ubuntu2204/base/Dockerfile
 # https://www.tensorflow.org/install/gpu
@@ -35,71 +40,86 @@ COPY --chown=notebook:notebook --from=miniconda $CONDA_DIR $CONDA_DIR
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu-jupyter.Dockerfile
 # might also be useful for CUDA packages
 
-ENV NV_CUDA_LIB_VERSION=11.8.0-1  \
-        NV_CUDNN_VERSION=8.9.0.131 \
-        NV_CUDNN_PACKAGE_NAME="libcudnn8" \
-        NV_CUDA_CUDART_VERSION=11.8.89-1 \
-        NV_CUDA_COMPAT_PACKAGE=cuda-compat-11-8 \
-        CUDA_VERSION=11.8.0  \
-        NV_NVTX_VERSION=11.8.86-1 \
-        NV_LIBNPP_VERSION=11.8.0.86-1 \
-        NV_LIBCUSPARSE_VERSION=11.7.5.86-1 \
-        NV_LIBCUBLAS_PACKAGE_NAME=libcublas-11-8 \
-        NV_LIBCUBLAS_VERSION=11.11.3.6-1 \
-        NV_LIBNCCL_PACKAGE_NAME=libnccl2 \
-        NV_LIBNCCL_PACKAGE_VERSION=2.15.5-1 \
-        NV_CUDA_CUDART_DEV_VERSION=11.8.89-1 \
-        NV_NVML_DEV_VERSION=11.8.86-1 \
-        NV_NVPROF_VERSION=11.8.87-1 \
-        NCCL_VERSION=2.15.5-1 \
-        NV_LIBNPP_DEV_VERSION=11.8.0.86-1 \
-        NV_LIBCUSPARSE_DEV_VERSION=11.7.5.86-1 \
-        NV_LIBCUBLAS_DEV_VERSION=11.11.3.6-1 \
-        NV_LIBCUBLAS_DEV_PACKAGE_NAME=libcublas-dev-11-8 \
-        NV_LIBNCCL_DEV_PACKAGE_NAME=libnccl-dev \
-        NV_LIBNCCL_DEV_PACKAGE_VERSION=2.15.5-1 \
-        NV_CUDA_NSIGHT_COMPUTE_VERSION=11.8.0-1
+ENV NV_CUDA_LIB_VERSION=12.8.1-1 \
+    NV_CUDNN_VERSION=9.8.0.87-1 \
+    NV_CUDNN_PACKAGE_NAME="libcudnn9-cuda-12" \
+    NV_CUDA_CUDART_VERSION=12.8.90-1 \
+    NV_CUDA_COMPAT_PACKAGE=cuda-compat-12-8 \
+    CUDA_VERSION=12.8.1 \
+    NV_NVTX_VERSION=12.8.90-1\
+    NV_LIBNPP_VERSION=12.3.3.100-1 \
+    NV_LIBCUSPARSE_VERSION=12.5.8.93-1 \
+    NV_LIBCUBLAS_PACKAGE_NAME=libcublas-12-8 \
+    NV_LIBCUBLAS_VERSION=12.8.4.1-1 \
+    NV_LIBNCCL_PACKAGE_NAME=libnccl2 \
+    NV_LIBNCCL_PACKAGE_VERSION=2.26.2-1\
+    NV_CUDA_CUDART_DEV_VERSION=12.8.90-1 \
+    NV_NVML_DEV_VERSION=12.8.90-1 \
+    NV_NVPROF_VERSION=12.8.90-1\
+    NCCL_VERSION=2.26.2-1 \
+    NV_LIBNPP_DEV_VERSION=12.3.3.100-1 \
+    NV_LIBCUSPARSE_DEV_VERSION=12.5.8.93-1 \
+    NV_LIBCUBLAS_DEV_VERSION=12.8.4.1-1 \
+    NV_LIBCUBLAS_DEV_PACKAGE_NAME=libcublas-dev-12-8 \
+    NV_LIBNCCL_DEV_PACKAGE_NAME=libnccl-dev \
+    NV_LIBNCCL_DEV_PACKAGE_VERSION=2.26.2-1 \
+    NV_CUDA_NSIGHT_COMPUTE_VERSION=12.8.1-1 \
+    CUDA_TOOLKIT_VERSION=12.8.1-1 \
+    NVIDIA_GDS_VERSION=12.8.1-1 \
+    CUDA_DRIVER_VERSION=570.133.20-0ubuntu1 \
+    LIBGLU1_MESA_DEV_VERSION=9.0.2-1.1build1 \
+    FREEGLUT3_DEV_VERSION=3.4.0-1build1 \
+    MESA_COMMON_DEV_VERSION=24.0.5-1ubuntu1 \
+    LIBFREEIMAGE_DEV_VERSION=3.18.0+ds2-10build4
 
-ENV NV_CUDNN_PACKAGE="libcudnn8=$NV_CUDNN_VERSION-1+cuda11.8" \
-        PKG_CUDNN_VERSION="$NV_CUDNN_VERSION-1+cuda11.8" \
-        NV_LIBNPP_PACKAGE="libnpp-11-8=${NV_LIBNPP_VERSION}"\
-        NV_LIBCUBLAS_PACKAGE="${NV_LIBCUBLAS_PACKAGE_NAME}=${NV_LIBCUBLAS_VERSION}" \
-        NV_NVPROF_DEV_PACKAGE="cuda-nvprof-11-8=${NV_NVPROF_VERSION}" \
-        NV_LIBNCCL_PACKAGE="${NV_LIBNCCL_PACKAGE_NAME}=${NV_LIBNCCL_PACKAGE_VERSION}+cuda11.8" \
-        NV_LIBNPP_DEV_PACKAGE="libnpp-dev-11-8=${NV_LIBNPP_DEV_VERSION}" \
-        NV_LIBCUBLAS_DEV_PACKAGE="${NV_LIBCUBLAS_DEV_PACKAGE_NAME}=${NV_LIBCUBLAS_DEV_VERSION}"  \
-        NV_LIBNCCL_DEV_PACKAGE="${NV_LIBNCCL_DEV_PACKAGE_NAME}=${NV_LIBNCCL_DEV_PACKAGE_VERSION}+cuda11.8" \
-        NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE="cuda-nsight-compute-11-8=${NV_CUDA_NSIGHT_COMPUTE_VERSION}"
+ENV NV_CUDNN_PACKAGE="libcudnn9-cuda-12=${NV_CUDNN_VERSION}" \
+    PKG_CUDNN_VERSION="$NV_CUDNN_VERSION" \
+    NV_LIBNPP_PACKAGE="libnpp-12-8=${NV_LIBNPP_VERSION}"\
+    NV_LIBCUBLAS_PACKAGE="${NV_LIBCUBLAS_PACKAGE_NAME}=${NV_LIBCUBLAS_VERSION}" \
+    NV_NVPROF_DEV_PACKAGE="cuda-nvprof-12-8=${NV_NVPROF_VERSION}" \
+    NV_LIBNCCL_PACKAGE="${NV_LIBNCCL_PACKAGE_NAME}=${NV_LIBNCCL_PACKAGE_VERSION}+cuda12.8" \
+    NV_LIBNPP_DEV_PACKAGE="libnpp-dev-12-8=${NV_LIBNPP_DEV_VERSION}" \
+    NV_LIBCUBLAS_DEV_PACKAGE="${NV_LIBCUBLAS_DEV_PACKAGE_NAME}=${NV_LIBCUBLAS_DEV_VERSION}"  \
+    NV_LIBNCCL_DEV_PACKAGE="${NV_LIBNCCL_DEV_PACKAGE_NAME}=${NV_LIBNCCL_DEV_PACKAGE_VERSION}+cuda12.8" \
+    NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE="cuda-nsight-compute-12-8=${NV_CUDA_NSIGHT_COMPUTE_VERSION}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 curl ca-certificates && \
-    curl -fsLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb && \
-    dpkg -i cuda-keyring_1.0-1_all.deb && \
+    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/3bf863cc.pub | apt-key add - && \
+    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64 /" > /etc/apt/sources.list.d/cuda.list && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    cuda-cudart-11-8="${NV_CUDA_CUDART_VERSION}" \
-    "${NV_CUDA_COMPAT_PACKAGE}" \
-    "cuda-libraries-11-8=${NV_CUDA_LIB_VERSION}" \
-    "${NV_LIBNPP_PACKAGE}" \
-    cuda-nvtx-11-8="${NV_NVTX_VERSION}" \
-    libcusparse-11-8="${NV_LIBCUSPARSE_VERSION}" \
-    "${NV_LIBCUBLAS_PACKAGE}" \
-    "${NV_LIBNCCL_PACKAGE}" \
-    "${NV_CUDNN_PACKAGE}" \
-    cuda-cudart-dev-11-8="${NV_CUDA_CUDART_DEV_VERSION}" \
-    cuda-command-line-tools-11-8="${NV_CUDA_LIB_VERSION}"\
-    cuda-minimal-build-11-8="${NV_CUDA_LIB_VERSION}" \
-    cuda-libraries-dev-11-8="${NV_CUDA_LIB_VERSION}" \
-    cuda-nvml-dev-11-8="${NV_NVML_DEV_VERSION}" \
-    "${NV_NVPROF_DEV_PACKAGE}" \
-    "${NV_LIBNPP_DEV_PACKAGE}" \
-    libcusparse-dev-11-8="${NV_LIBCUSPARSE_DEV_VERSION}" \
-    "${NV_LIBCUBLAS_DEV_PACKAGE}" \
-    "${NV_LIBNCCL_DEV_PACKAGE}" \
-    "${NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE}" \
+    cuda-toolkit=12.8.1-1 \
+        nvidia-gds=12.8.1-1 \
+        cuda-drivers-570="${CUDA_DRIVER_VERSION}" \
+        libglu1-mesa-dev="${LIBGLU1_MESA_DEV_VERSION}" \
+        freeglut3-dev="${FREEGLUT3_DEV_VERSION}" \
+        mesa-common-dev="${MESA_COMMON_DEV_VERSION}" \
+        libfreeimage-dev="${LIBFREEIMAGE_DEV_VERSION}" \
+    build-essential \
+           cuda-cudart-12-8=${NV_CUDA_CUDART_VERSION} \
+           "${NV_CUDA_COMPAT_PACKAGE}" \
+           cuda-libraries-12-8="${NV_CUDA_LIB_VERSION}" \
+           "${NV_LIBNPP_PACKAGE}" \
+           cuda-nvtx-12-8="${NV_NVTX_VERSION}" \
+           libcusparse-12-8="${NV_LIBCUSPARSE_VERSION}" \
+           "${NV_LIBCUBLAS_PACKAGE}" \
+           "${NV_LIBNCCL_PACKAGE}" \
+           "${NV_CUDNN_PACKAGE}" \
+            cuda-cudart-dev-12-8="${NV_CUDA_CUDART_DEV_VERSION}" \
+            cuda-command-line-tools-12-8="${NV_CUDA_LIB_VERSION}" \
+            cuda-minimal-build-12-8="${NV_CUDA_LIB_VERSION}" \
+            cuda-libraries-dev-12-8="${NV_CUDA_LIB_VERSION}" \
+            cuda-nvml-dev-12-8="${NV_NVML_DEV_VERSION}" \
+            "${NV_NVPROF_DEV_PACKAGE}" \
+            "${NV_LIBNPP_DEV_PACKAGE}" \
+            libcusparse-dev-12-8="${NV_LIBCUSPARSE_DEV_VERSION}" \
+            "${NV_LIBCUBLAS_DEV_PACKAGE}" \
+            "${NV_LIBNCCL_DEV_PACKAGE}" \
+            "${NV_CUDA_NSIGHT_COMPUTE_DEV_PACKAGE}" \
 	openssh-client \
 	less \
 	net-tools \
