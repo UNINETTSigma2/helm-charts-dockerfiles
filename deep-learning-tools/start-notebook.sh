@@ -44,7 +44,7 @@ else
 fi
 
 tensorboard --logdir="$TENSORBOARD_LOGDIR" --port=6006 &
-mlflow server --backend-store-uri "sqlite:///$MLFLOW_DATADIR/mlflow.db" --default-artifact-root "file:$MLFLOW_DATADIR" --host 0.0.0.0 &
+mlflow server --backend-store-uri "sqlite:///$MLFLOW_DATADIR/mlflow.db" --default-artifact-root "file:$MLFLOW_DATADIR" --host 0.0.0.0 --allowed-hosts "*.sigma2.no,*.dataporten.no,localhost" &
 export MLFLOW_TRACKING_URI="http://localhost:5000"
 
 sleep inf
