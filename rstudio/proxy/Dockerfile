@@ -1,4 +1,4 @@
-FROM nginx:1.29.0-alpine
+FROM nginx:1.29.4-alpine
 
 LABEL maintainer="Sigma2 As <system@sigma2.no>"
 # Add TINI
