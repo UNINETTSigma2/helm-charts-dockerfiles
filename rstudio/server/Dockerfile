@@ -1,11 +1,11 @@
 # Upstream Dockerfile https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/r-ver_4.3.3.Dockerfile
 
-FROM rocker/r-ver:4.5.1
+FROM rocker/r-ver:4.5.2
 
 LABEL maintainer = "contact@sigma2.no"
 
 ENV S6_VERSION=v2.1.0.2
-ENV RSTUDIO_VERSION=2025.05.1+513
+ENV RSTUDIO_VERSION=2025.09.2+418
 ENV PANDOC_VERSION=default
 
 ENV PATH=/usr/lib/rstudio-server/bin:$PATH
@@ -21,8 +21,8 @@ ENV TZ="Europe/Oslo" \
     TINI_VERSION=v0.19.0 \
     APP_UID=977 \
     APP_GID=977 \
-    PKG_R_VERSION=4.5.1 \
-    PKG_RSTUDIO_VERSION=2025.05.1+513 \
+    PKG_R_VERSION=4.5.2 \
+    PKG_RSTUDIO_VERSION=2025.09.2+418 \
     PKG_SHINY_VERSION=1.5.23.1030
 
 # Setup Tini, as S6 does not work when run as non-root users
