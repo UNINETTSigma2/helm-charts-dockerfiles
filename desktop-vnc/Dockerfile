@@ -61,10 +61,6 @@ ENV PKG_CUDA_VERSION=12.8.1 \
     CUDA_TOOLKIT_VERSION=12.8.1-1 \
     NVIDIA_GDS_VERSION=12.8.1-1 \
     CUDA_DRIVER_VERSION=570.133.20-0ubuntu1 \
-    LIBGLU1_MESA_DEV_VERSION=9.0.2-1.1build1 \
-    FREEGLUT3_DEV_VERSION=3.4.0-1build1 \
-    MESA_COMMON_DEV_VERSION=25.0.7-0ubuntu0.24.04.1 \
-    LIBFREEIMAGE_DEV_VERSION=3.18.0+ds2-10build4
 
 ENV NV_CUDNN_PACKAGE="libcudnn9-cuda-12=${NV_CUDNN_VERSION}" \
     PKG_CUDNN_VERSION="$NV_CUDNN_VERSION" \
@@ -81,10 +77,7 @@ RUN apt-get install -y --no-install-recommends \
     cuda-toolkit=12.8.1-1 \
     nvidia-gds=12.8.1-1 \
     cuda-drivers-570="${CUDA_DRIVER_VERSION}" \
-    libglu1-mesa-dev="${LIBGLU1_MESA_DEV_VERSION}" \
-    freeglut3-dev="${FREEGLUT3_DEV_VERSION}" \
-    mesa-common-dev="${MESA_COMMON_DEV_VERSION}" \
-    libfreeimage-dev="${LIBFREEIMAGE_DEV_VERSION}"
+
 
 ## Connection ports for controlling the UI:
 # VNC port:5901
