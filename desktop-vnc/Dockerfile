@@ -15,6 +15,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN apt-get update
 
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    dpkg -i google-chrome-stable_current_amd64.deb
+
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH} \
     LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64 \
     NVIDIA_VISIBLE_DEVICES="" \
@@ -96,8 +99,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     locales ca-certificates xauth ssh \
     unzip htop gedit git \
     x11-xserver-utils adwaita-icon-theme-full \
-    chromium-browser chromium-browser-l10n autoconf libtool pkg-config automake \
-    chromium-codecs-ffmpeg vim emacs net-tools libxrender1 mesa-utils  \
+    autoconf libtool pkg-config automake \
+    vim emacs net-tools libxrender1 mesa-utils  \
     locales  python3-numpy ttf-wqy-zenhei libxext-dev libx11-dev x11proto-gl-dev \
     supervisor xfce4 xfce4-terminal xterm dbus-x11 glmark2 \
     libnss-wrapper gettext csh zsh nano gv openssh-client tcsh rsync less cdo nco ncview \
