@@ -60,7 +60,7 @@ ENV PKG_CUDA_VERSION=12.8.1 \
     NV_CUDA_NSIGHT_COMPUTE_VERSION=12.8.1-1 \
     CUDA_TOOLKIT_VERSION=12.8.1-1 \
     NVIDIA_GDS_VERSION=12.8.1-1 \
-    CUDA_DRIVER_VERSION=570.133.20-0ubuntu1 \
+    CUDA_DRIVER_VERSION=570.133.20-0ubuntu1
 
 ENV NV_CUDNN_PACKAGE="libcudnn9-cuda-12=${NV_CUDNN_VERSION}" \
     PKG_CUDNN_VERSION="$NV_CUDNN_VERSION" \
@@ -76,7 +76,7 @@ ENV NV_CUDNN_PACKAGE="libcudnn9-cuda-12=${NV_CUDNN_VERSION}" \
 RUN apt-get install -y --no-install-recommends \
     cuda-toolkit=12.8.1-1 \
     nvidia-gds=12.8.1-1 \
-    cuda-drivers-570="${CUDA_DRIVER_VERSION}" \
+    cuda-drivers-570="${CUDA_DRIVER_VERSION}"
 
 
 ## Connection ports for controlling the UI:
