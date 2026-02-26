@@ -7,6 +7,8 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 LABEL maintainer="contact@sigma2.no"
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 curl wget bzip2 ca-certificates apt-file git cmake gcc pciutils libopenmpi-dev && \
+    fonts-liberation libasound2  libatk-bridge2.0-0 libatk1.0-0 libatspi2.0-0 libcairo2  && \
+    libcups2 libdbus-1-3 libgbm1 libglib2.0-0 libgtk-4-1 libnspr4 libnss3 libpango-1.0-0 libvulkan1 libxcomposite1 libxdamage1 libxfixes3 libxkbcommon0 libxrandr2 xdg-utils&& \
     curl -fsLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
     dpkg -i cuda-keyring_1.1-1_all.deb && \
     apt-get -y autoremove && \
