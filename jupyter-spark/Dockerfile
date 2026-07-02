@@ -101,14 +101,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN apt-get update
 
-RUN apt-get install -y --no-install-recommends \
-    cuda-toolkit=12.8.1-1 \
-    nvidia-gds=12.8.1-1 \
-    cuda-drivers-570="${CUDA_DRIVER_VERSION}" \
-    libglu1-mesa-dev="${LIBGLU1_MESA_DEV_VERSION}" \
-    freeglut3-dev="${FREEGLUT3_DEV_VERSION}" \
-    mesa-common-dev="${MESA_COMMON_DEV_VERSION}" \
-    libfreeimage-dev="${LIBFREEIMAGE_DEV_VERSION}"
+#RUN apt-get install -y --no-install-recommends \
+#    cuda-toolkit=12.8.1-1 \
+#    nvidia-gds=12.8.1-1 \
+#    cuda-drivers-570="${CUDA_DRIVER_VERSION}" \
+#    libglu1-mesa-dev="${LIBGLU1_MESA_DEV_VERSION}" \
+#    freeglut3-dev="${FREEGLUT3_DEV_VERSION}" \
+#    mesa-common-dev="${MESA_COMMON_DEV_VERSION}" \
+#    libfreeimage-dev="${LIBFREEIMAGE_DEV_VERSION}"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
        build-essential \
