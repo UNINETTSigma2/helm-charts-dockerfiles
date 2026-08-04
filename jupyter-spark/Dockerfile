@@ -6,7 +6,7 @@
 # SciPy: https://github.com/jupyter/docker-stacks/blob/main/scipy-notebook/Dockerfile
 # Minimal: https://github.com/jupyter/docker-stacks/blob/main/minimal-notebook/Dockerfile
 # Base: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
-FROM quay.io/jupyter/all-spark-notebook:3c428a398be3 AS miniconda
+FROM quay.io/jupyter/all-spark-notebook:c9ecde976a5f AS miniconda
 USER root
 ENV DEBIAN_FRONTEND=noninteractive \
     NODE_OPTIONS="--max-old-space-size=4096" \
@@ -28,14 +28,14 @@ RUN conda config --set channel_priority strict && \
 RUN mamba create -n minimal -y && bash -c 'source activate minimal && conda install -y ipykernel && ipython kernel install --name=minimal --display-name="Python 3 (minimal conda)" && conda clean --all -f -y && conda deactivate'
 USER notebook
 
-FROM quay.io/jupyter/all-spark-notebook:3c428a398be3
+FROM quay.io/jupyter/all-spark-notebook:c9ecde976a5f
 LABEL maintainer="contact@sigma2.no"
 USER root
 
 # Setup ENV for Appstore to be picked up
 ENV APP_UID=999 \
 	APP_GID=999 \
-	PKG_JUPYTER_NOTEBOOK_VERSION=7.5.7 \
+	PKG_JUPYTER_NOTEBOOK_VERSION=7.6.1 \
 	PKG_CUDA_VERSION=12.8.1
 
 RUN groupadd -g "$APP_GID" notebook && \
