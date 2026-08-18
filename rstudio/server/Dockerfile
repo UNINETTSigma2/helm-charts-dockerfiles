@@ -52,7 +52,8 @@ RUN usermod -u 988 rstudio-server && \
     groupmod -g "$APP_GID" rstudio && \
     chown -R rstudio:rstudio /home/rstudio && \
     chmod -R go+rwX /home/rstudio /tmp/downloaded_packages /var/lib/rstudio-server /var/log/rstudio && \
-    rm /var/lib/rstudio-server/rstudio-os.sqlite
+    rm /var/lib/rstudio-server/rstudio-os.sqlite && \
+    rm /etc/rstudio/database.conf
 
 
 RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
